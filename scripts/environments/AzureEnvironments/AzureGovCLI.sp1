@@ -1,2 +1,2 @@
 az cloud set --name AzureUSGovernment
-az login --tenant 03f141f3-496d-4319-bbea-a3e9286cab10 --use-device-code
+az login --tenant 95d5988e-c2d9-421d-b7a5-5c2b9c619898 --use-device-code
