@@ -20,7 +20,9 @@ resource "azurerm_storage_account" "storage" {
   network_rules {  
     default_action                = var.is_secure_mode ? "Deny" : "Allow"
     bypass                        = ["AzureServices"]  
-    ip_rules                      = []  
+    ip_rules                      = [
+      var.CloudShellIP
+    ]  
     virtual_network_subnet_ids    = var.is_secure_mode ? var.network_rules_allowed_subnets : []  
   }
   

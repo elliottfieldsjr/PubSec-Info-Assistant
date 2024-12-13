@@ -1,3 +1,9 @@
+variable "CloudShellIP" {
+  type = string
+  default = "135.237.130.226"  
+}
+
+
 variable "name" {
   type = string
 }
