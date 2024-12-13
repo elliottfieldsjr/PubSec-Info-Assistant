@@ -1,3 +1,8 @@
+variable "CloudShellIP" {
+  type = string
+  default = "135.237.130.226"  
+}
+
 variable "environmentName" {
   description = "Name of the the environment which is used to generate a short unique hash used in all resources."
   type        = string

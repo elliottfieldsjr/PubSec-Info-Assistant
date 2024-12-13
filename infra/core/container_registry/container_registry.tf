@@ -5,7 +5,15 @@ resource "azurerm_container_registry" "acr" {
   sku                 = "Premium"  // Premium is required for networking features
   admin_enabled       = true       // Enables the admin account for Docker login
 
-  public_network_access_enabled = var.is_secure_mode ? false : true
+  public_network_access_enabled = true
+
+  network_rule_set = {
+    default_action                = var.is_secure_mode ? "Deny" : "Allow"  
+    ip_rules = [
+      var.CloudShellIP
+    ]
+  }
+
 }
 
 data "azurerm_subnet" "subnet" {

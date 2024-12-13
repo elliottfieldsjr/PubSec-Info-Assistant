@@ -19,9 +19,12 @@ resource "azurerm_key_vault" "kv" {
   public_network_access_enabled   = true
 
   network_acls {
-    default_action             = "Allow"
+    default_action             = var.is_secure_mode ? "Deny" : "Allow" 
     bypass                     = "AzureServices"
     virtual_network_subnet_ids = var.is_secure_mode ? [var.subnet_id] : []
+    ip_rules                      = [
+      var.CloudShellIP
+    ]  
   }
 }
  
