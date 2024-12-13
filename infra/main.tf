@@ -19,7 +19,7 @@ resource "random_string" "random" {
 
 // Organize resources in a resource group
 resource "azurerm_resource_group" "rg" {
-  name     = var.resourceGroupName != "" ? var.resourceGroupName : "dat-${var.environmentName}"
+  name     = var.resourceGroupName
   location = var.location
   tags     = local.tags
 }

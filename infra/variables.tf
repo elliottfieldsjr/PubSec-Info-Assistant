@@ -1,6 +1,5 @@
 variable "CloudShellIP" {
   type = string
-  default = "74.249.85.199"  
 }
 
 variable "environmentName" {
@@ -15,7 +14,6 @@ variable "location" {
 
 variable "resourceGroupName" {
   type    = string
-  default = ""
 }
 
 variable "buildNumber" {
