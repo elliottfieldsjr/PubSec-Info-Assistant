@@ -9,8 +9,10 @@ resource "azurerm_container_registry" "acr" {
 
   network_rule_set = {
     default_action                = var.is_secure_mode ? "Deny" : "Allow"  
-    ip_rules = [
-      var.CloudShellIP
+    ip_rule = [
+     {
+      ip_range = var.CloudShellIP
+     } 
     ]
   }
 
