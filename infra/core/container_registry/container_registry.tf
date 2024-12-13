@@ -10,7 +10,10 @@ resource "azurerm_container_registry" "acr" {
   network_rule_set = {
     ip_rule = [
      {
-      ip_range = "${var.CloudShellIP}/32"
+      ip_range = [
+        "${var.CloudShellIP}/32"
+      ]
+      
      }
     ]
   }
