@@ -19,7 +19,7 @@ resource "random_string" "random" {
 
 // Organize resources in a resource group
 resource "azurerm_resource_group" "rg" {
-  name     = var.resourceGroupName != "" ? var.resourceGroupName : "infoasst-${var.environmentName}"
+  name     = var.resourceGroupName != "" ? var.resourceGroupName : "dat-${var.environmentName}"
   location = var.location
   tags     = local.tags
 }
@@ -43,10 +43,10 @@ module "entraObjects" {
 module "network" {
   source                          = "./core/network/network"
   count                           = var.is_secure_mode ? 1 : 0
-  vnet_name                       = "infoasst-vnet-${random_string.random.result}"
-  nsg_name                        = "infoasst-nsg-${random_string.random.result}"
-  ddos_name                       = "infoasst-ddos-${random_string.random.result}"
-  dns_resolver_name               = "infoasst-dns-${random_string.random.result}"
+  vnet_name                       = "dat-vnet-${random_string.random.result}"
+  nsg_name                        = "dat-nsg-${random_string.random.result}"
+  ddos_name                       = "dat-ddos-${random_string.random.result}"
+  dns_resolver_name               = "dat-dns-${random_string.random.result}"
   enabledDDOSProtectionPlan       = var.enabledDDOSProtectionPlan
   ddos_plan_id                    = var.ddos_plan_id
   location                        = var.location
@@ -77,7 +77,7 @@ module "privateDnsZoneAzureOpenAi" {
   count              = var.is_secure_mode ? 1 : 0
   name               = "privatelink.${var.azure_openai_domain}"
   resourceGroupName  = azurerm_resource_group.rg.name
-  vnetLinkName       = "infoasst-azure-openai-vnetlink-${random_string.random.result}"
+  vnetLinkName       = "dat-azure-openai-vnetlink-${random_string.random.result}"
   virtual_network_id = var.is_secure_mode ? module.network[0].vnet_id : null
   tags               = local.tags
   depends_on = [ module.network[0] ]
@@ -88,7 +88,7 @@ module "privateDnsZoneAzureAi" {
   count              = var.is_secure_mode ? 1 : 0
   name               = "privatelink.${var.azure_ai_private_link_domain}"
   resourceGroupName  = azurerm_resource_group.rg.name
-  vnetLinkName       = "infoasst-azure-ai-vnetlink-${random_string.random.result}"
+  vnetLinkName       = "dat-azure-ai-vnetlink-${random_string.random.result}"
   virtual_network_id = var.is_secure_mode ? module.network[0].vnet_id : null
   tags               = local.tags
   depends_on = [ module.network[0] ]
@@ -99,7 +99,7 @@ module "privateDnsZoneApp" {
   count              = var.is_secure_mode ? 1 : 0
   name               = "privatelink.${var.azure_websites_domain}"
   resourceGroupName  = azurerm_resource_group.rg.name
-  vnetLinkName       = "infoasst-app-vnetlink-${random_string.random.result}"
+  vnetLinkName       = "dat-app-vnetlink-${random_string.random.result}"
   virtual_network_id = var.is_secure_mode ? module.network[0].vnet_id : null
   tags               = local.tags
   depends_on = [ module.network[0] ]
@@ -110,7 +110,7 @@ module "privateDnsZoneKeyVault" {
   count              = var.is_secure_mode ? 1 : 0
   name               = "privatelink.${var.azure_keyvault_domain}"
   resourceGroupName  = azurerm_resource_group.rg.name
-  vnetLinkName       = "infoasst-kv-vnetlink-${random_string.random.result}"
+  vnetLinkName       = "dat-kv-vnetlink-${random_string.random.result}"
   virtual_network_id = var.is_secure_mode ? module.network[0].vnet_id : null
   tags               = local.tags
   depends_on = [ module.network[0] ]
@@ -121,7 +121,7 @@ module "privateDnsZoneStorageAccountBlob" {
   count              = var.is_secure_mode ? 1 : 0
   name               = "privatelink.blob.${var.azure_storage_domain}"
   resourceGroupName  = azurerm_resource_group.rg.name
-  vnetLinkName       = "infoasst-storage-blob-vnetlink-${random_string.random.result}"
+  vnetLinkName       = "dat-storage-blob-vnetlink-${random_string.random.result}"
   virtual_network_id = var.is_secure_mode ? module.network[0].vnet_id : null
   tags               = local.tags
   depends_on = [ module.network[0] ]
@@ -133,7 +133,7 @@ module "privateDnsZoneStorageAccountFile" {
   count              = var.is_secure_mode ? 1 : 0
   name               = "privatelink.file.${var.azure_storage_domain}"
   resourceGroupName  = azurerm_resource_group.rg.name
-  vnetLinkName       = "infoasst-storage-file-vnetlink-${random_string.random.result}"
+  vnetLinkName       = "dat-storage-file-vnetlink-${random_string.random.result}"
   virtual_network_id = var.is_secure_mode ? module.network[0].vnet_id : null
   tags               = local.tags
   depends_on = [ module.network[0] ]
@@ -144,7 +144,7 @@ module "privateDnsZoneStorageAccountTable" {
   count              = var.is_secure_mode ? 1 : 0
   name               = "privatelink.table.${var.azure_storage_domain}"
   resourceGroupName  = azurerm_resource_group.rg.name
-  vnetLinkName       = "infoasst-storage-table-vnetlink-${random_string.random.result}"
+  vnetLinkName       = "dat-storage-table-vnetlink-${random_string.random.result}"
   virtual_network_id = var.is_secure_mode ? module.network[0].vnet_id : null
   tags               = local.tags
   depends_on = [ module.network[0] ]
@@ -155,7 +155,7 @@ module "privateDnsZoneStorageAccountQueue" {
   count              = var.is_secure_mode ? 1 : 0
   name               = "privatelink.queue.${var.azure_storage_domain}"
   resourceGroupName  = azurerm_resource_group.rg.name
-  vnetLinkName       = "infoasst-storage-queue-vnetlink-${random_string.random.result}"
+  vnetLinkName       = "dat-storage-queue-vnetlink-${random_string.random.result}"
   virtual_network_id = var.is_secure_mode ? module.network[0].vnet_id : null
   tags               = local.tags
   depends_on = [ module.network[0] ]
@@ -166,7 +166,7 @@ module "privateDnsZoneSearchService" {
   count              = var.is_secure_mode ? 1 : 0
   name               = "privatelink.${var.azure_search_domain}"
   resourceGroupName  = azurerm_resource_group.rg.name
-  vnetLinkName       = "infoasst-search-vnetlink-${random_string.random.result}"
+  vnetLinkName       = "dat-search-vnetlink-${random_string.random.result}"
   virtual_network_id = var.is_secure_mode ? module.network[0].vnet_id : null
   tags               = local.tags
   depends_on = [ module.network[0] ]
@@ -177,7 +177,7 @@ module "privateDnsZoneCosmosDb" {
   count              = var.is_secure_mode ? 1 : 0
   name               = "privatelink.${var.cosmosdb_domain}"
   resourceGroupName  = azurerm_resource_group.rg.name
-  vnetLinkName       = "infoasst-cosmos-vnetlink-${random_string.random.result}"
+  vnetLinkName       = "dat-cosmos-vnetlink-${random_string.random.result}"
   virtual_network_id = var.is_secure_mode ? module.network[0].vnet_id : null
   tags               = local.tags
   depends_on = [ module.network[0] ]
@@ -188,7 +188,7 @@ module "privateDnsZoneACR" {
   count              = var.is_secure_mode ? 1 : 0
   name               = "privatelink.${var.azure_acr_domain}"
   resourceGroupName  = azurerm_resource_group.rg.name
-  vnetLinkName       = "infoasst-acr-vnetlink-${random_string.random.result}"
+  vnetLinkName       = "dat-acr-vnetlink-${random_string.random.result}"
   virtual_network_id = var.is_secure_mode ? module.network[0].vnet_id : null
   tags               = local.tags
   depends_on = [ module.network[0] ]
@@ -197,14 +197,14 @@ module "privateDnsZoneACR" {
 module "logging" {
   depends_on = [ module.network ]
   source = "./core/logging/loganalytics"
-  logAnalyticsName        = var.logAnalyticsName != "" ? var.logAnalyticsName : "infoasst-la-${random_string.random.result}"
-  applicationInsightsName = var.applicationInsightsName != "" ? var.applicationInsightsName : "infoasst-ai-${random_string.random.result}"
+  logAnalyticsName        = var.logAnalyticsName != "" ? var.logAnalyticsName : "dat-la-${random_string.random.result}"
+  applicationInsightsName = var.applicationInsightsName != "" ? var.applicationInsightsName : "dat-ai-${random_string.random.result}"
   location                = var.location
   tags                    = local.tags
   skuName                 = "PerGB2018"
   resourceGroupName       = azurerm_resource_group.rg.name
   is_secure_mode                        = var.is_secure_mode
-  privateLinkScopeName                  = "infoasst-ampls-${random_string.random.result}"
+  privateLinkScopeName                  = "dat-ampls-${random_string.random.result}"
   privateDnsZoneNameMonitor             = "privatelink.${var.azure_monitor_domain}"
   privateDnsZoneNameOms                 = "privatelink.${var.azure_monitor_oms_domain}"
   privateDnSZoneNameOds                 = "privatelink.${var.azure_monitor_ods_domain}"
@@ -222,7 +222,7 @@ module "logging" {
 
 module "storage" {
   source                          = "./core/storage"
-  name                            = var.storageAccountName != "" ? var.storageAccountName : "infoasststore${random_string.random.result}"
+  name                            = var.storageAccountName != "" ? var.storageAccountName : "datstore${random_string.random.result}"
   location                        = var.location
   tags                            = local.tags
   accessTier                      = "Hot"
@@ -249,7 +249,7 @@ module "storage" {
 
 module "kvModule" {
   source                        = "./core/security/keyvault" 
-  name                          = "infoasst-kv-${random_string.random.result}"
+  name                          = "dat-kv-${random_string.random.result}"
   location                      = var.location
   kvAccessObjectId              = data.azurerm_client_config.current.object_id 
   resourceGroupName             = azurerm_resource_group.rg.name
@@ -266,8 +266,8 @@ module "kvModule" {
 
 module "enrichmentApp" {
   source                                    = "./core/host/enrichmentapp"
-  name                                      = var.enrichmentServiceName != "" ? var.enrichmentServiceName : "infoasst-enrichmentweb-${random_string.random.result}"
-  plan_name                                 = var.enrichmentAppServicePlanName != "" ? var.enrichmentAppServicePlanName : "infoasst-enrichmentasp-${random_string.random.result}"
+  name                                      = var.enrichmentServiceName != "" ? var.enrichmentServiceName : "dat-enrichmentweb-${random_string.random.result}"
+  plan_name                                 = var.enrichmentAppServicePlanName != "" ? var.enrichmentAppServicePlanName : "dat-enrichmentasp-${random_string.random.result}"
   location                                  = var.location 
   tags                                      = local.tags
   sku = {
@@ -330,8 +330,8 @@ module "enrichmentApp" {
 # // The application frontend
 module "webapp" {
   source                              = "./core/host/webapp"
-  name                                = var.backendServiceName != "" ? var.backendServiceName : "infoasst-web-${random_string.random.result}"
-  plan_name                           = var.appServicePlanName != "" ? var.appServicePlanName : "infoasst-asp-${random_string.random.result}"
+  name                                = var.backendServiceName != "" ? var.backendServiceName : "dat-web-${random_string.random.result}"
+  plan_name                           = var.appServicePlanName != "" ? var.appServicePlanName : "dat-asp-${random_string.random.result}"
   sku = {
     tier                              = var.appServiceSkuTier
     size                              = var.appServiceSkuSize
@@ -421,12 +421,12 @@ module "webapp" {
 module "functions" { 
   source = "./core/host/functions"
 
-  name                                  = var.functionsAppName != "" ? var.functionsAppName : "infoasst-func-${random_string.random.result}"
+  name                                  = var.functionsAppName != "" ? var.functionsAppName : "dat-func-${random_string.random.result}"
   location                              = var.location
   tags                                  = local.tags
   keyVaultUri                           = module.kvModule.keyVaultUri
   keyVaultName                          = module.kvModule.keyVaultName 
-  plan_name                             = var.appServicePlanName != "" ? var.appServicePlanName : "infoasst-func-asp-${random_string.random.result}"
+  plan_name                             = var.appServicePlanName != "" ? var.appServicePlanName : "dat-func-asp-${random_string.random.result}"
   sku                                   = {
     size                                = var.functionsAppSkuSize
     tier                                = var.functionsAppSkuTier
@@ -492,7 +492,7 @@ module "functions" {
 
 module "openaiServices" {
   source                          = "./core/ai/openaiservices"
-  name                            = var.openAIServiceName != "" ? var.openAIServiceName : "infoasst-aoai-${random_string.random.result}"
+  name                            = var.openAIServiceName != "" ? var.openAIServiceName : "dat-aoai-${random_string.random.result}"
   location                        = var.location
   tags                            = local.tags
   resourceGroupName               = azurerm_resource_group.rg.name
@@ -538,10 +538,10 @@ module "openaiServices" {
 
 module "aiDocIntelligence" {
   source                        = "./core/ai/docintelligence"
-  name                          = "infoasst-docint-${random_string.random.result}"
+  name                          = "dat-docint-${random_string.random.result}"
   location                      = var.location
   tags                          = local.tags
-  customSubDomainName           = "infoasst-docint-${random_string.random.result}"
+  customSubDomainName           = "dat-docint-${random_string.random.result}"
   resourceGroupName             = azurerm_resource_group.rg.name
   key_vault_name                = module.kvModule.keyVaultName
   is_secure_mode                = var.is_secure_mode
@@ -553,7 +553,7 @@ module "aiDocIntelligence" {
 
 module "cognitiveServices" {
   source                        = "./core/ai/cogServices"
-  name                          = "infoasst-aisvc-${random_string.random.result}"
+  name                          = "dat-aisvc-${random_string.random.result}"
   location                      = var.location 
   tags                          = local.tags
   resourceGroupName             = azurerm_resource_group.rg.name
@@ -569,7 +569,7 @@ module "cognitiveServices" {
 
 module "searchServices" {
   source                        = "./core/search"
-  name                          = var.searchServicesName != "" ? var.searchServicesName : "infoasst-search-${random_string.random.result}"
+  name                          = var.searchServicesName != "" ? var.searchServicesName : "dat-search-${random_string.random.result}"
   location                      = var.location
   tags                          = local.tags
   semanticSearch                = var.use_semantic_reranker ? "free" : null
@@ -585,7 +585,7 @@ module "searchServices" {
 
 module "cosmosdb" {
   source = "./core/db"
-  name                          = "infoasst-cosmos-${random_string.random.result}"
+  name                          = "dat-cosmos-${random_string.random.result}"
   location                      = var.location
   tags                          = local.tags
   logDatabaseName               = "statusdb"
@@ -601,7 +601,7 @@ module "cosmosdb" {
 
 module "acr"{
   source                = "./core/container_registry"
-  name                  = "infoasstacr${random_string.random.result}" 
+  name                  = "datacr${random_string.random.result}" 
   location              = var.location
   resourceGroupName     = azurerm_resource_group.rg.name
   is_secure_mode        = var.is_secure_mode
@@ -633,7 +633,7 @@ module "azMonitor" {
   source            = "./core/logging/monitor"
   logAnalyticsName  = module.logging.logAnalyticsName
   location          = var.location
-  logWorkbookName   = "infoasst-lw-${random_string.random.result}"
+  logWorkbookName   = "dat-lw-${random_string.random.result}"
   resourceGroupName = azurerm_resource_group.rg.name 
   componentResource = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${azurerm_resource_group.rg.name}/providers/Microsoft.OperationalInsights/workspaces/${module.logging.logAnalyticsName}"
 }
@@ -642,7 +642,7 @@ module "azMonitor" {
 module "bingSearch" {
   count                         = var.azure_environment == "AzureUSGovernment" ? 0 : var.is_secure_mode ? 0 : var.enableWebChat ? 1 : 0
   source                        = "./core/ai/bingSearch"
-  name                          = "infoasst-bing-${random_string.random.result}"
+  name                          = "dat-bing-${random_string.random.result}"
   resourceGroupName             = azurerm_resource_group.rg.name
   tags                          = local.tags
   sku                           = "S1" //supported SKUs can be found at https://www.microsoft.com/en-us/bing/apis/pricing

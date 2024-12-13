@@ -16,10 +16,10 @@ resource "azurerm_key_vault" "kv" {
   enabled_for_template_deployment = true
   soft_delete_retention_days      = 7
   purge_protection_enabled        = true
-  public_network_access_enabled   = var.is_secure_mode ? false : true
+  public_network_access_enabled   = true
 
   network_acls {
-    default_action             = var.is_secure_mode ? "Deny" : "Allow" 
+    default_action             = Allow
     bypass                     = "AzureServices"
     virtual_network_subnet_ids = var.is_secure_mode ? [var.subnet_id] : []
   }
