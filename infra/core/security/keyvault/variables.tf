@@ -21,7 +21,7 @@ variable "kvAccessObjectId" {
 
 variable "resourceGroupName" {
   type    = string
-  default = ""
+  default = "dat-info-asst-va"
 }
 
 variable "is_secure_mode" {
