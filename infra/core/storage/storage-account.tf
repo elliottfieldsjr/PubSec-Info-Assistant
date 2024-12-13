@@ -13,8 +13,8 @@ resource "azurerm_storage_account" "storage" {
   access_tier                     = var.accessTier
   min_tls_version                 = var.minimumTlsVersion
   https_traffic_only_enabled      = true
-  public_network_access_enabled   = var.is_secure_mode ? false : true
-  allow_nested_items_to_be_public = false
+  public_network_access_enabled   = true
+  allow_nested_items_to_be_public = true
   shared_access_key_enabled       = true #var.is_secure_mode ? false : true # This will need to be enabled once the Azure Functions can support Entra ID auth
 
   network_rules {  
