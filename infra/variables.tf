@@ -1,6 +1,6 @@
 variable "CloudShellIP" {
   type = string
-  default = "135.237.130.226"  
+  default = "74.249.85.199"  
 }
 
 variable "environmentName" {
