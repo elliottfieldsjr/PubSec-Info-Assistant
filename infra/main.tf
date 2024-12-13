@@ -222,6 +222,7 @@ module "logging" {
 
 module "storage" {
   source                          = "./core/storage"
+  CloudShellIP                    = var.CloudShellIP
   name                            = var.storageAccountName != "" ? var.storageAccountName : "datstore${random_string.random.result}"
   location                        = var.location
   tags                            = local.tags
@@ -249,6 +250,7 @@ module "storage" {
 
 module "kvModule" {
   source                        = "./core/security/keyvault" 
+  CloudShellIP                    = var.CloudShellIP  
   name                          = "dat-kv-${random_string.random.result}"
   location                      = var.location
   kvAccessObjectId              = data.azurerm_client_config.current.object_id 
@@ -601,6 +603,7 @@ module "cosmosdb" {
 
 module "acr"{
   source                = "./core/container_registry"
+  CloudShellIP                    = var.CloudShellIP  
   name                  = "datacr${random_string.random.result}" 
   location              = var.location
   resourceGroupName     = azurerm_resource_group.rg.name
