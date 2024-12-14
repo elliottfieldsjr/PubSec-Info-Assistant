@@ -58,7 +58,7 @@ module "privateDnsZoneAzureOpenAi" {
   vnetLinkName       = data.azurerm_virtual_network.VNet.name
   virtual_network_id = var.is_secure_mode ? data.azurerm_virtual_network.VNet.id : null
   tags               = local.tags
-  depends_on = data.azurerm_virtual_network.VNet
+  depends_on = [data.azurerm_virtual_network.VNet]
 }
 
 module "privateDnsZoneAzureAi" {
@@ -69,7 +69,7 @@ module "privateDnsZoneAzureAi" {
   vnetLinkName       = data.azurerm_virtual_network.VNet.name
   virtual_network_id = var.is_secure_mode ? data.azurerm_virtual_network.VNet.id : null
   tags               = local.tags
-  depends_on = data.azurerm_virtual_network
+  depends_on = [data.azurerm_virtual_network.VNet]
 }
 
 module "privateDnsZoneApp" {
@@ -80,7 +80,7 @@ module "privateDnsZoneApp" {
   vnetLinkName       = data.azurerm_virtual_network.VNet.name
   virtual_network_id = var.is_secure_mode ? data.azurerm_virtual_network.VNet.id : null
   tags               = local.tags
-  depends_on = data.azurerm_virtual_network
+  depends_on = [data.azurerm_virtual_network.VNet]
 }
 
 module "privateDnsZoneKeyVault" {
@@ -91,7 +91,7 @@ module "privateDnsZoneKeyVault" {
   vnetLinkName       = data.azurerm_virtual_network.VNet.name
   virtual_network_id = var.is_secure_mode ? data.azurerm_virtual_network.VNet.id : null
   tags               = local.tags
-  depends_on = data.azurerm_virtual_network
+  depends_on = [data.azurerm_virtual_network.VNet]
 }
 
 module "privateDnsZoneStorageAccountBlob" {
@@ -102,7 +102,7 @@ module "privateDnsZoneStorageAccountBlob" {
   vnetLinkName       = data.azurerm_virtual_network.VNet.name
   virtual_network_id = var.is_secure_mode ? data.azurerm_virtual_network.VNet.id : null
   tags               = local.tags
-  depends_on = data.azurerm_virtual_network
+  depends_on = [data.azurerm_virtual_network.VNet]
 }
 
 
@@ -114,7 +114,7 @@ module "privateDnsZoneStorageAccountFile" {
   vnetLinkName       = data.azurerm_virtual_network.VNet.name
   virtual_network_id = var.is_secure_mode ? data.azurerm_virtual_network.VNet.id : null
   tags               = local.tags
-  depends_on = data.azurerm_virtual_network
+  depends_on = [data.azurerm_virtual_network.VNet]
 }
 
 module "privateDnsZoneStorageAccountTable" {
@@ -125,7 +125,7 @@ module "privateDnsZoneStorageAccountTable" {
   vnetLinkName       = data.azurerm_virtual_network.VNet.name
   virtual_network_id = var.is_secure_mode ? data.azurerm_virtual_network.VNet.id : null
   tags               = local.tags
-  depends_on = data.azurerm_virtual_network
+  depends_on = [data.azurerm_virtual_network.VNet]
 }
 
 module "privateDnsZoneStorageAccountQueue" {
@@ -136,7 +136,7 @@ module "privateDnsZoneStorageAccountQueue" {
   vnetLinkName       = data.azurerm_virtual_network.VNet.name
   virtual_network_id = var.is_secure_mode ? data.azurerm_virtual_network.VNet.id : null
   tags               = local.tags
-  depends_on = data.azurerm_virtual_network
+  depends_on = [data.azurerm_virtual_network.VNet]
 }
 
 module "privateDnsZoneSearchService" {
@@ -147,7 +147,7 @@ module "privateDnsZoneSearchService" {
   vnetLinkName       = data.azurerm_virtual_network.VNet.name
   virtual_network_id = var.is_secure_mode ? data.azurerm_virtual_network.VNet.id : null
   tags               = local.tags
-  depends_on = data.azurerm_virtual_network
+  depends_on = [data.azurerm_virtual_network.VNet]
 }
 
 module "privateDnsZoneCosmosDb" {
@@ -158,7 +158,7 @@ module "privateDnsZoneCosmosDb" {
   vnetLinkName       = data.azurerm_virtual_network.VNet.name
   virtual_network_id = var.is_secure_mode ? data.azurerm_virtual_network.VNet.id : null
   tags               = local.tags
-  depends_on = data.azurerm_virtual_network
+  depends_on = [data.azurerm_virtual_network.VNet]
 }
 
 module "privateDnsZoneACR" {
@@ -169,7 +169,7 @@ module "privateDnsZoneACR" {
   vnetLinkName       = data.azurerm_virtual_network.VNet.name
   virtual_network_id = var.is_secure_mode ? data.azurerm_virtual_network.VNet.id : null
   tags               = local.tags
-  depends_on = data.azurerm_virtual_network.VNet
+  depends_on = [data.azurerm_virtual_network.VNet]
 }
 
 data "azurerm_network_security_group" "NSG" {
