@@ -1,4 +1,5 @@
 variable "CloudShellIP" {
+  description = "Name of current CloudShell IP"
   type = string
 }
 
@@ -13,7 +14,33 @@ variable "location" {
 }
 
 variable "resourceGroupName" {
+  description = "Name of existing Resource Group"  
   type    = string
+}
+
+variable "vnetName" {
+  description = "Name of existing Virtual Network"
+  type        = string
+}
+
+variable "peSubnetName" {
+  description = "Name of existing Private Endpoint Subnet"
+  type        = string
+}
+
+variable "peSubnetCidr" {
+  description = "Cidr of existing Private Endpoint Subnet"
+  type        = string
+}
+
+variable "intSubnetName" {
+  description = "Name of existing Integration Subnet"
+  type        = string
+}
+
+variable "nsgName" {
+  description = "Name of existing Network Security Group"
+  type        = string
 }
 
 variable "buildNumber" {
