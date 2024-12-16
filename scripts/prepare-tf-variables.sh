@@ -15,8 +15,8 @@ export TF_VAR_InfoAssistINTSubnetName=$INFOASSISTINTSUBNETNAME
 export TF_VAR_InfoAssistNSGName=$INFOASSISTNSGNAME
 export TF_VAR_AZPDZResourceGroupName=$APDZRESOURCEGROUPNAME
 
-export TF_KVResourceGroupName=$KVRESOURCEGROUPNAME
-export TF_KVName=$KVNAME
+export TF_VAR_KVResourceGroupName=$KVRESOURCEGROUPNAME
+export TF_VAR_KVName=$KVNAME
 
 export TF_VAR_HubSubscriptionID=$HUB_SUBSCRIPTION_ID
 export TF_VAR_IdentitySubscriptionID=$IDENTITY_SUBSCRIPTION_ID
