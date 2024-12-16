@@ -17,6 +17,5 @@ terraform {
 }
 
 provider "azuread" {
-  alias       = "Tenant1"    
   environment = var.azure_environment == "AzureUSGovernment" ? "usgovernment" : "public"
 }

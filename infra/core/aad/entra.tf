@@ -7,7 +7,6 @@ locals {
 
 
 resource "azuread_application" "aad_web_app" {
-  provider = azuread.Tenant1
   count                         = var.isInAutomation ? 0 : 1
   display_name                  = "infoasst_web_access_${var.randomString}"
   identifier_uris               = ["api://infoasst-${var.randomString}"]
@@ -26,7 +25,6 @@ resource "azuread_application" "aad_web_app" {
 
 
 resource "azuread_service_principal" "aad_web_sp" {
-  provider = azuread.Tenant1
   count                         = var.isInAutomation ? 0 : 1
   client_id                     = azuread_application.aad_web_app[0].client_id
   app_role_assignment_required  = var.requireWebsiteSecurityMembership
@@ -34,7 +32,6 @@ resource "azuread_service_principal" "aad_web_sp" {
 }
 
 resource "azuread_application" "aad_mgmt_app" {
-  provider = azuread.Tenant1
   count             = var.isInAutomation ? 0 : 1
   display_name      = "infoasst_mgmt_access_${var.randomString}"
   owners            = local.owner_ids
@@ -43,7 +40,6 @@ resource "azuread_application" "aad_mgmt_app" {
 }
 
 resource "azuread_service_principal" "aad_mgmt_sp" {
-  provider = azuread.Tenant1
   count     = var.isInAutomation ? 0 : 1
   client_id = azuread_application.aad_mgmt_app[0].client_id
   owners    = local.owner_ids
