@@ -1,4 +1,3 @@
-
 resource "azurerm_log_analytics_workspace" "logAnalytics" {
   provider = azurerm.SHAREDSERVICESSub
   name                = var.logAnalyticsName

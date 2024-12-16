@@ -167,3 +167,29 @@ data "azurerm_key_vault" "InfoAssistKeyVault" {
   name                  = var.KVName
   resource_group_name   = var.KVResourceGroupName
 }
+
+module "logging" {
+  source = "./core/logging/loganalytics"
+  logAnalyticsName        = var.logAnalyticsName != "" ? var.logAnalyticsName : "dat-la-${random_string.random.result}"
+  applicationInsightsName = var.applicationInsightsName != "" ? var.applicationInsightsName : "dat-ai-${random_string.random.result}"
+  location                = var.location
+  tags                    = local.tags
+  skuName                 = "PerGB2018"
+  InfoAssistResourceGroupName           = var.InfoAssistResourceGroupName
+  APDZResourceGroupName                 = var.AZPDZResourceGroupName
+  is_secure_mode                        = var.is_secure_mode
+  privateLinkScopeName                  = "dat-ampls-${random_string.random.result}"
+  privateDnsZoneNameMonitor             = "privatelink.${var.azure_monitor_domain}"
+  privateDnsZoneNameOms                 = "privatelink.${var.azure_monitor_oms_domain}"
+  privateDnSZoneNameOds                 = "privatelink.${var.azure_monitor_ods_domain}"
+  privateDnsZoneNameAutomation          = "privatelink.${var.azure_automation_domain}"
+  privateDnsZoneResourceIdBlob          = var.is_secure_mode ? data.azurerm_private_dns_zone.BlobStoragePDZ.id : null
+  privateDnsZoneNameBlob                = var.is_secure_mode ? data.azurerm_private_dns_zone.BlobStoragePDZ.name : null
+  groupId                               = "azuremonitor"
+  subnet_name                           = var.is_secure_mode ? data.azurerm_subnet.InfoAssistPESubnet.name : null
+  vnet_name                             = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.name: null
+  ampls_subnet_CIDR                     = var.InfoAssistPESubnetCidr
+  vnet_id                               = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.id : null
+  nsg_id                                = var.is_secure_mode ? data.azurerm_network_security_group.InfoAssistNSG.id: null
+  nsg_name                              = var.is_secure_mode ? data.azurerm_network_security_group.InfoAssistNSG.name : null
+}
