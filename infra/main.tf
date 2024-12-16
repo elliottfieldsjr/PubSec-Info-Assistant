@@ -19,7 +19,7 @@ resource "random_string" "random" {
 
 module "entraObjects" {
   providers = {
-    "alias" = "OPERATIONSSub"  
+    "alias" = "sharedservicessub"  
   }
   source                            = "./core/aad"
   isInAutomation                    = var.isInAutomation
