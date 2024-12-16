@@ -28,6 +28,7 @@ locals {
 }
 
 resource "azurerm_cosmosdb_account" "cosmosdb_account" {
+  provider                      = azurerm.SHAREDSERVICESSub              
   name                          = lower(var.name)
   location                      = var.location
   resource_group_name           = var.resourceGroupName
@@ -54,12 +55,14 @@ resource "azurerm_cosmosdb_account" "cosmosdb_account" {
 }
 
 resource "azurerm_cosmosdb_sql_database" "log_database" {
+  provider            = azurerm.SHAREDSERVICESSub              
   name                = var.logDatabaseName
   resource_group_name = var.resourceGroupName
   account_name        = azurerm_cosmosdb_account.cosmosdb_account.name
 }
 
 resource "azurerm_cosmosdb_sql_container" "log_container" {
+  provider            = azurerm.SHAREDSERVICESSub              
   name                = var.logContainerName
   resource_group_name = var.resourceGroupName
   account_name        = azurerm_cosmosdb_account.cosmosdb_account.name
@@ -69,6 +72,7 @@ resource "azurerm_cosmosdb_sql_container" "log_container" {
 }
 
 data "azurerm_subnet" "subnet" {
+  provider             = azurerm.SHAREDSERVICESSub              
   count                = var.is_secure_mode ? 1 : 0
   name                 = var.subnet_name
   virtual_network_name = var.vnet_name
@@ -76,6 +80,7 @@ data "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_private_endpoint" "cosmosPrivateEndpoint" {
+  provider                      = azurerm.SHAREDSERVICESSub              
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint"
   location                      = var.location

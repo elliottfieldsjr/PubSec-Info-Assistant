@@ -371,9 +371,6 @@ module "webapp" {
 
 # // Function App 
 module "functions" { 
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source = "./core/host/functions"
   name                                  = var.functionsAppName != "" ? var.functionsAppName : "dat-func-${random_string.random.result}"
   location                              = var.location
@@ -388,7 +385,8 @@ module "functions" {
   }
   kind                                  = "linux"
   runtime                               = "python"
-  resourceGroupName                     = var.InfoAssistResourceGroupName
+  InfoAssistResourceGroupName           = var.InfoAssistResourceGroupName
+  KVResourceGroupName                   = var.KVResourceGroupName 
   azure_portal_domain                   = var.azure_portal_domain
   appInsightsConnectionString           = module.logging.applicationInsightsConnectionString
   appInsightsInstrumentationKey         = module.logging.applicationInsightsInstrumentationKey
@@ -445,9 +443,6 @@ module "functions" {
 }
 
 module "openaiServices" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source                          = "./core/ai/openaiservices"
   name                            = var.openAIServiceName != "" ? var.openAIServiceName : "dat-aoai-${random_string.random.result}"
   location                        = var.location
@@ -494,9 +489,6 @@ module "openaiServices" {
 }
 
 module "aiDocIntelligence" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source                        = "./core/ai/docintelligence"
   name                          = "dat-docint-${random_string.random.result}"
   location                      = var.location
@@ -511,15 +503,13 @@ module "aiDocIntelligence" {
   arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
 }
 
-module "cognitiveServices" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
+module "cognitiveServices" { 
   source                        = "./core/ai/cogServices"
   name                          = "dat-aisvc-${random_string.random.result}"
   location                      = var.location 
   tags                          = local.tags
-  resourceGroupName             = var.InfoAssistResourceGroupName
+  InfoAssistResourceGroupName   = var.InfoAssistResourceGroupName
+  KVResourceGroupName           = var.KVResourceGroupName 
   is_secure_mode                = var.is_secure_mode
   subnetResourceId              = var.is_secure_mode ? data.azurerm_subnet.InfoAssistPESubnet.id : null
   private_dns_zone_ids          = var.is_secure_mode ? [data.azurerm_private_dns_zone.CognitiveServicesPDZ.id] : null
@@ -531,9 +521,6 @@ module "cognitiveServices" {
 }
 
 module "searchServices" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source                        = "./core/search"
   name                          = var.searchServicesName != "" ? var.searchServicesName : "dat-search-${random_string.random.result}"
   location                      = var.location
@@ -549,10 +536,7 @@ module "searchServices" {
   key_vault_name                = data.azurerm_key_vault.InfoAssistKeyVault.name
 }
 
-module "cosmosdb" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
+module "cosmosdb" {  
   source = "./core/db"
   name                          = "dat-cosmos-${random_string.random.result}"
   location                      = var.location
@@ -568,12 +552,9 @@ module "cosmosdb" {
   arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
 }
 
-module "acr"{
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
+module "acr"{ 
   source                = "./core/container_registry"
-  CloudShellIP                    = var.CloudShellIP  
+  CloudShellIP          = var.CloudShellIP  
   name                  = "datacr${random_string.random.result}" 
   location              = var.location
   resourceGroupName     = var.InfoAssistResourceGroupName
@@ -586,9 +567,6 @@ module "acr"{
 
 // SharePoint Connector is not supported in secure mode
 module "sharepoint" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   count                               = var.is_secure_mode ? 0 : var.enableSharePointConnector ? 1 : 0
   source                              = "./core/sharepoint"
   location                            = data.azurerm_resource_group.InfoAssistRG.location
@@ -606,9 +584,6 @@ module "sharepoint" {
 }
 
 module "azMonitor" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source            = "./core/logging/monitor"
   logAnalyticsName  = module.logging.logAnalyticsName
   location          = var.location
@@ -618,14 +593,12 @@ module "azMonitor" {
 }
 
 // Bing Search is not supported in US Government or Secure Mode
-module "bingSearch" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
+module "bingSearch" {  
   count                         = var.azure_environment == "AzureUSGovernment" ? 0 : var.is_secure_mode ? 0 : var.enableWebChat ? 1 : 0
   source                        = "./core/ai/bingSearch"
   name                          = "dat-bing-${random_string.random.result}"
-  resourceGroupName             = var.InfoAssistResourceGroupName
+  InfoAssistResourceGroupName   = var.InfoAssistResourceGroupName
+  KVResourceGroupName           = var.KVResourceGroupName 
   tags                          = local.tags
   sku                           = "S1" //supported SKUs can be found at https://www.microsoft.com/en-us/bing/apis/pricing
   arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
@@ -634,10 +607,7 @@ module "bingSearch" {
 }
 
 // USER ROLES
-module "userRoles" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
+module "userRoles" { 
   source = "./core/security/role"
   for_each = { for role in local.selected_roles : role => { role_definition_id = local.azure_roles[role] } }
 
@@ -665,10 +635,7 @@ data "azurerm_resource_group" "existing" {
 }
 
 # # // SYSTEM IDENTITY ROLES
-module "webApp_OpenAiRole" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
+module "webApp_OpenAiRole" { 
   source = "./core/security/role"
   scope            = var.useExistingAOAIService ? data.azurerm_resource_group.existing[0].id : data.azurerm_resource_group.InfoAssistRG.id
   principalId      = module.webapp.identityPrincipalId
@@ -679,11 +646,7 @@ module "webApp_OpenAiRole" {
 }
 
 module "enrichmentApp_OpenAiRole" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source = "./core/security/role"
-
   scope            = var.useExistingAOAIService ? data.azurerm_resource_group.existing[0].id : data.azurerm_resource_group.InfoAssistRG.id
   principalId      = module.enrichmentApp.identityPrincipalId
   roleDefinitionId = local.azure_roles.CognitiveServicesOpenAIUser
@@ -693,9 +656,6 @@ module "enrichmentApp_OpenAiRole" {
 }
 
 module "webApp_CognitiveServicesUser" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source = "./core/security/role"
   scope            = data.azurerm_resource_group.InfoAssistRG.id
   principalId      = module.webapp.identityPrincipalId
@@ -706,9 +666,6 @@ module "webApp_CognitiveServicesUser" {
 }
 
 module "functionApp_CognitiveServicesUser" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source = "./core/security/role"
   scope            = data.azurerm_resource_group.InfoAssistRG.id
   principalId      = module.functions.identityPrincipalId
@@ -718,10 +675,7 @@ module "functionApp_CognitiveServicesUser" {
   resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
 }
 
-module "enrichmentApp_CognitiveServicesUser" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
+module "enrichmentApp_CognitiveServicesUser" { 
   source = "./core/security/role"
   scope            = data.azurerm_resource_group.InfoAssistRG.id
   principalId      = module.enrichmentApp.identityPrincipalId
@@ -732,9 +686,6 @@ module "enrichmentApp_CognitiveServicesUser" {
 }
 
 module "enrichmentApp_StorageQueueDataContributor" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source = "./core/security/role"
   scope            = data.azurerm_resource_group.InfoAssistRG.id
   principalId      = module.enrichmentApp.identityPrincipalId
@@ -744,10 +695,7 @@ module "enrichmentApp_StorageQueueDataContributor" {
   resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
 }
 
-module "functionApp_StorageQueueDataContributor" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
+module "functionApp_StorageQueueDataContributor" { 
   source = "./core/security/role"
   scope            = data.azurerm_resource_group.InfoAssistRG.id
   principalId      = module.functions.identityPrincipalId
@@ -758,9 +706,6 @@ module "functionApp_StorageQueueDataContributor" {
 }
 
 module "webApp_StorageBlobDataContributor" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source = "./core/security/role"
   scope            = data.azurerm_resource_group.InfoAssistRG.id
   principalId      = module.webapp.identityPrincipalId
@@ -771,9 +716,6 @@ module "webApp_StorageBlobDataContributor" {
 }
 
 module "webApp_SearchIndexDataReader" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source = "./core/security/role"
   scope            = data.azurerm_resource_group.InfoAssistRG.id
   principalId      = module.webapp.identityPrincipalId
@@ -784,9 +726,6 @@ module "webApp_SearchIndexDataReader" {
 }
 
 module "functionApp_SearchIndexDataContributor" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source = "./core/security/role"
   scope            = data.azurerm_resource_group.InfoAssistRG.id
   principalId      = module.functions.identityPrincipalId
@@ -797,9 +736,6 @@ module "functionApp_SearchIndexDataContributor" {
 }
 
 module "encrichmentApp_SearchIndexDataContributor" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source = "./core/security/role"
   scope            = data.azurerm_resource_group.InfoAssistRG.id
   principalId      = module.enrichmentApp.identityPrincipalId
@@ -810,9 +746,6 @@ module "encrichmentApp_SearchIndexDataContributor" {
 }
 
 module "fuctionApp_StorageBlobDataOwner" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source = "./core/security/role"
   scope            = data.azurerm_resource_group.InfoAssistRG.id
   principalId      = module.functions.identityPrincipalId
@@ -823,9 +756,6 @@ module "fuctionApp_StorageBlobDataOwner" {
 }
 
 module "enrichmentApp_StorageBlobDataOwner" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source = "./core/security/role"
   scope            = data.azurerm_resource_group.InfoAssistRG.id
   principalId      = module.enrichmentApp.identityPrincipalId
@@ -835,10 +765,7 @@ module "enrichmentApp_StorageBlobDataOwner" {
   resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
 }
 
-module "fuctionApp_StorageAccountContributor" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
+module "fuctionApp_StorageAccountContributor" { 
   source = "./core/security/role"
   scope            = data.azurerm_resource_group.InfoAssistRG.id
   principalId      = module.functions.identityPrincipalId
@@ -876,9 +803,6 @@ resource "azurerm_cosmosdb_sql_role_assignment" "enrichmentApp_cosmosdb_data_con
 }
 
 module "docIntel_StorageBlobDataReader" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source = "./core/security/role"
   scope = data.azurerm_resource_group.InfoAssistRG.id
   principalId = module.aiDocIntelligence.docIntelligenceIdentity
@@ -889,10 +813,7 @@ module "docIntel_StorageBlobDataReader" {
 }
 
 # // MANAGEMENT SERVICE PRINCIPAL ROLES
-module "openAiRoleMgmt" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
+module "openAiRoleMgmt" { 
   source = "./core/security/role"
   # If leveraging an existing Azure OpenAI service, only make this assignment if not under automation.
   # When under automation and using an existing Azure OpenAI service, this will result in a duplicate assignment error.

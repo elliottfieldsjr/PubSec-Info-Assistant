@@ -1,4 +1,5 @@
 resource "azurerm_container_registry" "acr" {
+  provider            = azurerm.SHAREDSERVICESSub              
   name                = lower(var.name)
   resource_group_name = var.resourceGroupName
   location            = var.location
@@ -20,6 +21,7 @@ resource "azurerm_container_registry" "acr" {
 }
 
 data "azurerm_subnet" "subnet" {
+  provider             = azurerm.SHAREDSERVICESSub              
   count                = var.is_secure_mode ? 1 : 0
   name                 = var.subnet_name
   virtual_network_name = var.vnet_name
@@ -27,6 +29,7 @@ data "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_private_endpoint" "ContainerRegistryPrivateEndpoint" {
+  provider                      = azurerm.SHAREDSERVICESSub              
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint"
   location                      = var.location

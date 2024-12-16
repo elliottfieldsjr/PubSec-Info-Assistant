@@ -1,6 +1,9 @@
-variable "resourceGroupName" {
+variable "InfoAssistResourceGroupName" {
   type    = string
-  default = ""
+}
+
+variable "KVResourceGroupName" {
+  type    = string
 }
 
 variable "name" {

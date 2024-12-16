@@ -1,4 +1,5 @@
 resource "azurerm_application_insights_workbook" "example" {
+  provider                      = azurerm.SHAREDSERVICESSub              
   name                = "85b3e8bb-fc93-40be-83f2-98f6bec18ba0"
   resource_group_name = var.resourceGroupName
   location            = var.location

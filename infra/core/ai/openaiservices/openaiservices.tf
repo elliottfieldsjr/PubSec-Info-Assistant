@@ -1,4 +1,5 @@
 resource "azurerm_cognitive_account" "openaiAccount" {
+  provider                            = azurerm.SHAREDSERVICESSub          
   count                               = var.useExistingAOAIService ? 0 : 1
   name                                = var.name
   location                            = var.location
@@ -25,6 +26,7 @@ resource "azurerm_cognitive_account" "openaiAccount" {
 }
 
 resource "azurerm_cognitive_deployment" "deployment" {
+  provider              = azurerm.SHAREDSERVICESSub          
   count                 = var.useExistingAOAIService ? 0 : length(var.deployments)
   name                  = var.deployments[count.index].name
   cognitive_account_id  = azurerm_cognitive_account.openaiAccount[0].id
@@ -41,6 +43,7 @@ resource "azurerm_cognitive_deployment" "deployment" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs" {
+  provider                   = azurerm.SHAREDSERVICESSub          
   count                      = var.useExistingAOAIService ? 0 : 1
   name                       = azurerm_cognitive_account.openaiAccount[0].name
   target_resource_id         = azurerm_cognitive_account.openaiAccount[0].id
@@ -61,6 +64,7 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs" {
 }
 
 data "azurerm_subnet" "subnet" {
+  provider             = azurerm.SHAREDSERVICESSub          
   count                = var.is_secure_mode ? 1 : 0
   name                 = var.subnet_name
   virtual_network_name = var.vnet_name
@@ -68,6 +72,7 @@ data "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_private_endpoint" "openaiPrivateEndpoint" {
+  provider                      = azurerm.SHAREDSERVICESSub          
   count                         = var.useExistingAOAIService ? 0 : var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint"
   location                      = var.location

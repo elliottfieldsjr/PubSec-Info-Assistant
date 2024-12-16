@@ -1,4 +1,5 @@
 resource "azurerm_cognitive_account" "docIntelligenceAccount" {
+  provider                      = azurerm.SHAREDSERVICESSub            
   name                          = var.name
   location                      = var.location
   resource_group_name           = var.resourceGroupName
@@ -14,6 +15,7 @@ resource "azurerm_cognitive_account" "docIntelligenceAccount" {
 }
 
 data "azurerm_subnet" "subnet" {
+  provider             = azurerm.SHAREDSERVICESSub            
   count                = var.is_secure_mode ? 1 : 0
   name                 = var.subnet_name
   virtual_network_name = var.vnet_name
@@ -21,6 +23,7 @@ data "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_private_endpoint" "docintPrivateEndpoint" {
+  provider                      = azurerm.SHAREDSERVICESSub            
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint"
   location                      = var.location

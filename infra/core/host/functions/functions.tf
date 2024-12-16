@@ -1,8 +1,9 @@
 # Terraform resource file to create a service plan for the function app
 resource "azurerm_service_plan" "funcServicePlan" {
+  provider = azurerm.SHAREDSERVICESSub      
   name                = var.plan_name
   location            = var.location
-  resource_group_name = var.resourceGroupName
+  resource_group_name = var.InfoAssistResourceGroupName
   sku_name = var.sku["size"]
   worker_count = var.sku["capacity"]
   os_type = "Linux"
@@ -11,8 +12,9 @@ resource "azurerm_service_plan" "funcServicePlan" {
 }
 
 resource "azurerm_monitor_autoscale_setting" "scaleout" {
+  provider = azurerm.SHAREDSERVICESSub      
   name                = azurerm_service_plan.funcServicePlan.name
-  resource_group_name = var.resourceGroupName
+  resource_group_name = var.InfoAssistResourceGroupName
   location            = var.location
   target_resource_id  = azurerm_service_plan.funcServicePlan.id
 
@@ -67,26 +69,30 @@ resource "azurerm_monitor_autoscale_setting" "scaleout" {
 }
 
 resource "azurerm_role_assignment" "acr_pull_role" {
+  provider = azurerm.SHAREDSERVICESSub      
   principal_id         = azurerm_linux_function_app.function_app.identity.0.principal_id
   role_definition_name = "AcrPull"
   scope                = var.container_registry_id
 }
 
 data "azurerm_key_vault" "existing" {
+  provider            = azurerm.HUBSub      
   name                = var.keyVaultName
-  resource_group_name = var.resourceGroupName
+  resource_group_name = var.KVResourceGroupName
 }
 
 data "azurerm_storage_account" "existing_sa" {
+  provider            = azurerm.SHAREDSERVICESSub        
   name                = var.blobStorageAccountName
-  resource_group_name = var.resourceGroupName
+  resource_group_name = var.InfoAssistResourceGroupName
 }
 
 // Create function app resource
 resource "azurerm_linux_function_app" "function_app" {
+  provider                            = azurerm.SHAREDSERVICESSub        
   name                                = var.name
   location                            = var.location
-  resource_group_name                 = var.resourceGroupName
+  resource_group_name                 = var.InfoAssistResourceGroupName
   service_plan_id                     = azurerm_service_plan.funcServicePlan.id
   storage_account_name                = var.blobStorageAccountName
   storage_account_access_key          = data.azurerm_storage_account.existing_sa.primary_access_key
@@ -193,6 +199,7 @@ resource "azurerm_linux_function_app" "function_app" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_commercial" {
+  provider                   = azurerm.SHAREDSERVICESSub        
   count                      = var.azure_environment == "AzureUSGovernment" ? 0 : 1
   name                       = azurerm_linux_function_app.function_app.name
   target_resource_id         = azurerm_linux_function_app.function_app.id
@@ -213,6 +220,7 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_commercial" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_usgov" {
+  provider                   = azurerm.SHAREDSERVICESSub        
   count                      = var.azure_environment == "AzureUSGovernment" ? 1 : 0
   name                       = azurerm_linux_function_app.function_app.name
   target_resource_id         = azurerm_linux_function_app.function_app.id
@@ -229,6 +237,7 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_usgov" {
 }
 
 resource "azurerm_key_vault_access_policy" "policy" {
+  provider = azurerm.HUBSub        
   key_vault_id = data.azurerm_key_vault.existing.id
 
   tenant_id = azurerm_linux_function_app.function_app.identity.0.tenant_id
@@ -244,17 +253,19 @@ resource "azurerm_key_vault_access_policy" "policy" {
 }
 
 data "azurerm_subnet" "subnet" {
+  provider             = azurerm.SHAREDSERVICESSub        
   count                = var.is_secure_mode ? 1 : 0
   name                 = var.subnet_name
   virtual_network_name = var.vnet_name
-  resource_group_name  = var.resourceGroupName
+  resource_group_name  = var.InfoAssistResourceGroupName
 }
 
 resource "azurerm_private_endpoint" "privateFunctionEndpoint" {
+  provider                      = azurerm.SHAREDSERVICESSub          
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint"
   location                      = var.location
-  resource_group_name           = var.resourceGroupName
+  resource_group_name           = var.InfoAssistResourceGroupName
   subnet_id                     = data.azurerm_subnet.subnet[0].id
   tags                          = var.tags
   custom_network_interface_name = "infoasstfuncnic"
