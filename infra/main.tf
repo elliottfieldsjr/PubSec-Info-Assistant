@@ -18,6 +18,9 @@ resource "random_string" "random" {
 }
 
 module "entraObjects" {
+  providers = {
+    "alias" = "OPERATIONSSub"  
+  }
   source                            = "./core/aad"
   isInAutomation                    = var.isInAutomation
   requireWebsiteSecurityMembership  = var.requireWebsiteSecurityMembership
