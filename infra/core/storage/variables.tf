@@ -85,9 +85,12 @@ variable "queueNames" {
   default = []
 }
 
-variable "resourceGroupName" {
+variable "InfoAssistResourceGroupName" {
   type    = string
-  default = ""
+}
+
+variable "KVResourceGroupName" {
+  type    = string
 }
 
 variable "key_vault_name" { 

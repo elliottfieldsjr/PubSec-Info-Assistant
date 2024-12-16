@@ -1,8 +1,9 @@
 # Create the web app service plan
 resource "azurerm_service_plan" "appServicePlan" {
+  provider = azurerm.SHAREDSERVICESSub    
   name                = var.plan_name
   location            = var.location
-  resource_group_name = var.resourceGroupName
+  resource_group_name = var.InfoAssistResourceGroupName
 
   sku_name = var.sku["size"]
   worker_count = var.sku["capacity"]
@@ -12,8 +13,9 @@ resource "azurerm_service_plan" "appServicePlan" {
 }
 
 resource "azurerm_monitor_autoscale_setting" "scaleout" {
+  provider = azurerm.SHAREDSERVICESSub    
   name                = azurerm_service_plan.appServicePlan.name
-  resource_group_name = var.resourceGroupName
+  resource_group_name = var.InfoAssistResourceGroupName
   location            = var.location
   target_resource_id  = azurerm_service_plan.appServicePlan.id
 
@@ -68,6 +70,7 @@ resource "azurerm_monitor_autoscale_setting" "scaleout" {
 }
 
 resource "azurerm_role_assignment" "acr_pull_role" {
+  provider = azurerm.SHAREDSERVICESSub    
   principal_id         = azurerm_linux_web_app.app_service.identity.0.principal_id
   role_definition_name = "AcrPull"
   scope                = var.container_registry_id
@@ -75,9 +78,10 @@ resource "azurerm_role_assignment" "acr_pull_role" {
 
 # Create the web app
 resource "azurerm_linux_web_app" "app_service" {
+  provider = azurerm.SHAREDSERVICESSub    
   name                                = var.name
   location                            = var.location
-  resource_group_name                 = var.resourceGroupName
+  resource_group_name                 = var.InfoAssistResourceGroupName
   service_plan_id                     = azurerm_service_plan.appServicePlan.id
   https_only                          = true
   tags                                = var.tags
@@ -158,6 +162,7 @@ resource "azurerm_linux_web_app" "app_service" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_commercial" {
+  provider = azurerm.SHAREDSERVICESSub    
   count                      = var.azure_environment == "AzureUSGovernment" ? 0 : 1
   name                       = azurerm_linux_web_app.app_service.name
   target_resource_id         = azurerm_linux_web_app.app_service.id
@@ -190,6 +195,7 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_commercial" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_usgov" {
+  provider = azurerm.SHAREDSERVICESSub    
   count                      = var.azure_environment == "AzureUSGovernment" ? 1 : 0
   name                       = azurerm_linux_web_app.app_service.name
   target_resource_id         = azurerm_linux_web_app.app_service.id
@@ -230,11 +236,13 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_usgov" {
 }
 
 data "azurerm_key_vault" "existing" {
+  provider = azurerm.HUBSub    
   name                = var.keyVaultName
-  resource_group_name = var.resourceGroupName
+  resource_group_name = var.KVResourceGroupName
 }
 
 resource "azurerm_key_vault_access_policy" "policy" {
+  provider = azurerm.HUBSub    
   key_vault_id = data.azurerm_key_vault.existing.id
 
   tenant_id = azurerm_linux_web_app.app_service.identity.0.tenant_id
@@ -250,14 +258,14 @@ data "azurerm_subnet" "subnet" {
   count                = var.is_secure_mode ? 1 : 0
   name                 = var.subnet_name
   virtual_network_name = var.vnet_name
-  resource_group_name  = var.resourceGroupName
+  resource_group_name  = var.InfoAssistResourceGroupName
 }
 
 resource "azurerm_private_endpoint" "backendPrivateEndpoint" {
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint"
   location                      = var.location
-  resource_group_name           = var.resourceGroupName
+  resource_group_name           = var.InfoAssistResourceGroupName
   subnet_id                     = data.azurerm_subnet.subnet[0].id
   tags                          = var.tags
   custom_network_interface_name = "infoasstwebnic"

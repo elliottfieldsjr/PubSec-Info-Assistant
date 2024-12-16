@@ -29,9 +29,12 @@ variable "sku" {
   type = map(string)
 }
 
-variable "resourceGroupName" {
+variable "InfoAssistResourceGroupName" {
   type    = string
-  default = ""
+}
+
+variable "KVResourceGroupName" {
+  type    = string
 }
 
 variable "storageAccountId" {

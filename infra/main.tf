@@ -166,8 +166,8 @@ module "logging" {
   location                = var.location
   tags                    = local.tags
   skuName                 = "PerGB2018"
-  InfoAssistResourceGroupName       = var.InfoAssistResourceGroupName
-  APDZResourceGroupName = var.AZPDZResourceGroupName
+  InfoAssistResourceGroupName           = var.InfoAssistResourceGroupName
+  APDZResourceGroupName                 = var.AZPDZResourceGroupName
   is_secure_mode                        = var.is_secure_mode
   privateLinkScopeName                  = "dat-ampls-${random_string.random.result}"
   privateDnsZoneNameMonitor             = "privatelink.${var.azure_monitor_domain}"
@@ -193,7 +193,8 @@ module "storage" {
   tags                            = local.tags
   accessTier                      = "Hot"
   allowBlobPublicAccess           = false
-  resourceGroupName               = var.InfoAssistResourceGroupName
+  InfoAssistResourceGroupName     = var.InfoAssistResourceGroupName
+  KVResourceGroupName             = var.KVResourceGroupName  
   arm_template_schema_mgmt_api    = var.arm_template_schema_mgmt_api
   key_vault_name                  = var.KVName
   deleteRetentionPolicy = {
@@ -214,9 +215,6 @@ module "storage" {
 }
 
 module "enrichmentApp" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source                                    = "./core/host/enrichmentapp"
   name                                      = var.enrichmentServiceName != "" ? var.enrichmentServiceName : "dat-enrichmentweb-${random_string.random.result}"
   plan_name                                 = var.enrichmentAppServicePlanName != "" ? var.enrichmentAppServicePlanName : "dat-enrichmentasp-${random_string.random.result}"
@@ -229,7 +227,8 @@ module "enrichmentApp" {
   }
   kind                                      = "linux"
   reserved                                  = true
-  resourceGroupName                         = var.InfoAssistResourceGroupName
+  InfoAssistResourceGroupName               = var.InfoAssistResourceGroupName
+  KVResourceGroupName                       = var.KVResourceGroupName  
   storageAccountId                          = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${var.InfoAssistResourceGroupName}/providers/Microsoft.Storage/storageAccounts/${module.storage.name}/services/queue/queues/${var.embeddingsQueue}"
   scmDoBuildDuringDeployment                = false
   enableOryxBuild                           = false
@@ -281,9 +280,6 @@ module "enrichmentApp" {
 
 # // The application frontend
 module "webapp" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source                              = "./core/host/webapp"
   name                                = var.backendServiceName != "" ? var.backendServiceName : "dat-web-${random_string.random.result}"
   plan_name                           = var.appServicePlanName != "" ? var.appServicePlanName : "dat-asp-${random_string.random.result}"
@@ -293,7 +289,8 @@ module "webapp" {
     capacity                          = 1
   }
   kind                                = "linux"
-  resourceGroupName                   = var.InfoAssistResourceGroupName
+  InfoAssistResourceGroupName         = var.InfoAssistResourceGroupName
+  KVResourceGroupName                 = var.KVResourceGroupName 
   location                            = var.location
   tags                                = merge(local.tags, { "azd-service-name" = "backend" })
   runtimeVersion                      = "3.12" 

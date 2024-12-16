@@ -7,7 +7,7 @@ resource "azurerm_storage_account" "storage" {
   provider = azurerm.SHAREDSERVICESSub  
   name                            = var.name
   location                        = var.location
-  resource_group_name             = var.resourceGroupName
+  resource_group_name             = var.InfoAssistResourceGroupName
   tags                            = var.tags
   account_tier                    = var.sku.name
   account_replication_type        = "LRS"
@@ -160,7 +160,7 @@ resource "azurerm_resource_group_template_deployment" "container" {
   provider = azurerm.SHAREDSERVICESSub  
   depends_on          = [azurerm_storage_account.storage]
   count               = length(var.containers)
-  resource_group_name = var.resourceGroupName
+  resource_group_name = var.InfoAssistResourceGroupName
   parameters_content = jsonencode({
     "storageAccountName" = { value = "${azurerm_storage_account.storage.name}" },
     "location"           = { value = var.location },
@@ -179,7 +179,7 @@ resource "azurerm_resource_group_template_deployment" "queue" {
   provider = azurerm.SHAREDSERVICESSub  
   depends_on          = [azurerm_storage_account.storage]
   count               = length(var.queueNames)
-  resource_group_name = var.resourceGroupName
+  resource_group_name = var.InfoAssistResourceGroupName
   parameters_content = jsonencode({
     "storageAccountName" = { value = "${azurerm_storage_account.storage.name}" },
     "location"           = { value = var.location },
@@ -195,7 +195,7 @@ resource "azurerm_resource_group_template_deployment" "queue" {
 
 module "storage_connection_string" {
   source                        = "../security/keyvaultSecret"  
-  resourceGroupName             = var.resourceGroupName
+  resourceGroupName             = var.KVResourceGroupName
   arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
   key_vault_name                = var.key_vault_name
   secret_name                   = "AZURE-STORAGE-CONNECTION-STRING"
@@ -211,7 +211,7 @@ data "azurerm_subnet" "subnet" {
   count                = var.is_secure_mode ? 1 : 0
   name                 = var.subnet_name
   virtual_network_name = var.vnet_name
-  resource_group_name  = var.resourceGroupName
+  resource_group_name  = var.InfoAssistResourceGroupName
 }
 
 // Create a private endpoint for blob storage account
@@ -220,7 +220,7 @@ resource "azurerm_private_endpoint" "blobPrivateEndpoint" {
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint-blob"
   location                      = var.location
-  resource_group_name           = var.resourceGroupName
+  resource_group_name           = var.InfoAssistResourceGroupName
   subnet_id                     = data.azurerm_subnet.subnet[0].id
   custom_network_interface_name = "infoasstblobstoragenic"
 
@@ -243,7 +243,7 @@ resource "azurerm_private_endpoint" "filePrivateEndpoint" {
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint-file"
   location                      = var.location
-  resource_group_name           = var.resourceGroupName
+  resource_group_name           = var.InfoAssistResourceGroupName
   subnet_id                     = data.azurerm_subnet.subnet[0].id
   custom_network_interface_name = "infoasstfilestoragenic"
 
@@ -267,7 +267,7 @@ resource "azurerm_private_endpoint" "tablePrivateEndpoint" {
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint-table"
   location                      = var.location
-  resource_group_name           = var.resourceGroupName
+  resource_group_name           = var.InfoAssistResourceGroupName
   subnet_id                     = data.azurerm_subnet.subnet[0].id
   custom_network_interface_name = "infoassttablestoragenic"
 
@@ -290,7 +290,7 @@ resource "azurerm_private_endpoint" "queuePrivateEndpoint" {
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint-queue"
   location                      = var.location
-  resource_group_name           = var.resourceGroupName
+  resource_group_name           = var.InfoAssistResourceGroupName
   subnet_id                     = data.azurerm_subnet.subnet[0].id
   custom_network_interface_name = "infoasstqueuestoragenic"
 
