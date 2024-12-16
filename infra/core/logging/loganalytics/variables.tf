@@ -1,9 +1,6 @@
-variable "logAnalyticsName" {
-  type    = string
-}
-
-variable "applicationInsightsName" {
-  type    = string
+variable "ResourceNamingConvention" {
+  description = "Naming Prefix for Deployed Resources"
+  type        = string
 }
 
 variable "location" {
@@ -75,10 +72,6 @@ variable "privateDnsZoneNameBlob" {
 
 variable "groupId" {
   type = string
-}
-
-variable "privateLinkScopeName" {
-  type    = string
 }
 
 variable "vnet_name" {

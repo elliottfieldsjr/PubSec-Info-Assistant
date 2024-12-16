@@ -1,5 +1,5 @@
 resource "azurerm_log_analytics_workspace" "logAnalytics" {
-  name                = var.logAnalyticsName
+  name                = "${var.ResourceNamingConvention}-la"
   location            = var.location
   resource_group_name = var.APDZResourceGroupName
   sku                 = var.skuName
@@ -8,7 +8,7 @@ resource "azurerm_log_analytics_workspace" "logAnalytics" {
 }
 
 resource "azurerm_application_insights" "applicationInsights" {
-  name                = var.applicationInsightsName
+  name                = "${var.ResourceNamingConvention}-ai"
   location            = var.location
   resource_group_name = var.APDZResourceGroupName
   application_type    = "web"
@@ -33,14 +33,14 @@ resource "azurerm_monitor_diagnostic_setting" "nsg_diagnostic_logs" {
 // Create Azure Private Link Scope for Azure Monitor
 resource "azurerm_monitor_private_link_scope" "ampls" {
   count               = var.is_secure_mode ? 1 : 0
-  name                = "${var.privateLinkScopeName}-pls"
+  name                = "${var.ResourceNamingConvention}-ampls-pls"
   resource_group_name = var.InfoAssistResourceGroupName
 }
 
 // add scoped resource for Log Analytics Workspace
 resource "azurerm_monitor_private_link_scoped_service" "ampl-ss_log_analytics" {
   count               = var.is_secure_mode ? 1 : 0
-  name                = "${var.privateLinkScopeName}-law-connection"
+  name                = "${var.ResourceNamingConvention}-ampls-law-connection"
   resource_group_name = var.InfoAssistResourceGroupName
   scope_name          = azurerm_monitor_private_link_scope.ampls[0].name
   linked_resource_id  = azurerm_log_analytics_workspace.logAnalytics.id
@@ -50,7 +50,7 @@ resource "azurerm_monitor_private_link_scoped_service" "ampl-ss_log_analytics" {
 // add scope resoruce for app insights
 resource "azurerm_monitor_private_link_scoped_service" "ampl_ss_app_insights" {
   count               = var.is_secure_mode ? 1 : 0
-  name                = "${var.privateLinkScopeName}-appInsights-connection"
+  name                = "${var.ResourceNamingConvention}-ampls-appInsights-connection"
   resource_group_name = var.InfoAssistResourceGroupName
   scope_name          = azurerm_monitor_private_link_scope.ampls[0].name
   linked_resource_id  = azurerm_application_insights.applicationInsights.id
@@ -66,14 +66,14 @@ data "azurerm_subnet" "subnet" {
 // add private endpoint for azure monitor - metrics, app insights, log analytics
 resource "azurerm_private_endpoint" "ampls" {
   count                             = var.is_secure_mode ? 1 : 0
-  name                              = "${var.privateLinkScopeName}-private-endpoint"
+  name                              = "${var.ResourceNamingConvention}-ampls-private-endpoint"
   location                          = var.location
   resource_group_name               = var.InfoAssistResourceGroupName
   subnet_id                         = data.azurerm_subnet.subnet[0].id
   custom_network_interface_name     = "infoasstamplsnic"
 
   private_service_connection {
-    name                            = "${var.privateLinkScopeName}-privateserviceconnection"
+    name                            = "${var.ResourceNamingConvention}-ampls-privateserviceconnection"
     private_connection_resource_id  = azurerm_monitor_private_link_scope.ampls[0].id
     is_manual_connection            = false
     subresource_names               = [var.groupId]

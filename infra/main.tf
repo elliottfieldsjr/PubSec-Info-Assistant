@@ -170,15 +170,13 @@ data "azurerm_key_vault" "InfoAssistKeyVault" {
 
 module "logging" {
   source = "./core/logging/loganalytics"
-  logAnalyticsName        = var.logAnalyticsName != "" ? var.logAnalyticsName : "dat-la-${random_string.random.result}"
-  applicationInsightsName = var.applicationInsightsName != "" ? var.applicationInsightsName : "dat-ai-${random_string.random.result}"
+  ResourceNamingConvention = var.ResourceNamingConvention
   location                = var.location
   tags                    = local.tags
   skuName                 = "PerGB2018"
   InfoAssistResourceGroupName           = var.InfoAssistResourceGroupName
   APDZResourceGroupName                 = var.AZPDZResourceGroupName
   is_secure_mode                        = var.is_secure_mode
-  privateLinkScopeName                  = "dat-ampls-${random_string.random.result}"
   privateDnsZoneNameMonitor             = "privatelink.${var.azure_monitor_domain}"
   privateDnsZoneNameOms                 = "privatelink.${var.azure_monitor_oms_domain}"
   privateDnSZoneNameOds                 = "privatelink.${var.azure_monitor_ods_domain}"
