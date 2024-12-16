@@ -40,7 +40,7 @@ output "BACKEND_NAME" {
 }
 
 output "RESOURCE_GROUP_NAME" {
-  value = azurerm_resource_group.rg.name
+  value = var.InfoAssistResourceGroupName
 }
 
 output "AZURE_OPENAI_CHAT_GPT_DEPLOYMENT" {
@@ -48,7 +48,7 @@ output "AZURE_OPENAI_CHAT_GPT_DEPLOYMENT" {
 }
 
 output "AZURE_OPENAI_RESOURCE_GROUP" {
-  value = var.useExistingAOAIService ? var.azureOpenAIResourceGroup : azurerm_resource_group.rg.name
+  value = var.useExistingAOAIService ? var.azureOpenAIResourceGroup : var.InfoAssistResourceGroupName
 }
 
 output "AZURE_FUNCTION_APP_NAME" {
@@ -152,7 +152,7 @@ output "ENRICHMENT_APPSERVICE_URL" {
 }
 
 output "AZURE_KEYVAULT_NAME" {
-  value = module.kvModule.keyVaultName
+  value = var.KVName
 }
 
 output "CHAT_WARNING_BANNER_TEXT" {
