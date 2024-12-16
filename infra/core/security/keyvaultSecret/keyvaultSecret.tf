@@ -11,6 +11,7 @@ data "template_file" "workflow" {
 }
 
 resource "azurerm_resource_group_template_deployment" "kv_secret" {
+  provider = azurerm.SHAREDSERVICESSub  
   resource_group_name = var.resourceGroupName
   parameters_content = jsonencode({
     "keyVaultName"              = { value = "${var.key_vault_name}" },

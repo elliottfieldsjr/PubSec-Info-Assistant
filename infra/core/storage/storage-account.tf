@@ -4,6 +4,7 @@ locals {
 }
 
 resource "azurerm_storage_account" "storage" {
+  provider = azurerm.SHAREDSERVICESSub  
   name                            = var.name
   location                        = var.location
   resource_group_name             = var.resourceGroupName
@@ -43,6 +44,7 @@ resource "azurerm_storage_account" "storage" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs" {
+  provider = azurerm.SHAREDSERVICESSub  
   name                       = azurerm_storage_account.storage.name
   target_resource_id         = azurerm_storage_account.storage.id
   log_analytics_workspace_id = var.logAnalyticsWorkspaceResourceId
@@ -57,6 +59,7 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "blob_diagnostic_logs" {
+  provider = azurerm.SHAREDSERVICESSub  
   name                       = "${azurerm_storage_account.storage.name}-blob"
   target_resource_id         = "${azurerm_storage_account.storage.id}/blobServices/default"
   log_analytics_workspace_id = var.logAnalyticsWorkspaceResourceId
@@ -80,6 +83,7 @@ resource "azurerm_monitor_diagnostic_setting" "blob_diagnostic_logs" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "file_diagnostic_logs" {
+  provider = azurerm.SHAREDSERVICESSub  
   name                       = "${azurerm_storage_account.storage.name}-file"
   target_resource_id         = "${azurerm_storage_account.storage.id}/fileServices/default"
   log_analytics_workspace_id = var.logAnalyticsWorkspaceResourceId
@@ -99,6 +103,7 @@ resource "azurerm_monitor_diagnostic_setting" "file_diagnostic_logs" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "queue_diagnostic_logs" {
+  provider = azurerm.SHAREDSERVICESSub  
   name                       = "${azurerm_storage_account.storage.name}-queue"
   target_resource_id         = "${azurerm_storage_account.storage.id}/queueServices/default"
   log_analytics_workspace_id = var.logAnalyticsWorkspaceResourceId
@@ -118,6 +123,7 @@ resource "azurerm_monitor_diagnostic_setting" "queue_diagnostic_logs" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "table_diagnostic_logs" {
+  provider = azurerm.SHAREDSERVICESSub  
   name                       = "${azurerm_storage_account.storage.name}-table"
   target_resource_id         = "${azurerm_storage_account.storage.id}/tableServices/default"
   log_analytics_workspace_id = var.logAnalyticsWorkspaceResourceId
@@ -151,6 +157,7 @@ data "template_file" "queue" {
 }
 
 resource "azurerm_resource_group_template_deployment" "container" {
+  provider = azurerm.SHAREDSERVICESSub  
   depends_on          = [azurerm_storage_account.storage]
   count               = length(var.containers)
   resource_group_name = var.resourceGroupName
@@ -169,6 +176,7 @@ resource "azurerm_resource_group_template_deployment" "container" {
 
 // Create a storage queue
 resource "azurerm_resource_group_template_deployment" "queue" {
+  provider = azurerm.SHAREDSERVICESSub  
   depends_on          = [azurerm_storage_account.storage]
   count               = length(var.queueNames)
   resource_group_name = var.resourceGroupName
@@ -186,7 +194,7 @@ resource "azurerm_resource_group_template_deployment" "queue" {
 }
 
 module "storage_connection_string" {
-  source                        = "../security/keyvaultSecret"
+  source                        = "../security/keyvaultSecret"  
   resourceGroupName             = var.resourceGroupName
   arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
   key_vault_name                = var.key_vault_name
@@ -199,6 +207,7 @@ module "storage_connection_string" {
 }
 
 data "azurerm_subnet" "subnet" {
+  provider = azurerm.SHAREDSERVICESSub  
   count                = var.is_secure_mode ? 1 : 0
   name                 = var.subnet_name
   virtual_network_name = var.vnet_name
@@ -207,6 +216,7 @@ data "azurerm_subnet" "subnet" {
 
 // Create a private endpoint for blob storage account
 resource "azurerm_private_endpoint" "blobPrivateEndpoint" {
+  provider = azurerm.SHAREDSERVICESSub  
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint-blob"
   location                      = var.location
@@ -229,6 +239,7 @@ resource "azurerm_private_endpoint" "blobPrivateEndpoint" {
 
 // Create a private endpoint for blob storage account
 resource "azurerm_private_endpoint" "filePrivateEndpoint" {
+  provider = azurerm.SHAREDSERVICESSub  
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint-file"
   location                      = var.location
@@ -252,6 +263,7 @@ resource "azurerm_private_endpoint" "filePrivateEndpoint" {
 
 // Create a private endpoint for blob storage account
 resource "azurerm_private_endpoint" "tablePrivateEndpoint" {
+  provider = azurerm.SHAREDSERVICESSub  
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint-table"
   location                      = var.location
@@ -274,6 +286,7 @@ resource "azurerm_private_endpoint" "tablePrivateEndpoint" {
 
 // Create a private endpoint for queue storage account
 resource "azurerm_private_endpoint" "queuePrivateEndpoint" {
+  provider = azurerm.SHAREDSERVICESSub  
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint-queue"
   location                      = var.location
@@ -296,6 +309,7 @@ resource "azurerm_private_endpoint" "queuePrivateEndpoint" {
 
 // Only create the config blob if we are not in secure mode as SharePoint integration is not supported in secure mode
 resource "azurerm_storage_blob" "config" {
+  provider = azurerm.SHAREDSERVICESSub  
   depends_on = [ azurerm_resource_group_template_deployment.container ]
   count                  = var.is_secure_mode ? 0 : 1
   name                   = "config.json"
