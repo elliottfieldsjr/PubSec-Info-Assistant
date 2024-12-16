@@ -26,9 +26,6 @@ data "azurerm_client_config" "SharedServicesSub" {
 }
 module "entraObjects" {
   source                            = "./core/aad"
-  providers = {
-    "azurerm" = azurerm.HUBSub
-  }
   ResourceNamingConvention = var.ResourceNamingConvention
   ObjectID = data.azurerm_client_config.HubSub.object_id
   isInAutomation                    = var.isInAutomation
@@ -173,6 +170,9 @@ data "azurerm_key_vault" "InfoAssistKeyVault" {
 
 module "logging" {
   source = "./core/logging/loganalytics"
+  providers = {
+    "azurerm" = azurerm.HUBSub
+  }  
   ResourceNamingConvention = var.ResourceNamingConvention
   location                = var.location
   tags                    = local.tags
