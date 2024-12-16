@@ -159,22 +159,6 @@ data "azurerm_key_vault" "InfoAssistKeyVault" {
   resource_group_name   = var.KVResourceGroupName
 }
 
-data "azurerm" "HUB" {
-  provider = azurerm.HUBSub
-}
-
-data "azurerm" "IDENTITY" {
-  provider = azurerm.IDENTITYSub
-}
-
-data "azurerm" "OPERATIONS" {
-  provider = azurerm.OPERATIONSSub
-}
-
-data "azurerm" "SHAREDSERVICES" {
-  provider = azurerm.SHAREDSERVICESSub
-}
-
 module "logging" {
   providers = {
     "key" = azurerm.SHAREDSERVICESSub
