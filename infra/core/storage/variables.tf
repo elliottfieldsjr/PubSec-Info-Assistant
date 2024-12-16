@@ -2,10 +2,6 @@ variable "CloudShellIP" {
   type = string
 }
 
-variable "Provider" {
-  type    = string
-}
-
 variable "name" {
   type = string
 }

@@ -1,7 +1,3 @@
-variable "Provider" {
-  type    = string
-}
-
 variable "name" {
   type = string
 }
