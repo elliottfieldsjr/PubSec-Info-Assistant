@@ -33,6 +33,7 @@ resource "random_string" "random" {
 
 module "entraObjects" {
   source                            = "./core/aad"
+  ObjectID = data.azurerm_client_config.HubSub.object_id
   isInAutomation                    = var.isInAutomation
   requireWebsiteSecurityMembership  = var.requireWebsiteSecurityMembership
   randomString                      = random_string.random.result

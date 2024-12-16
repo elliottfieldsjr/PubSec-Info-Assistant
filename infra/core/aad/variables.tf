@@ -1,4 +1,7 @@
-//// Variables that can vary based on the Azure environment being targeted
+variable "ObjectID" {
+  type = string
+}
+
 variable "randomString" {
   type = string
 }
