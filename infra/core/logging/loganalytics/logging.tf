@@ -1,3 +1,17 @@
+
+terraform {
+  required_version = ">= 0.15.3"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.3.0"
+      configuration_aliases = [
+        azurerm.HUBSub
+       ]
+    }
+  }
+}
+
 resource "azurerm_log_analytics_workspace" "logAnalytics" {
   name                = "${var.ResourceNamingConvention}-la"
   location            = var.location

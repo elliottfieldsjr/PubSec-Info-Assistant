@@ -171,8 +171,8 @@ data "azurerm_key_vault" "InfoAssistKeyVault" {
 module "logging" {
   source = "./core/logging/loganalytics"
   providers = {
-    azurerm = azurerm,
-    azurerm.HubSub = azurerm.HUBSub,
+    azurerm = azurerm
+    azurerm = azurerm.HUBSub
   }  
   ResourceNamingConvention = var.ResourceNamingConvention
   location                = var.location
