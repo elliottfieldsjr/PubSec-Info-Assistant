@@ -45,3 +45,125 @@ data "azurerm_resource_group" "InfoAssistRG" {
   provider            = azurerm.SHAREDSERVICESSub
   name                = var.InfoAssistResourceGroupName
 }
+
+data "azurerm_virtual_network" "InfoAssistVNet" {
+  provider            = azurerm.SHAREDSERVICESSub
+  name                = var.InfoAssistVNetName
+  resource_group_name = var.InfoAssistResourceGroupName
+}
+
+data "azurerm_subnet" "InfoAssistPESubnet" {
+  provider              = azurerm.SHAREDSERVICESSub
+  name                  = var.InfoAssistPESubnetName
+  virtual_network_name  = data.azurerm_virtual_network.InfoAssistVNet.name
+  resource_group_name   = var.InfoAssistResourceGroupName
+}
+
+data "azurerm_subnet" "InfoAssistINTSubnet" {
+  provider              = azurerm.SHAREDSERVICESSub  
+  name                  = var.InfoAssistINTSubnetName
+  virtual_network_name  = data.azurerm_virtual_network.InfoAssistVNet.name
+  resource_group_name   = var.InfoAssistResourceGroupName
+}
+
+data "azurerm_network_security_group" "InfoAssistNSG" {
+  provider            = azurerm.SHAREDSERVICESSub  
+  name                = var.InfoAssistNSGName
+  resource_group_name = var.InfoAssistResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "AzureAutomationPDZ" {
+  provider            = azurerm.HUBSub
+  name                = "privatelink.${var.azure_automation_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "AzureCRPDZ" {
+  provider            = azurerm.HUBSub  
+  name                = "privatelink.${var.azure_acr_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "AzureWebPDZ" {
+  provider            = azurerm.HUBSub  
+  name                = "privatelink.${var.azure_websites_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "BlobStoragePDZ" {
+  provider            = azurerm.HUBSub  
+  name                = "privatelink.${var.azure_blob_storage_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "FileStoragePDZ" {
+  provider            = azurerm.HUBSub  
+  name                = "privatelink.${var.azure_file_storage_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "QueueStoragePDZ" {
+  provider            = azurerm.HUBSub  
+  name                = "privatelink.${var.azure_queue_storage_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "TableStoragePDZ" {
+  provider            = azurerm.HUBSub  
+  name                = "privatelink.${var.azure_table_storage_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "CognitiveServicesPDZ" {
+  provider            = azurerm.HUBSub  
+  name                = "privatelink.${var.azure_ai_document_intelligence_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "DocumentsPDZ" {
+  provider            = azurerm.HUBSub  
+  name                = "privatelink.${var.cosmosdb_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "MonitorPDZ" {
+  provider            = azurerm.HUBSub  
+  name                = "privatelink.${var.azure_monitor_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "MonitorODSPDZ" {
+  provider            = azurerm.HUBSub  
+  name                = "privatelink.${var.azure_monitor_ods_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "MonitorOMSPDZ" {
+  provider            = azurerm.HUBSub  
+  name                = "privatelink.${var.azure_monitor_oms_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "OpenAIPDZ" {
+  provider            = azurerm.HUBSub  
+  name                = "privatelink.${var.azure_openai_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "SearchServicePDZ" {
+  provider            = azurerm.HUBSub  
+  name                = "privatelink.${var.azure_search_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_private_dns_zone" "KeyVaultPDZ" {
+  provider            = azurerm.HUBSub  
+  name                = "privatelink.${var.azure_keyvault_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
+
+data "azurerm_key_vault" "InfoAssistKeyVault" {
+  provider              = azurerm.HUBSub    
+  name                  = var.KVName
+  resource_group_name   = var.KVResourceGroupName
+}
