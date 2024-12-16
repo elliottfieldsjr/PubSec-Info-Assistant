@@ -19,7 +19,7 @@ resource "random_string" "random" {
 
 module "entraObjects" {
   providers = {
-    "alias" = azurerm.SHAREDSERVICESSub
+    "azurerm" = azurerm.SHAREDSERVICESSub
   }
   source                            = "./core/aad"
   isInAutomation                    = var.isInAutomation
