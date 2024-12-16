@@ -1,5 +1,4 @@
 resource "azurerm_log_analytics_workspace" "logAnalytics" {
-  provider = azurerm.SHAREDSERVICESSub
   name                = var.logAnalyticsName
   location            = var.location
   resource_group_name = var.APDZResourceGroupName
@@ -9,7 +8,6 @@ resource "azurerm_log_analytics_workspace" "logAnalytics" {
 }
 
 resource "azurerm_application_insights" "applicationInsights" {
-  provider = azurerm.SHAREDSERVICESSub  
   name                = var.applicationInsightsName
   location            = var.location
   resource_group_name = var.APDZResourceGroupName
@@ -20,7 +18,6 @@ resource "azurerm_application_insights" "applicationInsights" {
 
 // Create Diagnostic Setting for NSG here since the log analytics workspace is created here after the network is created
 resource "azurerm_monitor_diagnostic_setting" "nsg_diagnostic_logs" {
-  provider = azurerm.SHAREDSERVICESSub  
   count                      = var.is_secure_mode ? 1 : 0
   name                       = var.nsg_name
   target_resource_id         = var.nsg_id
@@ -35,7 +32,6 @@ resource "azurerm_monitor_diagnostic_setting" "nsg_diagnostic_logs" {
 
 // Create Azure Private Link Scope for Azure Monitor
 resource "azurerm_monitor_private_link_scope" "ampls" {
-  provider = azurerm.SHAREDSERVICESSub  
   count               = var.is_secure_mode ? 1 : 0
   name                = "${var.privateLinkScopeName}-pls"
   resource_group_name = var.InfoAssistResourceGroupName
@@ -43,7 +39,6 @@ resource "azurerm_monitor_private_link_scope" "ampls" {
 
 // add scoped resource for Log Analytics Workspace
 resource "azurerm_monitor_private_link_scoped_service" "ampl-ss_log_analytics" {
-  provider = azurerm.SHAREDSERVICESSub  
   count               = var.is_secure_mode ? 1 : 0
   name                = "${var.privateLinkScopeName}-law-connection"
   resource_group_name = var.InfoAssistResourceGroupName
@@ -54,7 +49,6 @@ resource "azurerm_monitor_private_link_scoped_service" "ampl-ss_log_analytics" {
 
 // add scope resoruce for app insights
 resource "azurerm_monitor_private_link_scoped_service" "ampl_ss_app_insights" {
-  provider = azurerm.SHAREDSERVICESSub  
   count               = var.is_secure_mode ? 1 : 0
   name                = "${var.privateLinkScopeName}-appInsights-connection"
   resource_group_name = var.InfoAssistResourceGroupName
@@ -63,7 +57,6 @@ resource "azurerm_monitor_private_link_scoped_service" "ampl_ss_app_insights" {
 }
 
 data "azurerm_subnet" "subnet" {
-  provider = azurerm.SHAREDSERVICESSub  
   count                = var.is_secure_mode ? 1 : 0
   name                 = var.subnet_name
   virtual_network_name = var.vnet_name
@@ -72,7 +65,6 @@ data "azurerm_subnet" "subnet" {
 
 // add private endpoint for azure monitor - metrics, app insights, log analytics
 resource "azurerm_private_endpoint" "ampls" {
-  provider = azurerm.SHAREDSERVICESSub  
   count                             = var.is_secure_mode ? 1 : 0
   name                              = "${var.privateLinkScopeName}-private-endpoint"
   location                          = var.location
@@ -100,7 +92,6 @@ resource "azurerm_private_endpoint" "ampls" {
 }
 
 resource "azurerm_private_dns_zone" "monitor" {
-  provider = azurerm.HUBSub
   count               = var.is_secure_mode ? 1 : 0
   name                = var.privateDnsZoneNameMonitor
   resource_group_name = var.APDZResourceGroupName
@@ -108,7 +99,6 @@ resource "azurerm_private_dns_zone" "monitor" {
 }
 
 resource "azurerm_private_dns_a_record" "monitor_api" {
-  provider = azurerm.HUBSub
   count               = var.is_secure_mode ? 1 : 0
   name                = "api"
   zone_name           = azurerm_private_dns_zone.monitor[0].name
@@ -118,7 +108,6 @@ resource "azurerm_private_dns_a_record" "monitor_api" {
 }
 
 resource "azurerm_private_dns_a_record" "monitor_global" {
-    provider = azurerm.HUBSub
   count               = var.is_secure_mode ? 1 : 0
   name                = "global.in.ai"
   zone_name           = azurerm_private_dns_zone.monitor[0].name
@@ -128,7 +117,6 @@ resource "azurerm_private_dns_a_record" "monitor_global" {
 }
 
 resource "azurerm_private_dns_a_record" "monitor_profiler" {
-  provider = azurerm.HUBSub
   count               = var.is_secure_mode ? 1 : 0
   name                = "profiler"
   zone_name           = azurerm_private_dns_zone.monitor[0].name
@@ -138,7 +126,6 @@ resource "azurerm_private_dns_a_record" "monitor_profiler" {
 }
 
 resource "azurerm_private_dns_a_record" "monitor_live" {
-  provider = azurerm.HUBSub
   count               = var.is_secure_mode ? 1 : 0
   name                = "live"
   zone_name           = azurerm_private_dns_zone.monitor[0].name
@@ -148,7 +135,6 @@ resource "azurerm_private_dns_a_record" "monitor_live" {
 }
 
 resource "azurerm_private_dns_a_record" "monitor_snapshot" {
-  provider = azurerm.HUBSub
   count               = var.is_secure_mode ? 1 : 0
   name                = "snapshot"
   zone_name           = azurerm_private_dns_zone.monitor[0].name
@@ -158,7 +144,6 @@ resource "azurerm_private_dns_a_record" "monitor_snapshot" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "monitor-net" {
-  provider = azurerm.SHAREDSERVICESSub    
   count               = var.is_secure_mode ? 1 : 0
   name                  = "infoasst-pl-monitor-net"
   resource_group_name   = var.InfoAssistResourceGroupName
@@ -167,14 +152,12 @@ resource "azurerm_private_dns_zone_virtual_network_link" "monitor-net" {
 }
 
 resource "azurerm_private_dns_zone" "oms" {
-  provider = azurerm.HUBSub  
   count               = var.is_secure_mode ? 1 : 0
   name                = var.privateDnsZoneNameOms
   resource_group_name = var.APDZResourceGroupName
 }
 
 resource "azurerm_private_dns_a_record" "oms_law_id" {
-  provider = azurerm.HUBSub  
   count               = var.is_secure_mode ? 1 : 0
   name                = "infoasst-pl-oms-law-id"
   zone_name           = azurerm_private_dns_zone.oms[0].name
@@ -184,7 +167,6 @@ resource "azurerm_private_dns_a_record" "oms_law_id" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "oms-net" {
-  provider = azurerm.SHAREDSERVICESSub
   count               = var.is_secure_mode ? 1 : 0
   name                  = "infoasst-pl-oms-net"
   resource_group_name   = var.InfoAssistResourceGroupName
@@ -193,14 +175,12 @@ resource "azurerm_private_dns_zone_virtual_network_link" "oms-net" {
 }
 
 resource "azurerm_private_dns_zone" "ods" {
-  provider = azurerm.HUBSub  
   count               = var.is_secure_mode ? 1 : 0
   name                = var.privateDnSZoneNameOds
   resource_group_name = var.APDZResourceGroupName
 }
 
 resource "azurerm_private_dns_a_record" "ods_law_id" {
-  provider = azurerm.HUBSub  
   count               = var.is_secure_mode ? 1 : 0
   name                = "infoasst_pl_ods_law_id"
   zone_name           = azurerm_private_dns_zone.ods[0].name
@@ -210,7 +190,6 @@ resource "azurerm_private_dns_a_record" "ods_law_id" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "ods-net" {
-  provider = azurerm.SHAREDSERVICESSub  
   count               = var.is_secure_mode ? 1 : 0
   name                  = "infoasst-pl-ods-net"
   resource_group_name   = var.InfoAssistResourceGroupName
@@ -219,14 +198,12 @@ resource "azurerm_private_dns_zone_virtual_network_link" "ods-net" {
 }
 
 resource "azurerm_private_dns_zone" "agentsvc" {
-  provider = azurerm.HUBSub  
   count               = var.is_secure_mode ? 1 : 0
   name                = var.privateDnsZoneNameAutomation
   resource_group_name = var.APDZResourceGroupName
 }
 
 resource "azurerm_private_dns_a_record" "agentsvc_law_id" {
-  provider = azurerm.HUBSub  
   count               = var.is_secure_mode ? 1 : 0
   name                = "infoasst_pl_agentsvc_law_id"
   zone_name           = azurerm_private_dns_zone.agentsvc[0].name
@@ -236,7 +213,6 @@ resource "azurerm_private_dns_a_record" "agentsvc_law_id" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "agentsvc-net" {
-  provider = azurerm.HUBSub
   count               = var.is_secure_mode ? 1 : 0
   name                  = "infoasst-pl-agentsvc-net"
   resource_group_name   = var.InfoAssistResourceGroupName
@@ -245,7 +221,6 @@ resource "azurerm_private_dns_zone_virtual_network_link" "agentsvc-net" {
 }
 
 resource "azurerm_private_dns_a_record" "blob_scadvisorcontentpld" {
-  provider = azurerm.HUBSub  
   count               = var.is_secure_mode ? 1 : 0
   name                = "scadvisorcontentpl"
   zone_name           = var.privateDnsZoneNameBlob
