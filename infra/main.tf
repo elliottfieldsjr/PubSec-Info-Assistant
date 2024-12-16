@@ -7,32 +7,3 @@ locals {
                       "StorageQueueDataContributor", 
                       "SearchIndexDataContributor"]
 }
-
-data "azurerm_client_config" "current" {}
-
-resource "random_string" "random" {
-  length  = 5
-  special = false
-  upper   = false
-  number  = false
-}
-
-module "entraObjects" {
-  source                            = "./core/aad"
-  azure_environment = var.azure_environment
-  HubSubscriptionID = var.HubSubscriptionID
-  OperationsSubscriptionID = var.OperationsSubscriptionID
-  IdentitySubscriptionID = var.IdentitySubscriptionID
-  SharedServicesSubscriptionID = var.SharedServicesSubscriptionID
-  isInAutomation                    = var.isInAutomation
-  requireWebsiteSecurityMembership  = var.requireWebsiteSecurityMembership
-  randomString                      = random_string.random.result
-  azure_websites_domain             = var.azure_websites_domain
-  aadWebClientId                    = var.aadWebClientId
-  aadMgmtClientId                   = var.aadMgmtClientId
-  aadMgmtServicePrincipalId         = var.aadMgmtServicePrincipalId
-  aadMgmtClientSecret               = var.aadMgmtClientSecret
-  entraOwners                       = var.entraOwners
-  serviceManagementReference        = var.serviceManagementReference
-  password_lifetime                 = var.password_lifetime
-}
