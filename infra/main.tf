@@ -30,3 +30,18 @@ resource "random_string" "random" {
   upper   = false
   number  = false
 }
+
+module "entraObjects" {
+  source                            = "./core/aad"
+  isInAutomation                    = var.isInAutomation
+  requireWebsiteSecurityMembership  = var.requireWebsiteSecurityMembership
+  randomString                      = random_string.random.result
+  azure_websites_domain             = var.azure_websites_domain
+  aadWebClientId                    = var.aadWebClientId
+  aadMgmtClientId                   = var.aadMgmtClientId
+  aadMgmtServicePrincipalId         = var.aadMgmtServicePrincipalId
+  aadMgmtClientSecret               = var.aadMgmtClientSecret
+  entraOwners                       = var.entraOwners
+  serviceManagementReference        = var.serviceManagementReference
+  password_lifetime                 = var.password_lifetime
+}

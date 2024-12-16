@@ -1,30 +1,4 @@
 //// Variables that can vary based on the Azure environment being targeted
-variable "azure_environment" {
-  type        = string
-  default     = "AzureCloud"
-  description = "The Azure Environemnt to target. More info can be found at https://docs.microsoft.com/en-us/cli/azure/manage-clouds-azure-cli?toc=/cli/azure/toc.json&bc=/cli/azure/breadcrumb/toc.json. Defaults to value for 'AzureCloud'"
-}
-
-variable "HubSubscriptionID" {
-  description = "HUB Subscription ID"
-  type        = string
-}
-
-variable "IdentitySubscriptionID" {
-  description = "IDENTITY Subscription ID"
-  type        = string
-}
-
-variable "OperationsSubscriptionID" {
-  description = "OPERATIONS Subscription ID"
-  type        = string
-}
-
-variable "SharedServicesSubscriptionID" {
-  description = "SHARED SERVICES Subscription ID"
-  type        = string
-}
-
 variable "randomString" {
   type = string
 }
