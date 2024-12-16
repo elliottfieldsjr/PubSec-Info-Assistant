@@ -3,6 +3,12 @@ variable "CloudShellIP" {
   type = string
 }
 
+variable "Provider" {
+  description = "Provider"
+  type = string
+}
+
+
 variable "environmentName" {
   description = "Name of the the environment which is used to generate a short unique hash used in all resources."
   type        = string
@@ -13,33 +19,68 @@ variable "location" {
   type        = string
 }
 
-variable "resourceGroupName" {
-  description = "Name of existing Resource Group"  
+variable "InfoAssistResourceGroupName" {
+  description = "Name of existing Info Assist Resource Group"  
   type    = string
 }
 
-variable "vnetName" {
-  description = "Name of existing Virtual Network"
+variable "AZPDZResourceGroupName" {
+  description = "Name of existing Azure DNS Zones Resource Group"  
+  type    = string
+}
+
+variable "KVResourceGroupName" {
+  description = "Name of existing Key Vault Resource Group"  
+  type    = string
+}
+
+variable "KVName" {
+  description = "Name of existing Key Vault"
   type        = string
 }
 
-variable "peSubnetName" {
-  description = "Name of existing Private Endpoint Subnet"
+variable "InfoAssistVNetName" {
+  description = "Name of existing Info Assist Virtual Network"
   type        = string
 }
 
-variable "peSubnetCidr" {
-  description = "Cidr of existing Private Endpoint Subnet"
+variable "InfoAssistPESubnetName" {
+  description = "Name of existing Info Assist Private Endpoint Subnet"
   type        = string
 }
 
-variable "intSubnetName" {
-  description = "Name of existing Integration Subnet"
+variable "InfoAssistPESubnetCidr" {
+  description = "Cidr of existing Info Assist Private Endpoint CIDR"
   type        = string
 }
 
-variable "nsgName" {
-  description = "Name of existing Network Security Group"
+variable "InfoAssistINTSubnetName" {
+  description = "Name of existing Info Assist Integration Subnet"
+  type        = string
+}
+
+variable "InfoAssistNSGName" {
+  description = "Name of existing Info Assist Network Security Group"
+  type        = string
+}
+
+variable "HubSubscriptionID" {
+  description = "HUB Subscription ID"
+  type        = string
+}
+
+variable "IdentitySubscriptionID" {
+  description = "IDENTITY Subscription ID"
+  type        = string
+}
+
+variable "OperationsSubscriptionID" {
+  description = "OPERATIONS Subscription ID"
+  type        = string
+}
+
+variable "SharedServicesSubscriptionID" {
+  description = "SHARED SERVICES Subscription ID"
   type        = string
 }
 
@@ -100,6 +141,22 @@ variable "azure_environment" {
   type        = string
   default     = "AzureCloud"
   description = "The Azure Environemnt to target. More info can be found at https://docs.microsoft.com/en-us/cli/azure/manage-clouds-azure-cli?toc=/cli/azure/toc.json&bc=/cli/azure/breadcrumb/toc.json. Defaults to value for 'AzureCloud'"
+}
+
+variable "azure_blob_storage_domain" {
+  type        = string
+}
+
+variable "azure_file_storage_domain" {
+  type        = string
+}
+
+variable "azure_queue_storage_domain" {
+  type        = string
+}
+
+variable "azure_table_storage_domain" {
+  type        = string
 }
 
 variable "azure_websites_domain" {

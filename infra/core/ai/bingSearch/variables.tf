@@ -1,3 +1,7 @@
+variable "Provider" {
+  type    = string
+}
+
 variable "resourceGroupName" {
   type    = string
   default = ""

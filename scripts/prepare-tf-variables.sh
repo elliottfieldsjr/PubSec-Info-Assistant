@@ -7,12 +7,21 @@ ENV_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # To maintain backward compatibility, we need to convert some of the variables to TF_VAR_ format
 export TF_VAR_CloudShellIP=$CLOUDSHELLIP
-export TF_VAR_resourceGroupName=$RESOURCEGROUPNAME
-export TF_VAR_vnetName=$VNETNAME
-export TF_VAR_peSubnetName=$PRIVATEENDPOINTSUBNETNAME
-export TF_VAR_peSubnetCidr=$PRIVATEENDPOINTSUBNETNCIDR
-export TF_VAR_intSubnetName=$INTEGRATIONSUBNETNAME
-export TF_VAR_nsgName=$NETWORKSECURITYGROUPNAME
+export TF_VAR_InfoAssistResourceGroupName=$INFOASSISTRESOURCEGROUPNAME
+export TF_VAR_InfoAssistVNetName=$INFOASSISTVNETNAME
+export TF_VAR_InfoAssistPESubnetName=$INFOASSISTPESUBNETNAME
+export TF_VAR_InfoAssistPESubnetCidr=$INFOASSISTPESUBNETNCIDR
+export TF_VAR_InfoAssistINTSubnetName=$INFOASSISTINTSUBNETNAME
+export TF_VAR_InfoAssistNSGName=$INFOASSISTNSGNAME
+export TF_VAR_AZPDZResourceGroupName=$APDZRESOURCEGROUPNAME
+
+export TF_KVResourceGroupName=$KVRESOURCEGROUPNAME
+export TF_KVName=$KVNAME
+
+export TF_VAR_HubSubscriptionID=$HUB_SUBSCRIPTION_ID
+export TF_VAR_IdentitySubscriptionID=$IDENTITY_SUBSCRIPTION_ID
+export TF_VAR_OperationsSubscriptionID=$OPERATIONS_SUBSCRIPTION_ID
+export TF_VAR_SharedServicesSubscriptionID=$SHAREDSERVICES_SUBSCRIPTION_ID
 export TF_VAR_environmentName=$WORKSPACE
 export TF_VAR_location=$LOCATION
 export TF_VAR_useExistingAOAIService=$USE_EXISTING_AOAI
