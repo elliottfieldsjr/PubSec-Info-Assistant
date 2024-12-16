@@ -27,7 +27,7 @@ data "azurerm_client_config" "SharedServicesSub" {
 module "entraObjects" {
   source                            = "./core/aad"
   providers = {
-    "azurerm" = data.azurerm_client_config.HUBSub
+    "azurerm" = azurerm.HUBSub
   }
   ResourceNamingConvention = var.ResourceNamingConvention
   ObjectID = data.azurerm_client_config.HubSub.object_id
