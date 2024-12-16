@@ -18,10 +18,12 @@ resource "random_string" "random" {
 }
 
 module "entraObjects" {
-  providers = {
-    "azurerm" = azurerm.SHAREDSERVICESSub
-  }
   source                            = "./core/aad"
+  azure_environment = var.azure_environment
+  HubSubscriptionID = var.HubSubscriptionID
+  OperationsSubscriptionID = var.OperationsSubscriptionID
+  IdentitySubscriptionID = var.IdentitySubscriptionID
+  SharedServicesSubscriptionID = var.SharedServicesSubscriptionID
   isInAutomation                    = var.isInAutomation
   requireWebsiteSecurityMembership  = var.requireWebsiteSecurityMembership
   randomString                      = random_string.random.result
