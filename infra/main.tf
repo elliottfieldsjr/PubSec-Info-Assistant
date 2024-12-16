@@ -160,16 +160,14 @@ data "azurerm_key_vault" "InfoAssistKeyVault" {
 }
 
 module "logging" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }
   source = "./core/logging/loganalytics"
   logAnalyticsName        = var.logAnalyticsName != "" ? var.logAnalyticsName : "dat-la-${random_string.random.result}"
   applicationInsightsName = var.applicationInsightsName != "" ? var.applicationInsightsName : "dat-ai-${random_string.random.result}"
   location                = var.location
   tags                    = local.tags
   skuName                 = "PerGB2018"
-  resourceGroupName       = var.InfoAssistResourceGroupName
+  InfoAssistResourceGroupName       = var.InfoAssistResourceGroupName
+  APDZResourceGroupName = var.AZPDZResourceGroupName
   is_secure_mode                        = var.is_secure_mode
   privateLinkScopeName                  = "dat-ampls-${random_string.random.result}"
   privateDnsZoneNameMonitor             = "privatelink.${var.azure_monitor_domain}"

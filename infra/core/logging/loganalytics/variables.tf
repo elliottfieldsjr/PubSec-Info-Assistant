@@ -20,7 +20,11 @@ variable "skuName" {
   default = "PerGB2018"
 }
 
-variable "resourceGroupName" {
+variable "InfoAssistResourceGroupName" {
+  type    = string
+}
+
+variable "APDZResourceGroupName" {
   type    = string
 }
 
