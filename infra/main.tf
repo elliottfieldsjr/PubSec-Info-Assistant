@@ -23,3 +23,10 @@ data "azurerm_client_config" "OperationsSub" {
 data "azurerm_client_config" "SharedServicesSub" {
   provider = azurerm.SHAREDSERVICESSub
 }
+
+resource "random_string" "random" {
+  length  = 5
+  special = false
+  upper   = false
+  number  = false
+}
