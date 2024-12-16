@@ -30,7 +30,6 @@ module "entraObjects" {
   ObjectID = data.azurerm_client_config.HubSub.object_id
   isInAutomation                    = var.isInAutomation
   requireWebsiteSecurityMembership  = var.requireWebsiteSecurityMembership
-  randomString                      = random_string.random.result
   azure_websites_domain             = var.azure_websites_domain
   aadWebClientId                    = var.aadWebClientId
   aadMgmtClientId                   = var.aadMgmtClientId

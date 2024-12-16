@@ -7,10 +7,6 @@ variable "ObjectID" {
   type = string
 }
 
-variable "randomString" {
-  type = string
-}
-
 variable "requireWebsiteSecurityMembership" {
   type = bool
   default = false

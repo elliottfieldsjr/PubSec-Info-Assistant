@@ -31,7 +31,7 @@ resource "azuread_service_principal" "aad_web_sp" {
 
 resource "azuread_application" "aad_mgmt_app" {
   count             = var.isInAutomation ? 0 : 1
-  display_name      = "infoasst_mgmt_access_${var.randomString}"
+  display_name      = "${var.ResourceNamingConvention}_infoasst_mgmt_access"
   owners            = local.owner_ids
   sign_in_audience  = "AzureADMyOrg"
   service_management_reference = var.serviceManagementReference
