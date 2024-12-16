@@ -8,6 +8,18 @@ locals {
                       "SearchIndexDataContributor"]
 }
 
-data "azurerm_client_config" "SharedServices" {
+data "azurerm_client_config" "HubSub" {
+  provider = azurerm.HUBSub
+}
+
+data "azurerm_client_config" "IdentitySub" {
+  provider = azurerm.IDENTITYSub
+}
+
+data "azurerm_client_config" "OperationsSub" {
+  provider = azurerm.OPERATIONSSub
+}
+
+data "azurerm_client_config" "SharedServicesSub" {
   provider = azurerm.SHAREDSERVICESSub
 }
