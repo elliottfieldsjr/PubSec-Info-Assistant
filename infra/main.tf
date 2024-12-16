@@ -71,3 +71,9 @@ data "azurerm_network_security_group" "InfoAssistNSG" {
   name                = var.InfoAssistNSGName
   resource_group_name = var.InfoAssistResourceGroupName
 }
+
+data "azurerm_private_dns_zone" "AzureAutomationPDZ" {
+  provider            = azurerm.HUBSub
+  name                = "privatelink.${var.azure_automation_domain}"
+  resource_group_name = var.AZPDZResourceGroupName
+}
