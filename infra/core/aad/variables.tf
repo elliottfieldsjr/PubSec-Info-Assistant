@@ -1,3 +1,8 @@
+variable "ResourceNamingConvention" {
+  description = "Naming Prefix for Deployed Resources"
+  type        = string
+}
+
 variable "ObjectID" {
   type = string
 }

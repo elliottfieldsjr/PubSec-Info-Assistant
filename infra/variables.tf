@@ -1,3 +1,8 @@
+variable "ResourceNamingConvention" {
+  description = "Naming Prefix for Deployed Resources"
+  type        = string
+}
+
 variable "CloudShellIP" {
   description = "Name of current CloudShell IP"
   type = string
