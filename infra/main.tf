@@ -172,6 +172,7 @@ module "logging" {
   source = "./core/logging/loganalytics"
   providers = {
     "azurerm" = azurerm.HUBSub
+    "azurerm" = azurerm.SHAREDSERVICESSub
   }  
   ResourceNamingConvention = var.ResourceNamingConvention
   location                = var.location
