@@ -186,9 +186,6 @@ module "logging" {
 }
 
 module "storage" {
-  providers = {
-    "key" = azurerm.SHAREDSERVICESSub
-  }  
   source                          = "./core/storage"
   CloudShellIP                    = var.CloudShellIP
   name                            = var.storageAccountName != "" ? var.storageAccountName : "datstore${random_string.random.result}"
