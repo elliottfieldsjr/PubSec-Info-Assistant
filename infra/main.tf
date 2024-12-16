@@ -21,7 +21,7 @@ data "azurerm_client_config" "OperationsSub" {
 }
 
 data "azurerm_client_config" "SharedServicesSub" {
-  provider = azurerm.SHAREDSERVICESSub
+  provider = azurerm
 
 }
 module "entraObjects" {
@@ -42,32 +42,32 @@ module "entraObjects" {
 
 
 data "azurerm_resource_group" "InfoAssistRG" {
-  provider            = azurerm.SHAREDSERVICESSub
+  provider            = azurerm
   name                = var.InfoAssistResourceGroupName
 }
 
 data "azurerm_virtual_network" "InfoAssistVNet" {
-  provider            = azurerm.SHAREDSERVICESSub
+  provider            = azurerm
   name                = var.InfoAssistVNetName
   resource_group_name = var.InfoAssistResourceGroupName
 }
 
 data "azurerm_subnet" "InfoAssistPESubnet" {
-  provider              = azurerm.SHAREDSERVICESSub
+  provider              = azurerm
   name                  = var.InfoAssistPESubnetName
   virtual_network_name  = data.azurerm_virtual_network.InfoAssistVNet.name
   resource_group_name   = var.InfoAssistResourceGroupName
 }
 
 data "azurerm_subnet" "InfoAssistINTSubnet" {
-  provider              = azurerm.SHAREDSERVICESSub  
+  provider              = azurerm
   name                  = var.InfoAssistINTSubnetName
   virtual_network_name  = data.azurerm_virtual_network.InfoAssistVNet.name
   resource_group_name   = var.InfoAssistResourceGroupName
 }
 
 data "azurerm_network_security_group" "InfoAssistNSG" {
-  provider            = azurerm.SHAREDSERVICESSub  
+  provider            = azurerm
   name                = var.InfoAssistNSGName
   resource_group_name = var.InfoAssistResourceGroupName
 }
