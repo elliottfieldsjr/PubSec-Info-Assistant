@@ -36,8 +36,3 @@ module "entraObjects" {
   serviceManagementReference        = var.serviceManagementReference
   password_lifetime                 = var.password_lifetime
 }
-
-data "azurerm_resource_group" "InfoAssistRG" {
-  provider            = azurerm.SHAREDSERVICESSub
-  name                = var.InfoAssistResourceGroupName
-}
