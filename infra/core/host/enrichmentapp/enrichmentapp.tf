@@ -1,6 +1,18 @@
 // Create Enrichment App Service Plan 
+terraform {
+  required_version = ">= 0.15.3"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.3.0"
+      configuration_aliases = [
+        azurerm.HUBSub,
+       ]
+    }
+  }
+}
+
 resource "azurerm_service_plan" "appServicePlan" {
-  provider = azurerm.SHAREDSERVICESSub  
   name                          = var.plan_name
   location                      = var.location
   resource_group_name           = var.InfoAssistResourceGroupName
@@ -13,7 +25,6 @@ resource "azurerm_service_plan" "appServicePlan" {
 }
 
 resource "azurerm_monitor_autoscale_setting" "scaleout" {
-  provider = azurerm.SHAREDSERVICESSub    
   name                = azurerm_service_plan.appServicePlan.name
   resource_group_name = var.InfoAssistResourceGroupName
   location            = var.location
@@ -71,7 +82,6 @@ resource "azurerm_monitor_autoscale_setting" "scaleout" {
 
 # Create the Enrichment App Service
 resource "azurerm_linux_web_app" "enrichmentapp" {
-  provider = azurerm.SHAREDSERVICESSub    
   name                                            = var.name
   location                                        = var.location
   resource_group_name                             = var.InfoAssistResourceGroupName
@@ -136,14 +146,12 @@ resource "azurerm_linux_web_app" "enrichmentapp" {
 }
 
 resource "azurerm_role_assignment" "acr_pull_role" {
-  provider = azurerm.SHAREDSERVICESSub    
   principal_id         = azurerm_linux_web_app.enrichmentapp.identity.0.principal_id
   role_definition_name = "AcrPull"
   scope                = var.container_registry_id
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_commercial" {
-  provider = azurerm.SHAREDSERVICESSub    
   count                      = var.azure_environment == "AzureUSGovernment" ? 0 : 1
   name                       = azurerm_linux_web_app.enrichmentapp.name
   target_resource_id         = azurerm_linux_web_app.enrichmentapp.id
@@ -184,7 +192,6 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_commercial" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_usgov" {
-  provider = azurerm.SHAREDSERVICESSub    
   count                      = var.azure_environment == "AzureUSGovernment" ? 1 : 0
   name                       = azurerm_linux_web_app.enrichmentapp.name
   target_resource_id         = azurerm_linux_web_app.enrichmentapp.id
@@ -225,7 +232,6 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_usgov" {
 }
 
 data "azurerm_subnet" "subnet" {
-  provider = azurerm.SHAREDSERVICESSub    
   count                = var.is_secure_mode ? 1 : 0
   name                 = var.subnet_name
   virtual_network_name = var.vnet_name
@@ -233,7 +239,6 @@ data "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_private_endpoint" "privateEnrichmentEndpoint" {
-  provider = azurerm.SHAREDSERVICESSub    
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint"
   location                      = var.location

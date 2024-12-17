@@ -178,7 +178,7 @@ module "logging" {
   source = "./core/logging/loganalytics"
   providers = {
     azurerm = azurerm
-    azurerm.HUBSub = azurerm.HUBSub,
+    azurerm.HUBSub = azurerm.HUBSub
     azurerm.OPERATIONSSub = azurerm.OPERATIONSSub
   }  
   ResourceNamingConvention = var.ResourceNamingConvention
@@ -214,7 +214,7 @@ module "storage" {
   source                          = "./core/storage"
   providers = {
     azurerm = azurerm
-    azurerm.HUBSub = azurerm.HUBSub,
+    azurerm.HUBSub = azurerm.HUBSub
     azurerm.OPERATIONSSub = azurerm.OPERATIONSSub
   }   
   CloudShellIP                    = var.CloudShellIP
@@ -243,4 +243,17 @@ module "storage" {
   network_rules_allowed_subnets   = var.is_secure_mode ? [data.azurerm_subnet.InfoAssistPESubnet.id] : null
   kv_secret_expiration            = var.kv_secret_expiration
   logAnalyticsWorkspaceResourceId = data.azurerm_log_analytics_workspace.ExistingLAW.id
+}
+
+module "acr"{ 
+  source                = "./core/container_registry"
+  CloudShellIP          = var.CloudShellIP  
+  name                  = "${var.ResourceNamingConvention}datacr" 
+  location              = var.location
+  resourceGroupName     = var.InfoAssistResourceGroupName
+  is_secure_mode        = var.is_secure_mode
+  subnet_name           = var.is_secure_mode ? data.azurerm_subnet.InfoAssistPESubnet.name : null
+  vnet_name             = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.name : null
+  private_dns_zone_name = var.is_secure_mode ? data.azurerm_private_dns_zone.AzureCRPDZ.name : null
+  private_dns_zone_ids  = var.is_secure_mode ? [data.azurerm_private_dns_zone.AzureCRPDZ.id] : null
 }
