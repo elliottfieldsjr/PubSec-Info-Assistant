@@ -202,6 +202,7 @@ resource "azurerm_resource_group_template_deployment" "queue" {
 
 module "storage_connection_string" {
   providers = {
+    azurerm = azurerm
     azurerm.HUBSub = azurerm.HUBSub
   }
   source                        = "../security/keyvaultSecret"  

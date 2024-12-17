@@ -1,3 +1,17 @@
+terraform {
+  required_version = ">= 0.15.3"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.3.0"
+      configuration_aliases = [
+        azurerm.HUBSub,
+        azurerm.OPERATIONSSub,
+       ]
+    }
+  }
+}
+
 locals {
   arm_file_path = "arm_templates/kv_secret/kv_secret.template.json"
 }
@@ -11,7 +25,7 @@ data "template_file" "workflow" {
 }
 
 resource "azurerm_resource_group_template_deployment" "kv_secret" {
-  provider = azurerm.SHAREDSERVICESSub  
+  provider = azurerm.HUBSub
   resource_group_name = var.resourceGroupName
   parameters_content = jsonencode({
     "keyVaultName"              = { value = "${var.key_vault_name}" },
