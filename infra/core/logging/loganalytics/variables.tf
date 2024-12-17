@@ -50,7 +50,15 @@ variable "privateDnsZoneNameMonitor" {
   type = string
 }
 
+variable "privateDnsZoneNameMonitorId" {
+  type = string
+}
+
 variable "privateDnsZoneNameOms" {
+  type = string
+}
+
+variable "privateDnsZoneNameOmsId" {
   type = string
 }
 
@@ -58,7 +66,15 @@ variable "privateDnSZoneNameOds" {
   type = string
 }
 
+variable "privateDnSZoneNameOdsId" {
+  type = string
+}
+
 variable "privateDnsZoneNameAutomation" {
+  type = string
+}
+
+variable "privateDnsZoneNameAutomationId" {
   type = string
 }
 

@@ -182,9 +182,13 @@ module "logging" {
   APDZResourceGroupName                 = var.APDZResourceGroupName
   is_secure_mode                        = var.is_secure_mode
   privateDnsZoneNameMonitor             = "privatelink.${var.azure_monitor_domain}"
+  privateDnsZoneNameMonitorId           = data.azurerm_private_dns_zone.MonitorPDZ.id
   privateDnsZoneNameOms                 = "privatelink.${var.azure_monitor_oms_domain}"
+  privateDnsZoneNameOmsId               = data.azurerm_private_dns_zone.MonitorOMSPDZ.id
   privateDnSZoneNameOds                 = "privatelink.${var.azure_monitor_ods_domain}"
+  privateDnSZoneNameOdsId               = data.azurerm_private_dns_zone.MonitorODSPDZ.id
   privateDnsZoneNameAutomation          = "privatelink.${var.azure_automation_domain}"
+  privateDnsZoneNameAutomationId        = data.azurerm_private_dns_zone.AzureAutomationPDZ.id
   privateDnsZoneResourceIdBlob          = var.is_secure_mode ? data.azurerm_private_dns_zone.BlobStoragePDZ.id : null
   privateDnsZoneNameBlob                = var.is_secure_mode ? data.azurerm_private_dns_zone.BlobStoragePDZ.name : null
   groupId                               = "azuremonitor"

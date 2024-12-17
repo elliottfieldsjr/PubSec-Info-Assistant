@@ -96,10 +96,10 @@ resource "azurerm_private_endpoint" "ampls" {
   private_dns_zone_group {
     name                            = "ampls"
     private_dns_zone_ids = [
-        azurerm_private_dns_zone.monitor[0].id,
-        azurerm_private_dns_zone.oms[0].id,
-        azurerm_private_dns_zone.ods[0].id,
-        azurerm_private_dns_zone.agentsvc[0].id,
+        var.privateDnsZoneNameMonitorId,
+        var.privateDnsZoneNameOmsId,
+        var.privateDnSZoneNameOdsId,
+        var.privateDnsZoneNameAutomationId,
         var.privateDnsZoneResourceIdBlob
     ]
   }
