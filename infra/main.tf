@@ -234,7 +234,7 @@ module "storage" {
   containers                      = ["content","website","upload","function","logs","config"]
   queueNames                      = ["pdf-submit-queue","pdf-polling-queue","non-pdf-submit-queue","media-submit-queue","text-enrichment-queue","image-enrichment-queue","embeddings-queue"]
   is_secure_mode                  = var.is_secure_mode
-  subnet_name                     = var.is_secure_mode ? data.azurerm_subnet.InfoAssistPESubnet.id : null
+  subnet_name                     = var.is_secure_mode ? data.azurerm_subnet.InfoAssistPESubnet.name : null
   vnet_name                       = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.name : null
   private_dns_zone_ids            = var.is_secure_mode ? [data.azurerm_private_dns_zone.BlobStoragePDZ.id,
                                        data.azurerm_private_dns_zone.FileStoragePDZ.id,
