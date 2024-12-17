@@ -272,7 +272,7 @@ module "openaiServices" {
   private_dns_zone_ids            = var.is_secure_mode ? [data.azurerm_private_dns_zone.OpenAIPDZ.id] : null
   arm_template_schema_mgmt_api    = var.arm_template_schema_mgmt_api
   key_vault_name                  = data.azurerm_key_vault.InfoAssistKeyVault.name
-  logAnalyticsWorkspaceResourceId = module.logging.logAnalyticsId
+  logAnalyticsWorkspaceResourceId = data.azurerm_log_analytics_workspace.ExistingLAW.id
 
   deployments = [
     {
