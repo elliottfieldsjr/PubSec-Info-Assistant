@@ -106,6 +106,7 @@ resource "azurerm_private_endpoint" "ampls" {
 }
 
 resource "azurerm_private_dns_zone" "monitor" {
+  provider = azurerm.HUBSub
   count               = var.is_secure_mode ? 1 : 0
   name                = var.privateDnsZoneNameMonitor
   resource_group_name = var.APDZResourceGroupName

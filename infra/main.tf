@@ -75,91 +75,91 @@ data "azurerm_network_security_group" "InfoAssistNSG" {
 data "azurerm_private_dns_zone" "AzureAutomationPDZ" {
   provider            = azurerm.HUBSub
   name                = "privatelink.${var.azure_automation_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_private_dns_zone" "AzureCRPDZ" {
   provider            = azurerm.HUBSub  
   name                = "privatelink.${var.azure_acr_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_private_dns_zone" "AzureWebPDZ" {
   provider            = azurerm.HUBSub  
   name                = "privatelink.${var.azure_websites_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_private_dns_zone" "BlobStoragePDZ" {
   provider            = azurerm.HUBSub  
   name                = "privatelink.${var.azure_blob_storage_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_private_dns_zone" "FileStoragePDZ" {
   provider            = azurerm.HUBSub  
   name                = "privatelink.${var.azure_file_storage_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_private_dns_zone" "QueueStoragePDZ" {
   provider            = azurerm.HUBSub  
   name                = "privatelink.${var.azure_queue_storage_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_private_dns_zone" "TableStoragePDZ" {
   provider            = azurerm.HUBSub  
   name                = "privatelink.${var.azure_table_storage_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_private_dns_zone" "CognitiveServicesPDZ" {
   provider            = azurerm.HUBSub  
   name                = "privatelink.${var.azure_ai_document_intelligence_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_private_dns_zone" "DocumentsPDZ" {
   provider            = azurerm.HUBSub  
   name                = "privatelink.${var.cosmosdb_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_private_dns_zone" "MonitorPDZ" {
   provider            = azurerm.HUBSub  
   name                = "privatelink.${var.azure_monitor_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_private_dns_zone" "MonitorODSPDZ" {
   provider            = azurerm.HUBSub  
   name                = "privatelink.${var.azure_monitor_ods_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_private_dns_zone" "MonitorOMSPDZ" {
   provider            = azurerm.HUBSub  
   name                = "privatelink.${var.azure_monitor_oms_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_private_dns_zone" "OpenAIPDZ" {
   provider            = azurerm.HUBSub  
   name                = "privatelink.${var.azure_openai_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_private_dns_zone" "SearchServicePDZ" {
   provider            = azurerm.HUBSub  
   name                = "privatelink.${var.azure_search_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_private_dns_zone" "KeyVaultPDZ" {
   provider            = azurerm.HUBSub  
   name                = "privatelink.${var.azure_keyvault_domain}"
-  resource_group_name = var.AZPDZResourceGroupName
+  resource_group_name = var.APDZResourceGroupName
 }
 
 data "azurerm_key_vault" "InfoAssistKeyVault" {
@@ -179,7 +179,7 @@ module "logging" {
   tags                    = local.tags
   skuName                 = "PerGB2018"
   InfoAssistResourceGroupName           = var.InfoAssistResourceGroupName
-  APDZResourceGroupName                 = var.AZPDZResourceGroupName
+  APDZResourceGroupName                 = var.APDZResourceGroupName
   is_secure_mode                        = var.is_secure_mode
   privateDnsZoneNameMonitor             = "privatelink.${var.azure_monitor_domain}"
   privateDnsZoneNameOms                 = "privatelink.${var.azure_monitor_oms_domain}"

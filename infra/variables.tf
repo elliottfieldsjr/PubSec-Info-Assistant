@@ -23,7 +23,7 @@ variable "InfoAssistResourceGroupName" {
   type    = string
 }
 
-variable "AZPDZResourceGroupName" {
+variable "APDZResourceGroupName" {
   description = "Name of existing Azure DNS Zones Resource Group"  
   type    = string
 }
