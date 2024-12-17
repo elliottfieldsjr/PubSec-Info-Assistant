@@ -21,7 +21,7 @@ data "azurerm_log_analytics_workspace" "ExistingLAW" {
 }
 
 resource "azurerm_application_insights" "applicationInsights" {
-  provider = azurerm.OPERATIONS
+  provider = azurerm.OPERATIONSSub
   name                = "${var.ResourceNamingConvention}-ai"
   location            = var.location
   resource_group_name = var.LAWResourceGroupName
@@ -32,7 +32,7 @@ resource "azurerm_application_insights" "applicationInsights" {
 
 // Create Diagnostic Setting for NSG here since the log analytics workspace is created here after the network is created
 resource "azurerm_monitor_diagnostic_setting" "nsg_diagnostic_logs" {
-  provider                   = azurerm.OPERATIONS
+  provider                   = azurerm.OPERATIONSSub
   count                      = var.is_secure_mode ? 1 : 0
   name                       = var.nsg_name
   target_resource_id         = var.nsg_id
@@ -47,7 +47,7 @@ resource "azurerm_monitor_diagnostic_setting" "nsg_diagnostic_logs" {
 
 // add scope resoruce for app insights
 resource "azurerm_monitor_private_link_scoped_service" "ampl_ss_app_insights" {
-  provider            = azurerm.OPERATIONS  
+  provider            = azurerm.OPERATIONSSub
   count               = var.is_secure_mode ? 1 : 0
   name                = "${var.ResourceNamingConvention}-ampls-appInsights-connection"
   resource_group_name = var.LAWResourceGroupName
