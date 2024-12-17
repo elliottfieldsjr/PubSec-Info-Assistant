@@ -1,13 +1,27 @@
+terraform {
+  required_version = ">= 0.15.3"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.3.0"
+      configuration_aliases = [
+        azurerm.HUBSub,
+        azurerm.OPERATIONSSub,
+       ]
+    }
+  }
+}
+
 locals {
   container_arm_file_path = "arm_templates/storage_container/container.template.json"
   queue_arm_file_path     = "arm_templates/storage_queue/queue.template.json"
 }
 
 resource "azurerm_storage_account" "storage" {
-  provider = azurerm.SHAREDSERVICESSub  
   name                            = var.name
   location                        = var.location
   resource_group_name             = var.InfoAssistResourceGroupName
+
   tags                            = var.tags
   account_tier                    = var.sku.name
   account_replication_type        = "LRS"
@@ -44,7 +58,6 @@ resource "azurerm_storage_account" "storage" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs" {
-  provider = azurerm.SHAREDSERVICESSub  
   name                       = azurerm_storage_account.storage.name
   target_resource_id         = azurerm_storage_account.storage.id
   log_analytics_workspace_id = var.logAnalyticsWorkspaceResourceId
@@ -59,7 +72,6 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "blob_diagnostic_logs" {
-  provider = azurerm.SHAREDSERVICESSub  
   name                       = "${azurerm_storage_account.storage.name}-blob"
   target_resource_id         = "${azurerm_storage_account.storage.id}/blobServices/default"
   log_analytics_workspace_id = var.logAnalyticsWorkspaceResourceId
@@ -83,7 +95,6 @@ resource "azurerm_monitor_diagnostic_setting" "blob_diagnostic_logs" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "file_diagnostic_logs" {
-  provider = azurerm.SHAREDSERVICESSub  
   name                       = "${azurerm_storage_account.storage.name}-file"
   target_resource_id         = "${azurerm_storage_account.storage.id}/fileServices/default"
   log_analytics_workspace_id = var.logAnalyticsWorkspaceResourceId
@@ -103,7 +114,6 @@ resource "azurerm_monitor_diagnostic_setting" "file_diagnostic_logs" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "queue_diagnostic_logs" {
-  provider = azurerm.SHAREDSERVICESSub  
   name                       = "${azurerm_storage_account.storage.name}-queue"
   target_resource_id         = "${azurerm_storage_account.storage.id}/queueServices/default"
   log_analytics_workspace_id = var.logAnalyticsWorkspaceResourceId
@@ -123,7 +133,6 @@ resource "azurerm_monitor_diagnostic_setting" "queue_diagnostic_logs" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "table_diagnostic_logs" {
-  provider = azurerm.SHAREDSERVICESSub  
   name                       = "${azurerm_storage_account.storage.name}-table"
   target_resource_id         = "${azurerm_storage_account.storage.id}/tableServices/default"
   log_analytics_workspace_id = var.logAnalyticsWorkspaceResourceId
@@ -157,7 +166,6 @@ data "template_file" "queue" {
 }
 
 resource "azurerm_resource_group_template_deployment" "container" {
-  provider = azurerm.SHAREDSERVICESSub  
   depends_on          = [azurerm_storage_account.storage]
   count               = length(var.containers)
   resource_group_name = var.InfoAssistResourceGroupName
@@ -176,7 +184,6 @@ resource "azurerm_resource_group_template_deployment" "container" {
 
 // Create a storage queue
 resource "azurerm_resource_group_template_deployment" "queue" {
-  provider = azurerm.SHAREDSERVICESSub  
   depends_on          = [azurerm_storage_account.storage]
   count               = length(var.queueNames)
   resource_group_name = var.InfoAssistResourceGroupName
@@ -194,6 +201,9 @@ resource "azurerm_resource_group_template_deployment" "queue" {
 }
 
 module "storage_connection_string" {
+  providers = {
+    azurerm.HUBSub = azurerm.HUBSub
+  }
   source                        = "../security/keyvaultSecret"  
   resourceGroupName             = var.KVResourceGroupName
   arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
@@ -207,7 +217,6 @@ module "storage_connection_string" {
 }
 
 data "azurerm_subnet" "subnet" {
-  provider = azurerm.SHAREDSERVICESSub  
   count                = var.is_secure_mode ? 1 : 0
   name                 = var.subnet_name
   virtual_network_name = var.vnet_name
@@ -216,7 +225,6 @@ data "azurerm_subnet" "subnet" {
 
 // Create a private endpoint for blob storage account
 resource "azurerm_private_endpoint" "blobPrivateEndpoint" {
-  provider = azurerm.SHAREDSERVICESSub  
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint-blob"
   location                      = var.location
@@ -239,7 +247,6 @@ resource "azurerm_private_endpoint" "blobPrivateEndpoint" {
 
 // Create a private endpoint for blob storage account
 resource "azurerm_private_endpoint" "filePrivateEndpoint" {
-  provider = azurerm.SHAREDSERVICESSub  
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint-file"
   location                      = var.location

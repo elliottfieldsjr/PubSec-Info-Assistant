@@ -168,6 +168,12 @@ data "azurerm_key_vault" "InfoAssistKeyVault" {
   resource_group_name   = var.KVResourceGroupName
 }
 
+data "azurerm_log_analytics_workspace" "ExistingLAW" {
+  provider            = azurerm.OPERATIONSSub
+  name                = var.LAWName
+  resource_group_name = var.LAWResourceGroupName
+}
+
 module "logging" {
   source = "./core/logging/loganalytics"
   providers = {
@@ -202,4 +208,39 @@ module "logging" {
   vnet_id                               = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.id : null
   nsg_id                                = var.is_secure_mode ? data.azurerm_network_security_group.InfoAssistNSG.id: null
   nsg_name                              = var.is_secure_mode ? data.azurerm_network_security_group.InfoAssistNSG.name : null
+}
+
+module "storage" {
+  source                          = "./core/storage"
+  providers = {
+    azurerm = azurerm
+    azurerm.HUBSub = azurerm.HUBSub,
+    azurerm.OPERATIONSSub = azurerm.OPERATIONSSub
+  }   
+  CloudShellIP                    = var.CloudShellIP
+  name                            = var.storageAccountName != "" ? var.storageAccountName : var.InfoAssistStorageAccountName
+  location                        = var.location
+  tags                            = local.tags
+  accessTier                      = "Hot"
+  allowBlobPublicAccess           = false
+  InfoAssistResourceGroupName     = var.InfoAssistResourceGroupName
+  InfoAssistStorageAccountName    = var.InfoAssistStorageAccountName
+  KVResourceGroupName             = var.KVResourceGroupName  
+  arm_template_schema_mgmt_api    = var.arm_template_schema_mgmt_api
+  key_vault_name                  = var.KVName
+  deleteRetentionPolicy = {
+    days                          = 7
+  }
+  containers                      = ["content","website","upload","function","logs","config"]
+  queueNames                      = ["pdf-submit-queue","pdf-polling-queue","non-pdf-submit-queue","media-submit-queue","text-enrichment-queue","image-enrichment-queue","embeddings-queue"]
+  is_secure_mode                  = var.is_secure_mode
+  subnet_name                     = var.is_secure_mode ? data.azurerm_subnet.InfoAssistPESubnet.id : null
+  vnet_name                       = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.name : null
+  private_dns_zone_ids            = var.is_secure_mode ? [data.azurerm_private_dns_zone.BlobStoragePDZ.id,
+                                       data.azurerm_private_dns_zone.FileStoragePDZ.id,
+                                        data.azurerm_private_dns_zone.TableStoragePDZ.id,
+                                        data.azurerm_private_dns_zone.QueueStoragePDZ.id] : null
+  network_rules_allowed_subnets   = var.is_secure_mode ? [data.azurerm_subnet.InfoAssistPESubnet.id] : null
+  kv_secret_expiration            = var.kv_secret_expiration
+  logAnalyticsWorkspaceResourceId = data.azurerm_log_analytics_workspace.ExistingLAW.id
 }

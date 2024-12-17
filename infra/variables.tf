@@ -23,6 +23,11 @@ variable "InfoAssistResourceGroupName" {
   type    = string
 }
 
+variable "InfoAssistStorageAccountName" {
+  description = "Name of New Info Assist Storage Account"  
+  type    = string
+}
+
 variable "APDZResourceGroupName" {
   description = "Name of existing Azure DNS Zones Resource Group"  
   type    = string

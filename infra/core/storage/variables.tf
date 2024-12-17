@@ -89,6 +89,11 @@ variable "InfoAssistResourceGroupName" {
   type    = string
 }
 
+variable "InfoAssistStorageAccountName" {
+  description = "Name of New Info Assist Storage Account"  
+  type    = string
+}
+
 variable "KVResourceGroupName" {
   type    = string
 }
