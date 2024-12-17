@@ -14,6 +14,7 @@ terraform {
 }
 
 resource "azurerm_log_analytics_workspace" "logAnalytics" {
+  provider = azurerm
   name                = "${var.ResourceNamingConvention}-la"
   location            = var.location
   resource_group_name = var.APDZResourceGroupName
