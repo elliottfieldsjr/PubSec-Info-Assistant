@@ -20,12 +20,6 @@ data "azurerm_log_analytics_workspace" "ExistingLAW" {
   resource_group_name = var.LAWResourceGroupName
 }
 
-data "azurerm_monitor_private_link_scope" "ExistingAMPLS" {
-  count               = var.is_secure_mode ? 1 : 0
-  name                = var.AMPLSName
-  resource_group_name = var.LAWResourceGroupName
-}
-
 resource "azurerm_application_insights" "applicationInsights" {
   provider = azurerm.OPERATIONS
   name                = "${var.ResourceNamingConvention}-ai"
@@ -59,57 +53,6 @@ resource "azurerm_monitor_private_link_scoped_service" "ampl_ss_app_insights" {
   resource_group_name = var.LAWResourceGroupName
   scope_name          = var.AMPLSName
   linked_resource_id  = azurerm_application_insights.applicationInsights.id
-}
-
-
-resource "azurerm_private_dns_a_record" "monitor_api" {
-  provider = azurerm.HUBSub  
-  count               = var.is_secure_mode ? 1 : 0
-  name                = "api"
-  zone_name           = var.privateDnsZoneNameMonitor
-  resource_group_name = var.APDZResourceGroupName
-  ttl                 = 3600
-  records             = [cidrhost(var.ampls_subnet_CIDR, 7)]
-}
-
-resource "azurerm_private_dns_a_record" "monitor_global" {
-  provider = azurerm.HUBSub    
-  count               = var.is_secure_mode ? 1 : 0
-  name                = "global.in.ai"
-  zone_name           = var.privateDnsZoneNameMonitor
-  resource_group_name = var.APDZResourceGroupName
-  ttl                 = 3600
-  records             = [cidrhost(var.ampls_subnet_CIDR, 8)]
-}
-
-resource "azurerm_private_dns_a_record" "monitor_profiler" {
-  provider = azurerm.HUBSub    
-  count               = var.is_secure_mode ? 1 : 0
-  name                = "profiler"
-  zone_name           = var.privateDnsZoneNameMonitor
-  resource_group_name = var.APDZResourceGroupName
-  ttl                 = 3600
-  records             = [cidrhost(var.ampls_subnet_CIDR, 9)]
-}
-
-resource "azurerm_private_dns_a_record" "monitor_live" {
-  provider = azurerm.HUBSub    
-  count               = var.is_secure_mode ? 1 : 0
-  name                = "live"
-  zone_name           = var.privateDnsZoneNameMonitor
-  resource_group_name = var.APDZResourceGroupName
-  ttl                 = 3600
-  records             = [cidrhost(var.ampls_subnet_CIDR, 10)]
-}
-
-resource "azurerm_private_dns_a_record" "monitor_snapshot" {
-  provider = azurerm.HUBSub    
-  count               = var.is_secure_mode ? 1 : 0
-  name                = "snapshot"
-  zone_name           = var.privateDnsZoneNameMonitor
-  resource_group_name = var.APDZResourceGroupName
-  ttl                 = 3600
-  records             = [cidrhost(var.ampls_subnet_CIDR, 11)]
 }
 
 resource "azurerm_private_dns_a_record" "oms_law_id" {
