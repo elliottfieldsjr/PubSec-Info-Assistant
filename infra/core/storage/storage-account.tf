@@ -270,7 +270,6 @@ resource "azurerm_private_endpoint" "filePrivateEndpoint" {
 
 // Create a private endpoint for blob storage account
 resource "azurerm_private_endpoint" "tablePrivateEndpoint" {
-  provider = azurerm.SHAREDSERVICESSub  
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint-table"
   location                      = var.location
@@ -293,7 +292,6 @@ resource "azurerm_private_endpoint" "tablePrivateEndpoint" {
 
 // Create a private endpoint for queue storage account
 resource "azurerm_private_endpoint" "queuePrivateEndpoint" {
-  provider = azurerm.SHAREDSERVICESSub  
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint-queue"
   location                      = var.location
@@ -316,7 +314,6 @@ resource "azurerm_private_endpoint" "queuePrivateEndpoint" {
 
 // Only create the config blob if we are not in secure mode as SharePoint integration is not supported in secure mode
 resource "azurerm_storage_blob" "config" {
-  provider = azurerm.SHAREDSERVICESSub  
   depends_on = [ azurerm_resource_group_template_deployment.container ]
   count                  = var.is_secure_mode ? 0 : 1
   name                   = "config.json"
