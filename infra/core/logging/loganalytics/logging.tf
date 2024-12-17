@@ -15,7 +15,6 @@ terraform {
 
 data "azurerm_log_analytics_workspace" "ExistingLAW" {
   provider            = azurerm.OPERATIONSSub
-  count               = var.is_secure_mode ? 1 : 0  
   name                = var.LAWName
   resource_group_name = var.LAWResourceGroupName
 }
