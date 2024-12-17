@@ -204,6 +204,7 @@ module "storage_connection_string" {
   providers = {
     azurerm = azurerm
     azurerm.HUBSub = azurerm.HUBSub
+    azurerm.OPERATIONSSub = azurerm.OPERATIONSSub
   }
   source                        = "../security/keyvaultSecret"  
   resourceGroupName             = var.KVResourceGroupName
