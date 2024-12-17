@@ -27,7 +27,7 @@ resource "azurerm_application_insights" "applicationInsights" {
   resource_group_name = var.LAWResourceGroupName
   application_type    = "web"
   tags                = var.tags
-  workspace_id        = data.azurerm_log_analytics_workspace.ExistingLAW[count.index].id
+  workspace_id        = data.azurerm_log_analytics_workspace.ExistingLAW.id
 }
 
 // Create Diagnostic Setting for NSG here since the log analytics workspace is created here after the network is created
