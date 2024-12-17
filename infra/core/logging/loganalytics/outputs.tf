@@ -3,7 +3,7 @@ output "applicationInsightsId" {
 }
 
 output "logAnalyticsId" {
-  value = data.azurerm_log_analytics_workspace.ExistingLAW.id
+  value = data.azurerm_log_analytics_workspace.ExistingLAW[count.index].id
 }
 
 output "applicationInsightsName" {
@@ -11,7 +11,7 @@ output "applicationInsightsName" {
 }
 
 output "logAnalyticsName" {
-  value = data.azurerm_log_analytics_workspace.ExistingLAW.name
+  value = data.azurerm_log_analytics_workspace.ExistingLAW[count.index].id
 }
 
 output "applicationInsightsInstrumentationKey" {
