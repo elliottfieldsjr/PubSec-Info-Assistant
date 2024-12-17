@@ -27,7 +27,7 @@ resource "azurerm_application_insights" "applicationInsights" {
   resource_group_name = var.LAWResourceGroupName
   application_type    = "web"
   tags                = var.tags
-  workspace_id        = data.azurerm_log_analytics_workspace.ExistingLAW.id
+  workspace_id        = data.azurerm_log_analytics_workspace.ExistingLAW[count.index].id
 }
 
 // Create Diagnostic Setting for NSG here since the log analytics workspace is created here after the network is created
@@ -36,7 +36,7 @@ resource "azurerm_monitor_diagnostic_setting" "nsg_diagnostic_logs" {
   count                      = var.is_secure_mode ? 1 : 0
   name                       = var.nsg_name
   target_resource_id         = var.nsg_id
-  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.ExistingLAW.id
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.ExistingLAW[count.index].id
   enabled_log  {
     category = "NetworkSecurityGroupEvent"
   }
