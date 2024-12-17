@@ -6,7 +6,6 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 4.3.0"
       configuration_aliases = [
-        azurerm,
         azurerm.HUBSub,
        ]
     }
@@ -14,10 +13,9 @@ terraform {
 }
 
 resource "azurerm_log_analytics_workspace" "logAnalytics" {
-  provider = azurerm
   name                = "${var.ResourceNamingConvention}-la"
   location            = var.location
-  resource_group_name = var.APDZResourceGroupName
+  resource_group_name = var.InfoAssistResourceGroupName
   sku                 = var.skuName
   tags                = var.tags
   retention_in_days   = 30
@@ -26,7 +24,7 @@ resource "azurerm_log_analytics_workspace" "logAnalytics" {
 resource "azurerm_application_insights" "applicationInsights" {
   name                = "${var.ResourceNamingConvention}-ai"
   location            = var.location
-  resource_group_name = var.APDZResourceGroupName
+  resource_group_name = var.InfoAssistResourceGroupName
   application_type    = "web"
   tags                = var.tags
   workspace_id        = azurerm_log_analytics_workspace.logAnalytics.id
