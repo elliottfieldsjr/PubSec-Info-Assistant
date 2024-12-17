@@ -25,6 +25,20 @@ variable "APDZResourceGroupName" {
   type    = string
 }
 
+variable "LAWResourceGroupName" {
+  type    = string
+}
+
+variable "LAWName" {
+  description = "Name of existing Log Analytics Workspace"
+  type        = string
+}
+
+variable "AMPLSName" {
+  description = "Name of existing Azure Monitor Private Link Scope"
+  type        = string
+}
+
 variable "logWorkbookName" {
   description = "The name of the log workbook"
   type        = string

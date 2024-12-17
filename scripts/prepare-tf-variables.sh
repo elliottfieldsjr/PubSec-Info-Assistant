@@ -8,21 +8,27 @@ ENV_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # To maintain backward compatibility, we need to convert some of the variables to TF_VAR_ format
 export TF_VAR_ResourceNamingConvention=$RESOURCENAMINGCONVENTION
 export TF_VAR_CloudShellIP=$CLOUDSHELLIP
+
+export TF_VAR_SharedServicesSubscriptionID=$SHAREDSERVICES_SUBSCRIPTION_ID
 export TF_VAR_InfoAssistResourceGroupName=$INFOASSISTRESOURCEGROUPNAME
 export TF_VAR_InfoAssistVNetName=$INFOASSISTVNETNAME
 export TF_VAR_InfoAssistPESubnetName=$INFOASSISTPESUBNETNAME
 export TF_VAR_InfoAssistPESubnetCidr=$INFOASSISTPESUBNETCIDR
 export TF_VAR_InfoAssistINTSubnetName=$INFOASSISTINTSUBNETNAME
 export TF_VAR_InfoAssistNSGName=$INFOASSISTNSGNAME
-export TF_VAR_APDZResourceGroupName=$APDZRESOURCEGROUPNAME
-
-export TF_VAR_KVResourceGroupName=$KVRESOURCEGROUPNAME
-export TF_VAR_KVName=$KVNAME
 
 export TF_VAR_HubSubscriptionID=$HUB_SUBSCRIPTION_ID
+export TF_VAR_KVResourceGroupName=$KVRESOURCEGROUPNAME
+export TF_VAR_KVName=$KVNAME
+export TF_VAR_APDZResourceGroupName=$APDZRESOURCEGROUPNAME
+
 export TF_VAR_IdentitySubscriptionID=$IDENTITY_SUBSCRIPTION_ID
+
 export TF_VAR_OperationsSubscriptionID=$OPERATIONS_SUBSCRIPTION_ID
-export TF_VAR_SharedServicesSubscriptionID=$SHAREDSERVICES_SUBSCRIPTION_ID
+export TF_VAR_LAWResourceGroupName=$LAWRESOURCEGROUPNAME
+export TF_VAR_LAWName=$LAWNAME
+export TF_VAR_AMPLSName=$AMPLSNAME
+
 export TF_VAR_environmentName=$WORKSPACE
 export TF_VAR_location=$LOCATION
 export TF_VAR_useExistingAOAIService=$USE_EXISTING_AOAI

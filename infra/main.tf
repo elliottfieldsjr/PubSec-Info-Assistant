@@ -172,7 +172,8 @@ module "logging" {
   source = "./core/logging/loganalytics"
   providers = {
     azurerm = azurerm
-    azurerm.HUBSub = azurerm.HUBSub
+    azurerm.HUBSub = azurerm.HUBSub,
+    azurerm.OPERATIONSSub = azurerm.OPERATIONSSub
   }  
   ResourceNamingConvention = var.ResourceNamingConvention
   location                = var.location
@@ -180,6 +181,9 @@ module "logging" {
   skuName                 = "PerGB2018"
   InfoAssistResourceGroupName           = var.InfoAssistResourceGroupName
   APDZResourceGroupName                 = var.APDZResourceGroupName
+  LAWResourceGroupName                  = var.LAWResourceGroupName
+  LAWName                               = var.LAWName
+  AMPLSName                             = var.AMPLSName
   is_secure_mode                        = var.is_secure_mode
   privateDnsZoneNameMonitor             = "privatelink.${var.azure_monitor_domain}"
   privateDnsZoneNameMonitorId           = data.azurerm_private_dns_zone.MonitorPDZ.id

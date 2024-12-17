@@ -28,6 +28,20 @@ variable "APDZResourceGroupName" {
   type    = string
 }
 
+variable "LAWResourceGroupName" {
+  type    = string
+}
+
+variable "LAWName" {
+  description = "Name of existing Log Analytics Workspace"
+  type        = string
+}
+
+variable "AMPLSName" {
+  description = "Name of existing Azure Monitor Private Link Scope"
+  type        = string
+}
+
 variable "KVResourceGroupName" {
   description = "Name of existing Key Vault Resource Group"  
   type    = string

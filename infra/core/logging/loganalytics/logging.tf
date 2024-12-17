@@ -7,35 +7,42 @@ terraform {
       version = "~> 4.3.0"
       configuration_aliases = [
         azurerm.HUBSub,
+        azurerm.OPERATIONSSub,
        ]
     }
   }
 }
 
-resource "azurerm_log_analytics_workspace" "logAnalytics" {
-  name                = "${var.ResourceNamingConvention}-la"
-  location            = var.location
-  resource_group_name = var.InfoAssistResourceGroupName
-  sku                 = var.skuName
-  tags                = var.tags
-  retention_in_days   = 30
+data "azurerm_log_analytics_workspace" "ExistingLAW" {
+  provider            = azurerm.OPERATIONSSub
+  count               = var.is_secure_mode ? 1 : 0  
+  name                = var.LAWName
+  resource_group_name = var.LAWResourceGroupName
+}
+
+data "azurerm_monitor_private_link_scope" "ExistingAMPLS" {
+  count               = var.is_secure_mode ? 1 : 0
+  name                = var.AMPLSName
+  resource_group_name = var.LAWResourceGroupName
 }
 
 resource "azurerm_application_insights" "applicationInsights" {
+  provider = azurerm.OPERATIONS
   name                = "${var.ResourceNamingConvention}-ai"
   location            = var.location
-  resource_group_name = var.InfoAssistResourceGroupName
+  resource_group_name = var.LAWResourceGroupName
   application_type    = "web"
   tags                = var.tags
-  workspace_id        = azurerm_log_analytics_workspace.logAnalytics.id
+  workspace_id        = data.azurerm_log_analytics_workspace.ExistingLAW.id
 }
 
 // Create Diagnostic Setting for NSG here since the log analytics workspace is created here after the network is created
 resource "azurerm_monitor_diagnostic_setting" "nsg_diagnostic_logs" {
+  provider                   = azurerm.OPERATIONS
   count                      = var.is_secure_mode ? 1 : 0
   name                       = var.nsg_name
   target_resource_id         = var.nsg_id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.logAnalytics.id
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.ExistingLAW.id
   enabled_log  {
     category = "NetworkSecurityGroupEvent"
   }
@@ -44,66 +51,16 @@ resource "azurerm_monitor_diagnostic_setting" "nsg_diagnostic_logs" {
   }
 }
 
-// Create Azure Private Link Scope for Azure Monitor
-resource "azurerm_monitor_private_link_scope" "ampls" {
-  count               = var.is_secure_mode ? 1 : 0
-  name                = "${var.ResourceNamingConvention}-ampls-pls"
-  resource_group_name = var.InfoAssistResourceGroupName
-}
-
-// add scoped resource for Log Analytics Workspace
-resource "azurerm_monitor_private_link_scoped_service" "ampl-ss_log_analytics" {
-  count               = var.is_secure_mode ? 1 : 0
-  name                = "${var.ResourceNamingConvention}-ampls-law-connection"
-  resource_group_name = var.InfoAssistResourceGroupName
-  scope_name          = azurerm_monitor_private_link_scope.ampls[0].name
-  linked_resource_id  = azurerm_log_analytics_workspace.logAnalytics.id
-}
-
-
 // add scope resoruce for app insights
 resource "azurerm_monitor_private_link_scoped_service" "ampl_ss_app_insights" {
+  provider            = azurerm.OPERATIONS  
   count               = var.is_secure_mode ? 1 : 0
   name                = "${var.ResourceNamingConvention}-ampls-appInsights-connection"
-  resource_group_name = var.InfoAssistResourceGroupName
-  scope_name          = azurerm_monitor_private_link_scope.ampls[0].name
+  resource_group_name = var.LAWResourceGroupName
+  scope_name          = var.AMPLSName
   linked_resource_id  = azurerm_application_insights.applicationInsights.id
 }
 
-data "azurerm_subnet" "subnet" {
-  count                = var.is_secure_mode ? 1 : 0
-  name                 = var.subnet_name
-  virtual_network_name = var.vnet_name
-  resource_group_name  = var.InfoAssistResourceGroupName
-}
-
-// add private endpoint for azure monitor - metrics, app insights, log analytics
-resource "azurerm_private_endpoint" "ampls" {
-  count                             = var.is_secure_mode ? 1 : 0
-  name                              = "${var.ResourceNamingConvention}-ampls-private-endpoint"
-  location                          = var.location
-  resource_group_name               = var.InfoAssistResourceGroupName
-  subnet_id                         = data.azurerm_subnet.subnet[0].id
-  custom_network_interface_name     = "infoasstamplsnic"
-
-  private_service_connection {
-    name                            = "${var.ResourceNamingConvention}-ampls-privateserviceconnection"
-    private_connection_resource_id  = azurerm_monitor_private_link_scope.ampls[0].id
-    is_manual_connection            = false
-    subresource_names               = [var.groupId]
-  }
-
-  private_dns_zone_group {
-    name                            = "ampls"
-    private_dns_zone_ids = [
-        var.privateDnsZoneNameMonitorId,
-        var.privateDnsZoneNameOmsId,
-        var.privateDnSZoneNameOdsId,
-        var.privateDnsZoneNameAutomationId,
-        var.privateDnsZoneResourceIdBlob
-    ]
-  }
-}
 
 resource "azurerm_private_dns_a_record" "monitor_api" {
   provider = azurerm.HUBSub  
@@ -155,14 +112,6 @@ resource "azurerm_private_dns_a_record" "monitor_snapshot" {
   records             = [cidrhost(var.ampls_subnet_CIDR, 11)]
 }
 
-resource "azurerm_private_dns_zone_virtual_network_link" "monitor-net" {
-  count               = var.is_secure_mode ? 1 : 0
-  name                  = "infoasst-pl-monitor-net"
-  resource_group_name   = var.InfoAssistResourceGroupName
-  private_dns_zone_name = var.privateDnsZoneNameMonitor
-  virtual_network_id    = var.vnet_id
-}
-
 resource "azurerm_private_dns_a_record" "oms_law_id" {
   provider = azurerm.HUBSub    
   count               = var.is_secure_mode ? 1 : 0
@@ -171,14 +120,6 @@ resource "azurerm_private_dns_a_record" "oms_law_id" {
   resource_group_name = var.APDZResourceGroupName
   ttl                 = 3600
   records             = [cidrhost(var.ampls_subnet_CIDR, 4)]
-}
-
-resource "azurerm_private_dns_zone_virtual_network_link" "oms-net" {
-  count               = var.is_secure_mode ? 1 : 0
-  name                  = "infoasst-pl-oms-net"
-  resource_group_name   = var.InfoAssistResourceGroupName
-  private_dns_zone_name = var.privateDnsZoneNameOms
-  virtual_network_id    = var.vnet_id
 }
 
 resource "azurerm_private_dns_a_record" "ods_law_id" {
@@ -191,13 +132,6 @@ resource "azurerm_private_dns_a_record" "ods_law_id" {
   records             = [cidrhost(var.ampls_subnet_CIDR, 5)]
 }
 
-resource "azurerm_private_dns_zone_virtual_network_link" "ods-net" {
-  count               = var.is_secure_mode ? 1 : 0
-  name                  = "infoasst-pl-ods-net"
-  resource_group_name   = var.InfoAssistResourceGroupName
-  private_dns_zone_name = var.privateDnSZoneNameOds
-  virtual_network_id    = var.vnet_id
-}
 
 resource "azurerm_private_dns_a_record" "agentsvc_law_id" {
   provider = azurerm.HUBSub    
@@ -207,14 +141,6 @@ resource "azurerm_private_dns_a_record" "agentsvc_law_id" {
   resource_group_name = var.APDZResourceGroupName
   ttl                 = 3600
   records             = [cidrhost(var.ampls_subnet_CIDR, 6)]
-}
-
-resource "azurerm_private_dns_zone_virtual_network_link" "agentsvc-net" {
-  count               = var.is_secure_mode ? 1 : 0
-  name                  = "infoasst-pl-agentsvc-net"
-  resource_group_name   = var.InfoAssistResourceGroupName
-  private_dns_zone_name = var.privateDnsZoneNameAutomation
-  virtual_network_id    = var.vnet_id
 }
 
 resource "azurerm_private_dns_a_record" "blob_scadvisorcontentpld" {
