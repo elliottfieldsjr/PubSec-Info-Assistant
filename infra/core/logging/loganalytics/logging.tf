@@ -35,7 +35,7 @@ resource "azurerm_monitor_diagnostic_setting" "nsg_diagnostic_logs" {
   count                      = var.is_secure_mode ? 1 : 0
   name                       = var.nsg_name
   target_resource_id         = var.nsg_id
-  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.ExistingLAW[count.index].id
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.ExistingLAW.id
   enabled_log  {
     category = "NetworkSecurityGroupEvent"
   }
