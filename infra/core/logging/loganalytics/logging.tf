@@ -195,7 +195,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "ods-net" {
   count               = var.is_secure_mode ? 1 : 0
   name                  = "infoasst-pl-ods-net"
   resource_group_name   = var.InfoAssistResourceGroupName
-  private_dns_zone_name = azurerm_private_dns_zone.ods[0].name
+  private_dns_zone_name = var.privateDnSZoneNameOds
   virtual_network_id    = var.vnet_id
 }
 
