@@ -304,3 +304,19 @@ module "openaiServices" {
     }
   ]
 }
+
+module "searchServices" {
+  source                        = "./core/search"
+  name                          = var.searchServicesName != "" ? var.searchServicesName : "${var.ResourceNamingConvention}-search-va"
+  location                      = var.location
+  tags                          = local.tags
+  semanticSearch                = var.use_semantic_reranker ? "free" : null
+  resourceGroupName             = var.InfoAssistResourceGroupName
+  azure_search_domain           = var.azure_search_domain
+  is_secure_mode                = var.is_secure_mode
+  subnet_name                   = var.is_secure_mode ? data.azurerm_subnet.InfoAssistPESubnet.name : null
+  vnet_name                     = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.name : null
+  private_dns_zone_ids          = var.is_secure_mode ? [data.azurerm_private_dns_zone.SearchServicePDZ.id] : null
+  arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
+  key_vault_name                = data.azurerm_key_vault.InfoAssistKeyVault.name
+}
