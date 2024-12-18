@@ -386,3 +386,36 @@ module "cosmosdb" {
   private_dns_zone_ids          = var.is_secure_mode ? [data.azurerm_private_dns_zone.DocumentsPDZ.id] : null
   arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
 }
+
+// SharePoint Connector is not supported in secure mode
+module "sharepoint" {
+  count                               = var.is_secure_mode ? 0 : var.enableSharePointConnector ? 1 : 0
+  source                              = "./core/sharepoint"
+  WorkFlowName                        = "${var.ResourceNamingConvention}-infoasst-sharepointonline" 
+  location                            = data.azurerm_resource_group.InfoAssistRG.location
+  resource_group_name                 = var.InfoAssistResourceGroupName
+  resource_group_id                   = data.azurerm_resource_group.InfoAssistRG.name
+  subscription_id                     = data.azurerm_client_config.HubSub.subscription_id
+  storage_account_name                = module.storage.name
+  storage_access_key                  = module.storage.storage_account_access_key
+  tags                                = local.tags
+
+  depends_on = [
+    module.storage
+  ]
+}
+
+// Bing Search is not supported in US Government or Secure Mode
+module "bingSearch" {  
+  count                         = var.azure_environment == "AzureUSGovernment" ? 0 : var.is_secure_mode ? 0 : var.enableWebChat ? 1 : 0
+  source                        = "./core/ai/bingSearch"
+  name                          = "${var.ResourceNamingConvention}-bing-va"
+  InfoAssistResourceGroupName   = var.InfoAssistResourceGroupName
+  KVResourceGroupName           = var.KVResourceGroupName 
+  tags                          = local.tags
+  sku                           = "S1" //supported SKUs can be found at https://www.microsoft.com/en-us/bing/apis/pricing
+  arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
+  key_vault_name                = data.azurerm_key_vault.InfoAssistKeyVault.name
+  kv_secret_expiration          = var.kv_secret_expiration
+}
+

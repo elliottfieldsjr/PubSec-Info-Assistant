@@ -1,3 +1,8 @@
+
+variable "WorkFlowName" {
+  type = string
+}
+
 variable "storage_account_name" {
   type = string
 }
@@ -16,10 +21,6 @@ variable "resource_group_id" {
 }
 
 variable "location" {
-  type = string
-}
-
-variable "random_string" {
   type = string
 }
 
