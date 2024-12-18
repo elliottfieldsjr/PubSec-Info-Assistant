@@ -249,7 +249,7 @@ module "storage" {
 module "acr"{ 
   source                = "./core/container_registry"
   CloudShellIP          = var.CloudShellIP  
-  name                  = "${var.ResourceNamingConvention}datacr" 
+  name                  = "${var.ResourceNamingConvention}datacrva" 
   location              = var.location
   resourceGroupName     = var.InfoAssistResourceGroupName
   is_secure_mode        = var.is_secure_mode
@@ -261,7 +261,7 @@ module "acr"{
 
 module "openaiServices" {
   source                          = "./core/ai/openaiservices"
-  name                            = var.openAIServiceName != "" ? var.openAIServiceName : "${var.ResourceNamingConvention}-aoai"
+  name                            = var.openAIServiceName != "" ? var.openAIServiceName : "${var.ResourceNamingConvention}-aoai-va"
   location                        = var.location
   tags                            = local.tags
   resourceGroupName               = var.InfoAssistResourceGroupName
