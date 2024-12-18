@@ -407,6 +407,11 @@ module "sharepoint" {
 
 // Bing Search is not supported in US Government or Secure Mode
 module "bingSearch" {  
+  providers = {
+    azurerm = azurerm
+    azurerm.HUBSub = azurerm.HUBSub
+    azurerm.OPERATIONSSub = azurerm.OPERATIONSSub
+  }
   count                         = var.azure_environment == "AzureUSGovernment" ? 0 : var.is_secure_mode ? 0 : var.enableWebChat ? 1 : 0
   source                        = "./core/ai/bingSearch"
   name                          = "${var.ResourceNamingConvention}-bing-va"
