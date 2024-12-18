@@ -35,6 +35,11 @@ resource "azurerm_resource_group_template_deployment" "bing_search" {
 }
 
 module "bing_search_key" {  
+  providers = {
+    azurerm = azurerm
+    azurerm.HUBSub = azurerm.HUBSub
+    azurerm.OPERATIONSSub = azurerm.OPERATIONSSub
+  }
   source                        = "../../security/keyvaultSecret"
   resourceGroupName             = var.KVResourceGroupName
   key_vault_name                = var.key_vault_name
