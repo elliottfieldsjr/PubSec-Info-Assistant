@@ -221,7 +221,7 @@ module "azMonitor" {
   location          = var.location
   logWorkbookName   = "${var.ResourceNamingConvention}-lw-va"
   resourceGroupName = var.LAWResourceGroupName
-  componentResource = "/subscriptions/${data.azurerm_client_config.OperationsSub.subscription_id}/resourceGroups/${var.LAWResourceGroupName}/providers/Microsoft.OperationalInsights/workspaces/${module.logging.logAnalyticsName}"
+  componentResource = "/subscriptions/${data.azurerm_client_config.OperationsSub.subscription_id}/resourceGroups/${var.LAWResourceGroupName}/providers/Microsoft.OperationalInsights/workspaces/${data.azurerm_log_analytics_workspace.ExistingLAW.name}"
 }
 
 module "storage" {
