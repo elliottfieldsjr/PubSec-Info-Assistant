@@ -348,3 +348,25 @@ module "aiDocIntelligence" {
   private_dns_zone_ids          = var.is_secure_mode ? [data.azurerm_private_dns_zone.CognitiveServicesPDZ.id] : null
   arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
 }
+
+module "cognitiveServices" { 
+  source                        = "./core/ai/cogServices"
+  providers = {
+    azurerm = azurerm
+    azurerm.HUBSub = azurerm.HUBSub
+    azurerm.OPERATIONSSub = azurerm.OPERATIONSSub
+  }   
+  name                          = "${var.ResourceNamingConvention}-aisvc-va"
+  location                      = var.location 
+  tags                          = local.tags
+  InfoAssistResourceGroupName   = var.InfoAssistResourceGroupName
+  KVResourceGroupName           = var.KVResourceGroupName 
+  is_secure_mode                = var.is_secure_mode
+  subnetResourceId              = var.is_secure_mode ? data.azurerm_subnet.InfoAssistPESubnet.id : null
+  private_dns_zone_ids          = var.is_secure_mode ? [data.azurerm_private_dns_zone.CognitiveServicesPDZ.id] : null
+  arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
+  key_vault_name                = data.azurerm_key_vault.InfoAssistKeyVault.name
+  kv_secret_expiration          = var.kv_secret_expiration
+  vnet_name                     = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.name : null
+  subnet_name                   = var.is_secure_mode ? data.azurerm_subnet.InfoAssistPESubnet.name : null
+}

@@ -1,5 +1,18 @@
+terraform {
+  required_version = ">= 0.15.3"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.3.0"
+      configuration_aliases = [
+        azurerm.HUBSub,
+        azurerm.OPERATIONSSub,
+       ]
+    }
+  }
+}
+
 resource "azurerm_cognitive_account" "cognitiveService" {
-  provider                      = azurerm.SHAREDSERVICESSub              
   name                          = var.name
   location                      = var.location
   resource_group_name           = var.InfoAssistResourceGroupName
@@ -11,6 +24,11 @@ resource "azurerm_cognitive_account" "cognitiveService" {
 }
 
 module "cog_service_key" {
+  providers = {
+    azurerm = azurerm
+    azurerm.HUBSub = azurerm.HUBSub
+    azurerm.OPERATIONSSub = azurerm.OPERATIONSSub
+  }
   source                        = "../../security/keyvaultSecret"
   arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
   key_vault_name                = var.key_vault_name
@@ -24,7 +42,6 @@ module "cog_service_key" {
 }
 
 data "azurerm_subnet" "subnet" {
-  provider             = azurerm.SHAREDSERVICESSub              
   count                = var.is_secure_mode ? 1 : 0
   name                 = var.subnet_name
   virtual_network_name = var.vnet_name
@@ -32,7 +49,6 @@ data "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_private_endpoint" "accountPrivateEndpoint" {
-  provider                      = azurerm.SHAREDSERVICESSub              
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint"
   location                      = var.location
