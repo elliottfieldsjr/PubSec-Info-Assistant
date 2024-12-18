@@ -20,7 +20,7 @@ data "azurerm_log_analytics_workspace" "ExistingLAW" {
 
 resource "azurerm_application_insights" "applicationInsights" {
   provider = azurerm.OPERATIONSSub
-  name                = "${var.ResourceNamingConvention}-ai"
+  name                = var.AppInsightsName
   location            = var.location
   resource_group_name = var.LAWResourceGroupName
   application_type    = "web"
@@ -47,7 +47,7 @@ resource "azurerm_monitor_diagnostic_setting" "nsg_diagnostic_logs" {
 resource "azurerm_monitor_private_link_scoped_service" "ampl_ss_app_insights" {
   provider            = azurerm.OPERATIONSSub
   count               = var.is_secure_mode ? 1 : 0
-  name                = "${var.ResourceNamingConvention}-ampls-appInsights-connection"
+  name                = var.AppInsightsAMPLSName
   resource_group_name = var.LAWResourceGroupName
   scope_name          = var.AMPLSName
   linked_resource_id  = azurerm_application_insights.applicationInsights.id

@@ -1,5 +1,10 @@
-variable "ResourceNamingConvention" {
-  description = "Naming Prefix for Deployed Resources"
+variable "AppInsightsName" {
+  description = "Name of New Application Insights"
+  type        = string
+}
+
+variable "AppInsightsAMPLSName" {
+  description = "Name of Application Insights AMPLS"
   type        = string
 }
 

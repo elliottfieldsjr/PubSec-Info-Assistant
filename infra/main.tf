@@ -181,7 +181,6 @@ module "logging" {
     azurerm.HUBSub = azurerm.HUBSub,
     azurerm.OPERATIONSSub = azurerm.OPERATIONSSub
   }  
-  ResourceNamingConvention = var.ResourceNamingConvention
   location                = var.location
   tags                    = local.tags
   skuName                 = "PerGB2018"
@@ -190,6 +189,8 @@ module "logging" {
   LAWResourceGroupName                  = var.LAWResourceGroupName
   LAWName                               = var.LAWName
   AMPLSName                             = var.AMPLSName
+  AppInsightsName                       = "${var.ResourceNamingConvention}-appinsights"
+  AppInsightsAMPLSName                  = "${var.ResourceNamingConvention}-ampls-appinsights-connection"
   is_secure_mode                        = var.is_secure_mode
   privateDnsZoneNameMonitor             = "privatelink.${var.azure_monitor_domain}"
   privateDnsZoneNameMonitorId           = data.azurerm_private_dns_zone.MonitorPDZ.id
