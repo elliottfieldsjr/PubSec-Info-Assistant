@@ -424,3 +424,70 @@ module "bingSearch" {
   kv_secret_expiration          = var.kv_secret_expiration
 }
 
+module "enrichmentApp" {
+  providers = {
+    azurerm = azurerm
+    azurerm.HUBSub = azurerm.HUBSub
+  }     
+  source                                    = "./core/host/enrichmentapp"
+  name                                      = var.enrichmentServiceName != "" ? var.enrichmentServiceName : "${var.ResourceNamingConvention}-enrichmentweb-va"
+  plan_name                                 = var.enrichmentAppServicePlanName != "" ? var.enrichmentAppServicePlanName : "${var.ResourceNamingConvention}-enrichmentasp-va"
+  location                                  = var.location 
+  tags                                      = local.tags
+  sku = {
+    size                                    = var.enrichmentAppServiceSkuSize
+    tier                                    = var.enrichmentAppServiceSkuTier
+    capacity                                = 3
+  }
+  kind                                      = "linux"
+  reserved                                  = true
+  InfoAssistResourceGroupName               = var.InfoAssistResourceGroupName
+  KVResourceGroupName                       = var.KVResourceGroupName  
+  storageAccountId                          = "/subscriptions/${data.azurerm_client_config.SharedServicesSub.subscription_id}/resourceGroups/${var.InfoAssistResourceGroupName}/providers/Microsoft.Storage/storageAccounts/${module.storage.name}/services/queue/queues/${var.embeddingsQueue}"
+  scmDoBuildDuringDeployment                = false
+  enableOryxBuild                           = false
+  managedIdentity                           = true
+  logAnalyticsWorkspaceResourceId           = data.azurerm_log_analytics_workspace.ExistingLAW.id
+  applicationInsightsConnectionString       = module.logging.applicationInsightsConnectionString
+  alwaysOn                                  = true
+  healthCheckPath                           = "/health"
+  appCommandLine                            = ""
+  keyVaultUri                               = data.azurerm_key_vault.InfoAssistKeyVault.vault_uri
+  keyVaultName                              = data.azurerm_key_vault.InfoAssistKeyVault.name
+  container_registry                        = module.acr.login_server
+  container_registry_admin_username         = module.acr.admin_username
+  container_registry_admin_password         = module.acr.admin_password
+  container_registry_id                     = module.acr.acr_id
+  is_secure_mode                            = var.is_secure_mode
+  subnetIntegration_id                      = var.is_secure_mode ? data.azurerm_subnet.InfoAssistINTSubnet.id : null
+  subnet_name                               = var.is_secure_mode ? data.azurerm_subnet.InfoAssistINTSubnet.name : null
+  vnet_name                                 = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.name : null
+  private_dns_zone_ids                      = var.is_secure_mode ? [data.azurerm_private_dns_zone.AzureWebPDZ.id] : null
+  azure_environment                         = var.azure_environment
+
+  appSettings = {
+    EMBEDDINGS_QUEUE                        = var.embeddingsQueue
+    LOG_LEVEL                               = "DEBUG"
+    DEQUEUE_MESSAGE_BATCH_SIZE              = 1
+    AZURE_BLOB_STORAGE_ACCOUNT              = module.storage.name
+    AZURE_BLOB_STORAGE_CONTAINER            = var.contentContainerName
+    AZURE_BLOB_STORAGE_UPLOAD_CONTAINER     = var.uploadContainerName
+    AZURE_BLOB_STORAGE_ENDPOINT             = module.storage.primary_blob_endpoint
+    AZURE_QUEUE_STORAGE_ENDPOINT            = module.storage.primary_queue_endpoint
+    COSMOSDB_URL                            = module.cosmosdb.CosmosDBEndpointURL
+    COSMOSDB_LOG_DATABASE_NAME              = module.cosmosdb.CosmosDBLogDatabaseName
+    COSMOSDB_LOG_CONTAINER_NAME             = module.cosmosdb.CosmosDBLogContainerName
+    MAX_EMBEDDING_REQUEUE_COUNT             = 5
+    EMBEDDING_REQUEUE_BACKOFF               = 60
+    AZURE_OPENAI_SERVICE                    = var.useExistingAOAIService ? var.azureOpenAIServiceName : module.openaiServices.name
+    AZURE_OPENAI_ENDPOINT                   = var.useExistingAOAIService ? "https://${var.azureOpenAIServiceName}.${var.azure_openai_domain}/" : module.openaiServices.endpoint
+    AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME  = var.azureOpenAIEmbeddingDeploymentName
+    AZURE_SEARCH_INDEX                      = var.searchIndexName
+    AZURE_SEARCH_SERVICE_ENDPOINT           = module.searchServices.endpoint
+    AZURE_SEARCH_AUDIENCE                   = var.azure_search_scope
+    TARGET_EMBEDDINGS_MODEL                 = var.useAzureOpenAIEmbeddings ? "azure-openai_${var.azureOpenAIEmbeddingDeploymentName}" : var.sentenceTransformersModelName
+    EMBEDDING_VECTOR_SIZE                   = var.useAzureOpenAIEmbeddings ? 1536 : var.sentenceTransformerEmbeddingVectorSize
+    AZURE_AI_CREDENTIAL_DOMAIN              = var.azure_ai_private_link_domain
+    AZURE_OPENAI_AUTHORITY_HOST             = var.azure_openai_authority_host
+  }
+}
