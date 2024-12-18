@@ -29,19 +29,19 @@ resource "azurerm_application_insights" "applicationInsights" {
 }
 
 // Create Diagnostic Setting for NSG here since the log analytics workspace is created here after the network is created
-resource "azurerm_monitor_diagnostic_setting" "nsg_diagnostic_logs" {
-  provider                   = azurerm.OPERATIONSSub
-  count                      = var.is_secure_mode ? 1 : 0
-  name                       = var.nsg_name
-  target_resource_id         = var.nsg_id
-  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.ExistingLAW.id
-  enabled_log  {
-    category = "NetworkSecurityGroupEvent"
-  }
-  enabled_log {
-    category = "NetworkSecurityGroupRuleCounter"
-  }
-}
+# resource "azurerm_monitor_diagnostic_setting" "nsg_diagnostic_logs" {
+#   provider                   = azurerm.OPERATIONSSub
+#   count                      = var.is_secure_mode ? 1 : 0
+#   name                       = var.nsg_name
+#   target_resource_id         = var.nsg_id
+#   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.ExistingLAW.id
+#   enabled_log  {
+#     category = "NetworkSecurityGroupEvent"
+#   }
+#   enabled_log {
+#     category = "NetworkSecurityGroupRuleCounter"
+#   }
+# }
 
 // add scope resoruce for app insights
 resource "azurerm_monitor_private_link_scoped_service" "ampl_ss_app_insights" {
