@@ -320,3 +320,18 @@ module "searchServices" {
   arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
   key_vault_name                = data.azurerm_key_vault.InfoAssistKeyVault.name
 }
+
+module "aiDocIntelligence" {
+  source                        = "./core/ai/docintelligence"
+  name                          = "${var.ResourceNamingConvention}-docint-va"
+  location                      = var.location
+  tags                          = local.tags
+  customSubDomainName           = "${var.ResourceNamingConvention}-docint-va"
+  resourceGroupName             = var.InfoAssistResourceGroupName
+  key_vault_name                = data.azurerm_key_vault.InfoAssistKeyVault.name
+  is_secure_mode                = var.is_secure_mode
+  subnet_name                   = var.is_secure_mode ? data.azurerm_subnet.InfoAssistPESubnet.name : null
+  vnet_name                     = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.name : null
+  private_dns_zone_ids          = var.is_secure_mode ? [data.azurerm_private_dns_zone.CognitiveServicesPDZ.id] : null
+  arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
+}
