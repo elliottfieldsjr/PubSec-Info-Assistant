@@ -1,5 +1,18 @@
+terraform {
+  required_version = ">= 0.15.3"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.3.0"
+      configuration_aliases = [
+        azurerm.OPERATIONSSub,
+       ]
+    }
+  }
+}
+
 resource "azurerm_application_insights_workbook" "example" {
-  provider                      = azurerm.SHAREDSERVICESSub              
+  provider            = azurerm.OPERATIONSSub
   name                = "85b3e8bb-fc93-40be-83f2-98f6bec18ba0"
   resource_group_name = var.resourceGroupName
   location            = var.location

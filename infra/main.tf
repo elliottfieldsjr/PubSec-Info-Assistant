@@ -211,6 +211,19 @@ module "logging" {
   nsg_name                              = var.is_secure_mode ? data.azurerm_network_security_group.InfoAssistNSG.name : null
 }
 
+module "azMonitor" {
+  source            = "./core/logging/monitor"
+  providers = {
+    azurerm = azurerm
+    azurerm.OPERATIONSSub = azurerm.OPERATIONSSub
+  }   
+  logAnalyticsName  = data.azurerm_log_analytics_workspace.ExistingLAW.name
+  location          = var.location
+  logWorkbookName   = "${var.ResourceNamingConvention}-lw-va"
+  resourceGroupName = var.LAWResourceGroupName
+  componentResource = "/subscriptions/${data.azurerm_client_config.OperationsSub.subscription_id}/resourceGroups/${var.LAWResourceGroupName}/providers/Microsoft.OperationalInsights/workspaces/${module.logging.logAnalyticsName}"
+}
+
 module "storage" {
   source                          = "./core/storage"
   providers = {
