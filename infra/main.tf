@@ -22,8 +22,8 @@ data "azurerm_client_config" "OperationsSub" {
 
 data "azurerm_client_config" "SharedServicesSub" {
   provider = azurerm
-
 }
+
 module "entraObjects" {
   source                            = "./core/aad"
   ResourceNamingConvention = var.ResourceNamingConvention
