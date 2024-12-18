@@ -1,3 +1,17 @@
+terraform {
+  required_version = ">= 0.15.3"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.3.0"
+      configuration_aliases = [
+        azurerm.HUBSub,
+        azurerm.OPERATIONSSub,
+       ]
+    }
+  }
+}
+
 locals {
   arm_file_path = "arm_templates/bing_search/bing.template.json"
 }
