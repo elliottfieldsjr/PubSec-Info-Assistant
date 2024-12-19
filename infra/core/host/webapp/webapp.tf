@@ -186,7 +186,6 @@ resource "azurerm_linux_web_app" "app_service" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_commercial" {
-  provider = azurerm.SHAREDSERVICESSub    
   count                      = var.azure_environment == "AzureUSGovernment" ? 0 : 1
   name                       = azurerm_linux_web_app.app_service.name
   target_resource_id         = azurerm_linux_web_app.app_service.id
