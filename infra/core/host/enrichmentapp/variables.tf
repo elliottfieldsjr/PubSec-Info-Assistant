@@ -125,15 +125,15 @@ variable "is_secure_mode" {
   type = bool
 }
 
-variable "subnetIntegration_id" {
-  type = string
-}
-
 variable "vnet_name" {
   type = string
 }
 
-variable "subnet_name" {
+variable "IntegrationSubnetName" {
+  type    = string
+}
+
+variable "PrivateEndpointSubnetName" {
   type = string
 }
 

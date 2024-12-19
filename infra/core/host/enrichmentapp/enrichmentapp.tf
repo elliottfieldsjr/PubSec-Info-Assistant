@@ -12,6 +12,20 @@ terraform {
   }
 }
 
+data "azurerm_subnet" "PE" {
+  count                = var.is_secure_mode ? 1 : 0
+  name                 = var.PrivateEndpointSubnetName
+  virtual_network_name = var.vnet_name
+  resource_group_name  = var.InfoAssistResourceGroupName
+}
+
+data "azurerm_subnet" "Integration" {
+  count                = var.is_secure_mode ? 1 : 0
+  name                 = var.PrivateEndpointSubnetName
+  virtual_network_name = var.vnet_name
+  resource_group_name  = var.InfoAssistResourceGroupName
+}
+
 resource "azurerm_service_plan" "appServicePlan" {
   name                          = var.plan_name
   location                      = var.location
@@ -92,7 +106,7 @@ resource "azurerm_linux_web_app" "enrichmentapp" {
   client_affinity_enabled                         = false
   enabled                                         = true
   public_network_access_enabled                   = var.is_secure_mode ? false : true
-  virtual_network_subnet_id                       = var.is_secure_mode ? var.subnetIntegration_id : null
+  virtual_network_subnet_id                       = var.is_secure_mode ? data.azurerm_subnet.Integration.id : null
   site_config {
     always_on                                     = var.alwaysOn
     app_command_line                              = var.appCommandLine
@@ -231,19 +245,12 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_usgov" {
   }
 }
 
-data "azurerm_subnet" "subnet" {
-  count                = var.is_secure_mode ? 1 : 0
-  name                 = var.subnet_name
-  virtual_network_name = var.vnet_name
-  resource_group_name  = var.InfoAssistResourceGroupName
-}
-
 resource "azurerm_private_endpoint" "privateEnrichmentEndpoint" {
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint"
   location                      = var.location
   resource_group_name           = var.InfoAssistResourceGroupName
-  subnet_id                     = data.azurerm_subnet.subnet[0].id
+  subnet_id                     = data.azurerm_subnet.PE[0].id
   custom_network_interface_name = "infoasstenrichnic"
 
   private_dns_zone_group {

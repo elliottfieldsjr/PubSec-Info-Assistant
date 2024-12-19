@@ -459,8 +459,8 @@ module "enrichmentApp" {
   container_registry_admin_password         = module.acr.admin_password
   container_registry_id                     = module.acr.acr_id
   is_secure_mode                            = var.is_secure_mode
-  subnetIntegration_id                      = var.is_secure_mode ? data.azurerm_subnet.InfoAssistINTSubnet.id : null
-  subnet_name                               = var.is_secure_mode ? data.azurerm_subnet.InfoAssistINTSubnet.name : null
+  IntegrationSubnetName                     = var.is_secure_mode ? data.azurerm_subnet.InfoAssistINTSubnet.name : null
+  PrivateEndpointSubnetName                 = var.is_secure_mode ? data.azurerm_subnet.InfoAssistPESubnet.name : null
   vnet_name                                 = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.name : null
   private_dns_zone_ids                      = var.is_secure_mode ? [data.azurerm_private_dns_zone.AzureWebPDZ.id] : null
   azure_environment                         = var.azure_environment
