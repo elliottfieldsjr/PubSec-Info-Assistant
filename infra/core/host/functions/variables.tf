@@ -260,11 +260,11 @@ variable "vnet_name" {
   type = string
 }
 
-variable "subnet_name" {
-  type = string
+variable "IntegrationSubnetName" {
+  type    = string
 }
 
-variable "subnetIntegration_id" {
+variable "PrivateEndpointSubnetName" {
   type = string
 }
 

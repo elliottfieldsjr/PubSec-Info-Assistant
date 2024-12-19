@@ -585,3 +585,77 @@ module "webapp" {
   aadClientId = module.entraObjects.azure_ad_web_app_client_id
   depends_on = [ data.azurerm_key_vault.InfoAssistKeyVault]
 }
+
+
+# // Function App 
+module "functions" { 
+  source = "./core/host/functions"
+  name                                  = var.functionsAppName != "" ? var.functionsAppName : "dat-func-${random_string.random.result}"
+  location                              = var.location
+  tags                                  = local.tags
+  keyVaultUri                           = data.azurerm_key_vault.InfoAssistKeyVault.vault_uri
+  keyVaultName                          = data.azurerm_key_vault.InfoAssistKeyVault.name
+  plan_name                             = var.appServicePlanName != "" ? var.appServicePlanName : "dat-func-asp-${random_string.random.result}"
+  sku                                   = {
+    size                                = var.functionsAppSkuSize
+    tier                                = var.functionsAppSkuTier
+    capacity                            = 2
+  }
+  kind                                  = "linux"
+  runtime                               = "python"
+  InfoAssistResourceGroupName           = var.InfoAssistResourceGroupName
+  KVResourceGroupName                   = var.KVResourceGroupName 
+  azure_portal_domain                   = var.azure_portal_domain
+  appInsightsConnectionString           = module.logging.applicationInsightsConnectionString
+  appInsightsInstrumentationKey         = module.logging.applicationInsightsInstrumentationKey
+  blobStorageAccountName                = module.storage.name
+  blobStorageAccountEndpoint            = module.storage.primary_blob_endpoint
+  blobStorageAccountOutputContainerName = var.contentContainerName
+  blobStorageAccountUploadContainerName = var.uploadContainerName 
+  blobStorageAccountLogContainerName    = var.functionLogsContainerName
+  queueStorageAccountEndpoint           = module.storage.primary_queue_endpoint
+  formRecognizerEndpoint                = module.aiDocIntelligence.formRecognizerAccountEndpoint
+  CosmosDBEndpointURL                   = module.cosmosdb.CosmosDBEndpointURL
+  CosmosDBLogDatabaseName               = module.cosmosdb.CosmosDBLogDatabaseName
+  CosmosDBLogContainerName              = module.cosmosdb.CosmosDBLogContainerName
+  chunkTargetSize                       = var.chunkTargetSize
+  targetPages                           = var.targetPages
+  formRecognizerApiVersion              = var.formRecognizerApiVersion
+  pdfSubmitQueue                        = var.pdfSubmitQueue
+  pdfPollingQueue                       = var.pdfPollingQueue
+  nonPdfSubmitQueue                     = var.nonPdfSubmitQueue
+  mediaSubmitQueue                      = var.mediaSubmitQueue
+  maxSecondsHideOnUpload                = var.maxSecondsHideOnUpload
+  maxSubmitRequeueCount                 = var.maxSubmitRequeueCount
+  pollQueueSubmitBackoff                = var.pollQueueSubmitBackoff
+  pdfSubmitQueueBackoff                 = var.pdfSubmitQueueBackoff
+  textEnrichmentQueue                   = var.textEnrichmentQueue
+  imageEnrichmentQueue                  = var.imageEnrichmentQueue
+  maxPollingRequeueCount                = var.maxPollingRequeueCount
+  submitRequeueHideSeconds              = var.submitRequeueHideSeconds
+  pollingBackoff                        = var.pollingBackoff
+  maxReadAttempts                       = var.maxReadAttempts
+  enrichmentEndpoint                    = module.cognitiveServices.cognitiveServiceEndpoint
+  enrichmentName                        = module.cognitiveServices.cognitiveServicerAccountName
+  enrichmentLocation                    = var.location
+  targetTranslationLanguage             = var.targetTranslationLanguage
+  maxEnrichmentRequeueCount             = var.maxEnrichmentRequeueCount
+  enrichmentBackoff                     = var.enrichmentBackoff
+  enableDevCode                         = var.enableDevCode
+  EMBEDDINGS_QUEUE                      = var.embeddingsQueue
+  azureSearchIndex                      = var.searchIndexName
+  azureSearchServiceEndpoint            = module.searchServices.endpoint
+  endpointSuffix                        = var.azure_storage_domain
+  logAnalyticsWorkspaceResourceId       = module.logging.logAnalyticsId
+  is_secure_mode                        = var.is_secure_mode
+  vnet_name                             = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.name : null
+  IntegrationSubnetName                 = var.is_secure_mode ? data.azurerm_subnet.InfoAssistINTSubnet.name : null
+  PrivateEndpointSubnetName             = var.is_secure_mode ? data.azurerm_subnet.InfoAssistPESubnet.name : null
+  private_dns_zone_ids                  = var.is_secure_mode ? [data.azurerm_private_dns_zone.AzureWebPDZ.id] : null
+  container_registry                    = module.acr.login_server
+  container_registry_admin_username     = module.acr.admin_username
+  container_registry_admin_password     = module.acr.admin_password
+  container_registry_id                 = module.acr.acr_id
+  azure_environment                     = var.azure_environment
+  azure_ai_credential_domain            = var.azure_ai_private_link_domain
+}

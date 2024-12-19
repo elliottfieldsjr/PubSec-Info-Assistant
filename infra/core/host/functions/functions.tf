@@ -1,6 +1,33 @@
+// Create Enrichment App Service Plan 
+terraform {
+  required_version = ">= 0.15.3"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.3.0"
+      configuration_aliases = [
+        azurerm.HUBSub,
+       ]
+    }
+  }
+}
+
+data "azurerm_subnet" "PE" {
+  count                = var.is_secure_mode ? 1 : 0
+  name                 = var.PrivateEndpointSubnetName
+  virtual_network_name = var.vnet_name
+  resource_group_name  = var.InfoAssistResourceGroupName
+}
+
+data "azurerm_subnet" "Integration" {
+  count                = var.is_secure_mode ? 1 : 0
+  name                 = var.IntegrationSubnetName
+  virtual_network_name = var.vnet_name
+  resource_group_name  = var.InfoAssistResourceGroupName
+}
+
 # Terraform resource file to create a service plan for the function app
 resource "azurerm_service_plan" "funcServicePlan" {
-  provider = azurerm.SHAREDSERVICESSub      
   name                = var.plan_name
   location            = var.location
   resource_group_name = var.InfoAssistResourceGroupName
@@ -12,7 +39,6 @@ resource "azurerm_service_plan" "funcServicePlan" {
 }
 
 resource "azurerm_monitor_autoscale_setting" "scaleout" {
-  provider = azurerm.SHAREDSERVICESSub      
   name                = azurerm_service_plan.funcServicePlan.name
   resource_group_name = var.InfoAssistResourceGroupName
   location            = var.location
@@ -69,7 +95,6 @@ resource "azurerm_monitor_autoscale_setting" "scaleout" {
 }
 
 resource "azurerm_role_assignment" "acr_pull_role" {
-  provider = azurerm.SHAREDSERVICESSub      
   principal_id         = azurerm_linux_function_app.function_app.identity.0.principal_id
   role_definition_name = "AcrPull"
   scope                = var.container_registry_id
@@ -82,14 +107,12 @@ data "azurerm_key_vault" "existing" {
 }
 
 data "azurerm_storage_account" "existing_sa" {
-  provider            = azurerm.SHAREDSERVICESSub        
   name                = var.blobStorageAccountName
   resource_group_name = var.InfoAssistResourceGroupName
 }
 
 // Create function app resource
 resource "azurerm_linux_function_app" "function_app" {
-  provider                            = azurerm.SHAREDSERVICESSub        
   name                                = var.name
   location                            = var.location
   resource_group_name                 = var.InfoAssistResourceGroupName
@@ -100,7 +123,7 @@ resource "azurerm_linux_function_app" "function_app" {
   https_only                          = true
   tags                                = var.tags
   public_network_access_enabled       = var.is_secure_mode ? false : true 
-  virtual_network_subnet_id           = var.is_secure_mode ? var.subnetIntegration_id : null
+  virtual_network_subnet_id           = var.is_secure_mode ? data.azurerm_subnet.Integration[0].id : null
   content_share_force_disabled        = true
 
 
@@ -199,7 +222,6 @@ resource "azurerm_linux_function_app" "function_app" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_commercial" {
-  provider                   = azurerm.SHAREDSERVICESSub        
   count                      = var.azure_environment == "AzureUSGovernment" ? 0 : 1
   name                       = azurerm_linux_function_app.function_app.name
   target_resource_id         = azurerm_linux_function_app.function_app.id
@@ -220,7 +242,6 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_commercial" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_usgov" {
-  provider                   = azurerm.SHAREDSERVICESSub        
   count                      = var.azure_environment == "AzureUSGovernment" ? 1 : 0
   name                       = azurerm_linux_function_app.function_app.name
   target_resource_id         = azurerm_linux_function_app.function_app.id
@@ -252,21 +273,12 @@ resource "azurerm_key_vault_access_policy" "policy" {
   ]
 }
 
-data "azurerm_subnet" "subnet" {
-  provider             = azurerm.SHAREDSERVICESSub        
-  count                = var.is_secure_mode ? 1 : 0
-  name                 = var.subnet_name
-  virtual_network_name = var.vnet_name
-  resource_group_name  = var.InfoAssistResourceGroupName
-}
-
 resource "azurerm_private_endpoint" "privateFunctionEndpoint" {
-  provider                      = azurerm.SHAREDSERVICESSub          
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint"
   location                      = var.location
   resource_group_name           = var.InfoAssistResourceGroupName
-  subnet_id                     = data.azurerm_subnet.subnet[0].id
+  subnet_id                     = data.azurerm_subnet.PE[0].id
   tags                          = var.tags
   custom_network_interface_name = "infoasstfuncnic"
    
