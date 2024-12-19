@@ -106,7 +106,7 @@ resource "azurerm_linux_web_app" "enrichmentapp" {
   client_affinity_enabled                         = false
   enabled                                         = true
   public_network_access_enabled                   = var.is_secure_mode ? false : true
-  virtual_network_subnet_id                       = var.is_secure_mode ? data.azurerm_subnet.Integration.id : null
+  virtual_network_subnet_id                       = var.is_secure_mode ? data.azurerm_subnet.Integration[0].id : null
   site_config {
     always_on                                     = var.alwaysOn
     app_command_line                              = var.appCommandLine
