@@ -21,7 +21,7 @@ data "azurerm_subnet" "PE" {
 
 data "azurerm_subnet" "Integration" {
   count                = var.is_secure_mode ? 1 : 0
-  name                 = var.PrivateEndpointSubnetName
+  name                 = var.IntegrationSubnetName
   virtual_network_name = var.vnet_name
   resource_group_name  = var.InfoAssistResourceGroupName
 }
