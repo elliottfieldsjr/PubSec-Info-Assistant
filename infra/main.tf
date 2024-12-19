@@ -491,3 +491,98 @@ module "enrichmentApp" {
     AZURE_OPENAI_AUTHORITY_HOST             = var.azure_openai_authority_host
   }
 }
+
+# // The application frontend
+module "webapp" {
+  providers = {
+    azurerm = azurerm
+    azurerm.HUBSub = azurerm.HUBSub
+  }   
+  source                              = "./core/host/webapp"
+  name                                = var.backendServiceName != "" ? var.backendServiceName : "dat-web-${random_string.random.result}"
+  plan_name                           = var.appServicePlanName != "" ? var.appServicePlanName : "dat-asp-${random_string.random.result}"
+  sku = {
+    tier                              = var.appServiceSkuTier
+    size                              = var.appServiceSkuSize
+    capacity                          = 1
+  }
+  kind                                = "linux"
+  InfoAssistResourceGroupName         = var.InfoAssistResourceGroupName
+  KVResourceGroupName                 = var.KVResourceGroupName 
+  location                            = var.location
+  tags                                = merge(local.tags, { "azd-service-name" = "backend" })
+  runtimeVersion                      = "3.12" 
+  scmDoBuildDuringDeployment          = false
+  managedIdentity                     = true
+  alwaysOn                            = true
+  appCommandLine                      = ""
+  healthCheckPath                     = "/health"
+  logAnalyticsWorkspaceResourceId     = module.logging.logAnalyticsId
+  azure_portal_domain                 = var.azure_portal_domain
+  enableOryxBuild                     = false
+  applicationInsightsConnectionString = module.logging.applicationInsightsConnectionString
+  keyVaultUri                         = data.azurerm_key_vault.InfoAssistKeyVault.vault_uri
+  keyVaultName                        = data.azurerm_key_vault.InfoAssistKeyVault.name
+  tenantId                            = data.azurerm_client_config.current.tenant_id
+  is_secure_mode                      = var.is_secure_mode
+  subnet_name                         = var.is_secure_mode ? data.azurerm_subnet.InfoAssistINTSubnet.name: null
+  vnet_name                           = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.name : null
+  snetIntegration_id                  = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.id: null
+  private_dns_zone_ids                = var.is_secure_mode ? [data.azurerm_private_dns_zone.AzureWebPDZ.id] : null
+  private_dns_zone_name               = var.is_secure_mode ? data.azurerm_private_dns_zone.AzureWebPDZ.name : null
+
+  container_registry                  = module.acr.login_server
+  container_registry_admin_username   = module.acr.admin_username
+  container_registry_admin_password   = module.acr.admin_password
+  container_registry_id               = module.acr.acr_id
+  randomString                        = random_string.random.result
+  azure_environment                   = var.azure_environment 
+
+  appSettings = {
+    APPLICATIONINSIGHTS_CONNECTION_STRING   = module.logging.applicationInsightsConnectionString
+    AZURE_BLOB_STORAGE_ACCOUNT              = module.storage.name
+    AZURE_BLOB_STORAGE_ENDPOINT             = module.storage.primary_blob_endpoint
+    AZURE_BLOB_STORAGE_CONTAINER            = var.contentContainerName
+    AZURE_BLOB_STORAGE_UPLOAD_CONTAINER     = var.uploadContainerName
+    AZURE_OPENAI_SERVICE                    = var.useExistingAOAIService ? var.azureOpenAIServiceName : module.openaiServices.name
+    AZURE_OPENAI_RESOURCE_GROUP             = var.useExistingAOAIService ? var.azureOpenAIResourceGroup : var.InfoAssistResourceGroupName
+    AZURE_OPENAI_ENDPOINT                   = var.useExistingAOAIService ? "https://${var.azureOpenAIServiceName}.${var.azure_openai_domain}/" : module.openaiServices.endpoint
+    AZURE_OPENAI_AUTHORITY_HOST             = var.azure_openai_authority_host
+    AZURE_ARM_MANAGEMENT_API                = var.azure_arm_management_api
+    AZURE_SEARCH_INDEX                      = var.searchIndexName
+    AZURE_SEARCH_SERVICE                    = module.searchServices.name
+    AZURE_SEARCH_SERVICE_ENDPOINT           = module.searchServices.endpoint
+    AZURE_SEARCH_AUDIENCE                   = var.azure_search_scope
+    AZURE_OPENAI_CHATGPT_DEPLOYMENT         = var.chatGptDeploymentName != "" ? var.chatGptDeploymentName : (var.chatGptModelName != "" ? var.chatGptModelName : "gpt-35-turbo-16k")
+    AZURE_OPENAI_CHATGPT_MODEL_NAME         = var.chatGptModelName
+    AZURE_OPENAI_CHATGPT_MODEL_VERSION      = var.chatGptModelVersion
+    USE_AZURE_OPENAI_EMBEDDINGS             = var.useAzureOpenAIEmbeddings
+    EMBEDDING_DEPLOYMENT_NAME               = var.useAzureOpenAIEmbeddings ? var.azureOpenAIEmbeddingDeploymentName : var.sentenceTransformersModelName
+    AZURE_OPENAI_EMBEDDINGS_MODEL_NAME      = var.azureOpenAIEmbeddingsModelName
+    AZURE_OPENAI_EMBEDDINGS_MODEL_VERSION   = var.azureOpenAIEmbeddingsModelVersion
+    APPINSIGHTS_INSTRUMENTATIONKEY          = module.logging.applicationInsightsInstrumentationKey
+    COSMOSDB_URL                            = module.cosmosdb.CosmosDBEndpointURL
+    COSMOSDB_LOG_DATABASE_NAME              = module.cosmosdb.CosmosDBLogDatabaseName
+    COSMOSDB_LOG_CONTAINER_NAME             = module.cosmosdb.CosmosDBLogContainerName
+    QUERY_TERM_LANGUAGE                     = var.queryTermLanguage
+    AZURE_SUBSCRIPTION_ID                   = data.azurerm_client_config.current.subscription_id
+    CHAT_WARNING_BANNER_TEXT                = var.chatWarningBannerText
+    TARGET_EMBEDDINGS_MODEL                 = var.useAzureOpenAIEmbeddings ? "azure-openai_${var.azureOpenAIEmbeddingDeploymentName}" : var.sentenceTransformersModelName
+    ENRICHMENT_APPSERVICE_URL               = module.enrichmentApp.uri
+    AZURE_AI_ENDPOINT                       = module.cognitiveServices.cognitiveServiceEndpoint
+    AZURE_AI_LOCATION                       = var.location
+    APPLICATION_TITLE                       = var.applicationtitle == "" ? "Information Assistant, built with Azure OpenAI" : var.applicationtitle
+    USE_SEMANTIC_RERANKER                   = var.use_semantic_reranker
+    BING_SEARCH_ENDPOINT                    = var.enableWebChat ? module.bingSearch[0].endpoint : ""
+    ENABLE_WEB_CHAT                         = var.enableWebChat
+    ENABLE_BING_SAFE_SEARCH                 = var.enableBingSafeSearch
+    ENABLE_UNGROUNDED_CHAT                  = var.enableUngroundedChat
+    ENABLE_MATH_ASSISTANT                   = var.enableMathAssitant
+    ENABLE_TABULAR_DATA_ASSISTANT           = var.enableTabularDataAssistant
+    MAX_CSV_FILE_SIZE                       = var.maxCsvFileSize
+    AZURE_AI_CREDENTIAL_DOMAIN               = var.azure_ai_private_link_domain
+  }
+
+  aadClientId = module.entraObjects.azure_ad_web_app_client_id
+  depends_on = [ data.azurerm_key_vault.InfoAssistKeyVault]
+}

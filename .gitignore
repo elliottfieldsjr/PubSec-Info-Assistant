@@ -391,7 +391,7 @@ app/enrichment/shared_code
 #terraform
 .terraform
 infra/.terraform*
-terraform.tfstate
+# terraform.tfstate
 terraform.tfstate.d
 .tfplan.txt
 infra/infoasst*
