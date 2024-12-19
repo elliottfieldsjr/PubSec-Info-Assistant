@@ -111,7 +111,7 @@ resource "azurerm_linux_web_app" "app_service" {
   tags                                = var.tags
   webdeploy_publish_basic_authentication_enabled = false
   public_network_access_enabled                   = true
-  virtual_network_subnet_id                       = var.is_secure_mode ? data.azurerm_subnet.Integration.id : null
+  virtual_network_subnet_id                       = var.is_secure_mode ? data.azurerm_subnet.Integration[count.index].id : null
   
   site_config {
     application_stack {
