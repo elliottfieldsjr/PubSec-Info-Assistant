@@ -134,7 +134,11 @@ variable "vnet_name" {
   type = string
 }
 
-variable "subnet_name" {
+variable "IntegrationSubnetName" {
+  type    = string
+}
+
+variable "PrivateEndpointSubnetName" {
   type = string
 }
 
@@ -146,13 +150,6 @@ variable "private_dns_zone_name" {
   type = string
 }
 
-variable "snetIntegration_id" {
-  type = string
-}
-
-variable "randomString" {
-  type = string
-}
 
 variable "container_registry" {
   description = "The login server of the container registry"

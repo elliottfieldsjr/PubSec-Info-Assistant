@@ -499,8 +499,8 @@ module "webapp" {
     azurerm.HUBSub = azurerm.HUBSub
   }   
   source                              = "./core/host/webapp"
-  name                                = var.backendServiceName != "" ? var.backendServiceName : "dat-web-${random_string.random.result}"
-  plan_name                           = var.appServicePlanName != "" ? var.appServicePlanName : "dat-asp-${random_string.random.result}"
+  name                                = var.backendServiceName != "" ? var.backendServiceName : "${var.ResourceNamingConvention}-web-va"
+  plan_name                           = var.appServicePlanName != "" ? var.appServicePlanName : "${var.ResourceNamingConvention}-asp-va"
   sku = {
     tier                              = var.appServiceSkuTier
     size                              = var.appServiceSkuSize
@@ -517,17 +517,17 @@ module "webapp" {
   alwaysOn                            = true
   appCommandLine                      = ""
   healthCheckPath                     = "/health"
-  logAnalyticsWorkspaceResourceId     = module.logging.logAnalyticsId
+  logAnalyticsWorkspaceResourceId     = data.azurerm_log_analytics_workspace.ExistingLAW.id
   azure_portal_domain                 = var.azure_portal_domain
   enableOryxBuild                     = false
   applicationInsightsConnectionString = module.logging.applicationInsightsConnectionString
   keyVaultUri                         = data.azurerm_key_vault.InfoAssistKeyVault.vault_uri
   keyVaultName                        = data.azurerm_key_vault.InfoAssistKeyVault.name
-  tenantId                            = data.azurerm_client_config.current.tenant_id
+  tenantId                            = data.azurerm_client_config.SharedServicesSub.tenant_id
   is_secure_mode                      = var.is_secure_mode
-  subnet_name                         = var.is_secure_mode ? data.azurerm_subnet.InfoAssistINTSubnet.name: null
+  IntegrationSubnetName               = var.is_secure_mode ? data.azurerm_subnet.InfoAssistINTSubnet.name : null
+  PrivateEndpointSubnetName           = var.is_secure_mode ? data.azurerm_subnet.InfoAssistPESubnet.name : null
   vnet_name                           = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.name : null
-  snetIntegration_id                  = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.id: null
   private_dns_zone_ids                = var.is_secure_mode ? [data.azurerm_private_dns_zone.AzureWebPDZ.id] : null
   private_dns_zone_name               = var.is_secure_mode ? data.azurerm_private_dns_zone.AzureWebPDZ.name : null
 
@@ -535,7 +535,6 @@ module "webapp" {
   container_registry_admin_username   = module.acr.admin_username
   container_registry_admin_password   = module.acr.admin_password
   container_registry_id               = module.acr.acr_id
-  randomString                        = random_string.random.result
   azure_environment                   = var.azure_environment 
 
   appSettings = {
@@ -565,7 +564,7 @@ module "webapp" {
     COSMOSDB_LOG_DATABASE_NAME              = module.cosmosdb.CosmosDBLogDatabaseName
     COSMOSDB_LOG_CONTAINER_NAME             = module.cosmosdb.CosmosDBLogContainerName
     QUERY_TERM_LANGUAGE                     = var.queryTermLanguage
-    AZURE_SUBSCRIPTION_ID                   = data.azurerm_client_config.current.subscription_id
+    AZURE_SUBSCRIPTION_ID                   = data.azurerm_client_config.SharedServicesSub.subscription_id
     CHAT_WARNING_BANNER_TEXT                = var.chatWarningBannerText
     TARGET_EMBEDDINGS_MODEL                 = var.useAzureOpenAIEmbeddings ? "azure-openai_${var.azureOpenAIEmbeddingDeploymentName}" : var.sentenceTransformersModelName
     ENRICHMENT_APPSERVICE_URL               = module.enrichmentApp.uri

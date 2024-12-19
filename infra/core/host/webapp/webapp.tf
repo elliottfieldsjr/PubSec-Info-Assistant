@@ -1,6 +1,33 @@
+// Create Enrichment App Service Plan 
+terraform {
+  required_version = ">= 0.15.3"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.3.0"
+      configuration_aliases = [
+        azurerm.HUBSub,
+       ]
+    }
+  }
+}
+
+data "azurerm_subnet" "PrivateEndpoint" {
+  count                = var.is_secure_mode ? 1 : 0
+  name                 = var.PrivateEndpointSubnetName
+  virtual_network_name = var.vnet_name
+  resource_group_name  = var.InfoAssistResourceGroupName
+}
+
+data "azurerm_subnet" "Integration" {
+  count                = var.is_secure_mode ? 1 : 0
+  name                 = var.IntegrationSubnetName
+  virtual_network_name = var.vnet_name
+  resource_group_name  = var.InfoAssistResourceGroupName
+}
+
 # Create the web app service plan
 resource "azurerm_service_plan" "appServicePlan" {
-  provider = azurerm.SHAREDSERVICESSub    
   name                = var.plan_name
   location            = var.location
   resource_group_name = var.InfoAssistResourceGroupName
@@ -13,7 +40,6 @@ resource "azurerm_service_plan" "appServicePlan" {
 }
 
 resource "azurerm_monitor_autoscale_setting" "scaleout" {
-  provider = azurerm.SHAREDSERVICESSub    
   name                = azurerm_service_plan.appServicePlan.name
   resource_group_name = var.InfoAssistResourceGroupName
   location            = var.location
@@ -70,7 +96,6 @@ resource "azurerm_monitor_autoscale_setting" "scaleout" {
 }
 
 resource "azurerm_role_assignment" "acr_pull_role" {
-  provider = azurerm.SHAREDSERVICESSub    
   principal_id         = azurerm_linux_web_app.app_service.identity.0.principal_id
   role_definition_name = "AcrPull"
   scope                = var.container_registry_id
@@ -78,7 +103,6 @@ resource "azurerm_role_assignment" "acr_pull_role" {
 
 # Create the web app
 resource "azurerm_linux_web_app" "app_service" {
-  provider = azurerm.SHAREDSERVICESSub    
   name                                = var.name
   location                            = var.location
   resource_group_name                 = var.InfoAssistResourceGroupName
@@ -87,7 +111,7 @@ resource "azurerm_linux_web_app" "app_service" {
   tags                                = var.tags
   webdeploy_publish_basic_authentication_enabled = false
   public_network_access_enabled                   = true
-  virtual_network_subnet_id                       = var.is_secure_mode ? var.snetIntegration_id : null
+  virtual_network_subnet_id                       = var.is_secure_mode ? data.azurerm_subnet.Integration.id : null
   
   site_config {
     application_stack {
@@ -195,7 +219,6 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_commercial" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_logs_usgov" {
-  provider = azurerm.SHAREDSERVICESSub    
   count                      = var.azure_environment == "AzureUSGovernment" ? 1 : 0
   name                       = azurerm_linux_web_app.app_service.name
   target_resource_id         = azurerm_linux_web_app.app_service.id
@@ -254,19 +277,12 @@ resource "azurerm_key_vault_access_policy" "policy" {
   ]
 }
 
-data "azurerm_subnet" "subnet" {
-  count                = var.is_secure_mode ? 1 : 0
-  name                 = var.subnet_name
-  virtual_network_name = var.vnet_name
-  resource_group_name  = var.InfoAssistResourceGroupName
-}
-
 resource "azurerm_private_endpoint" "backendPrivateEndpoint" {
   count                         = var.is_secure_mode ? 1 : 0
   name                          = "${var.name}-private-endpoint"
   location                      = var.location
   resource_group_name           = var.InfoAssistResourceGroupName
-  subnet_id                     = data.azurerm_subnet.subnet[0].id
+  subnet_id                     = data.azurerm_subnet.PrivateEndpoint[0].id
   tags                          = var.tags
   custom_network_interface_name = "infoasstwebnic"
 
