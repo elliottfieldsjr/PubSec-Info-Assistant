@@ -854,3 +854,27 @@ resource "azurerm_cosmosdb_sql_role_assignment" "enrichmentApp_cosmosdb_data_con
   principal_id = module.enrichmentApp.identityPrincipalId
   scope = module.cosmosdb.id
 }
+
+module "docIntel_StorageBlobDataReader" {
+  source = "./core/security/role"
+  scope = data.azurerm_resource_group.InfoAssistRG.id
+  principalId = module.aiDocIntelligence.docIntelligenceIdentity
+  roleDefinitionId = local.azure_roles.StorageBlobDataReader
+  principalType = "ServicePrincipal"
+  subscriptionId = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId = data.azurerm_resource_group.InfoAssistRG.id
+}
+
+# // MANAGEMENT SERVICE PRINCIPAL ROLES
+module "openAiRoleMgmt" { 
+  source = "./core/security/role"
+  # If leveraging an existing Azure OpenAI service, only make this assignment if not under automation.
+  # When under automation and using an existing Azure OpenAI service, this will result in a duplicate assignment error.
+  count = var.useExistingAOAIService ? var.isInAutomation ? 0 : 1 : 1
+  scope = var.useExistingAOAIService ? data.azurerm_resource_group.existing[0].id : data.azurerm_resource_group.InfoAssistRG.id
+  principalId     = module.entraObjects.azure_ad_mgmt_sp_id
+  roleDefinitionId = local.azure_roles.CognitiveServicesOpenAIUser
+  principalType   = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
