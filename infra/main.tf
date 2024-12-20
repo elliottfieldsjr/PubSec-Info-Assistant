@@ -686,7 +686,6 @@ resource "azurerm_cosmosdb_sql_role_assignment" "user_cosmosdb_data_contributor"
 }
 
 data "azurerm_resource_group" "existing" {
-  provider = azurerm.SHAREDSERVICESSub
   count = var.useExistingAOAIService ? 1 : 0
   name  = var.azureOpenAIResourceGroup
 }
