@@ -830,3 +830,27 @@ module "fuctionApp_StorageAccountContributor" {
   subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
   resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
 }
+
+resource "azurerm_cosmosdb_sql_role_assignment" "webApp_cosmosdb_data_contributor" {
+  resource_group_name = var.InfoAssistResourceGroupName
+  account_name = module.cosmosdb.name
+  role_definition_id = "/subscriptions/${data.azurerm_client_config.SharedServicesSub.subscription_id}/resourceGroups/${var.InfoAssistResourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${module.cosmosdb.name}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002" #Cosmos DB Built-in Data Contributor
+  principal_id = module.webapp.identityPrincipalId
+  scope = module.cosmosdb.id
+}
+
+resource "azurerm_cosmosdb_sql_role_assignment" "functionApp_cosmosdb_data_contributor" {
+  resource_group_name = var.InfoAssistResourceGroupName
+  account_name = module.cosmosdb.name
+  role_definition_id = "/subscriptions/${data.azurerm_client_config.SharedServicesSub.subscription_id}/resourceGroups/${var.InfoAssistResourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${module.cosmosdb.name}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002" #Cosmos DB Built-in Data Contributor
+  principal_id = module.functions.identityPrincipalId
+  scope = module.cosmosdb.id
+}
+
+resource "azurerm_cosmosdb_sql_role_assignment" "enrichmentApp_cosmosdb_data_contributor" {
+  resource_group_name = var.InfoAssistResourceGroupName
+  account_name = module.cosmosdb.name
+  role_definition_id = "/subscriptions/${data.azurerm_client_config.SharedServicesSub.subscription_id}/resourceGroups/${var.InfoAssistResourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${module.cosmosdb.name}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002" #Cosmos DB Built-in Data Contributor
+  principal_id = module.enrichmentApp.identityPrincipalId
+  scope = module.cosmosdb.id
+}
