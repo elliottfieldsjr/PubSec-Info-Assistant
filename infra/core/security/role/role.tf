@@ -1,5 +1,4 @@
 resource "azurerm_role_assignment" "role" {
-  provider                      = azurerm.SHAREDSERVICESSub                
   # name               = "${var.subscriptionId}${var.resourceGroupId}${var.principalId}${var.roleDefinitionId}"
   scope              = var.scope
   role_definition_id = "/subscriptions/${var.subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${var.roleDefinitionId}"
