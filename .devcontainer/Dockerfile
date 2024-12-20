@@ -2,6 +2,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:3.12-bookworm
 
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
+ENV DNS_SERVER=172.18.1.4
 # To make it easier for build and release pipelines to run apt-get,
 # configure apt to not require confirmation (assume the -y argument by default)
 RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
