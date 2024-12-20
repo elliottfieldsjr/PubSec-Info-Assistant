@@ -878,3 +878,18 @@ module "openAiRoleMgmt" {
   subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
   resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
 }
+
+// DEPLOYMENT OF AZURE CUSTOMER ATTRIBUTION TAG
+resource "azurerm_resource_group_template_deployment" "customer_attribution" {
+  count               = var.cuaEnabled ? 1 : 0
+  name                = "pid-${var.cuaId}"
+  resource_group_name = var.InfoAssistResourceGroupName
+  deployment_mode     = "Incremental"
+  template_content    = <<TEMPLATE
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "resources": []
+}
+TEMPLATE
+}
