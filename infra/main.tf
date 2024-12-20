@@ -678,7 +678,6 @@ module "userRoles" {
 }
 
 resource "azurerm_cosmosdb_sql_role_assignment" "user_cosmosdb_data_contributor" {
-  provider = azurerm.SHAREDSERVICESSub
   resource_group_name = var.InfoAssistResourceGroupName
   account_name = module.cosmosdb.name
   role_definition_id = "/subscriptions/${data.azurerm_client_config.SharedServicesSub.subscription_id}/resourceGroups/${var.InfoAssistResourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${module.cosmosdb.name}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002" #Cosmos DB Built-in Data Contributor
