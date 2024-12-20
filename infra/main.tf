@@ -594,12 +594,12 @@ module "functions" {
     azurerm.HUBSub = azurerm.HUBSub
   }
   source = "./core/host/functions"  
-  name                                  = var.functionsAppName != "" ? var.functionsAppName : "dat-func-${random_string.random.result}"
+  name                                  = var.functionsAppName != "" ? var.functionsAppName : "${var.ResourceNamingConvention}-func-va"
   location                              = var.location
   tags                                  = local.tags
   keyVaultUri                           = data.azurerm_key_vault.InfoAssistKeyVault.vault_uri
   keyVaultName                          = data.azurerm_key_vault.InfoAssistKeyVault.name
-  plan_name                             = var.appServicePlanName != "" ? var.appServicePlanName : "dat-func-asp-${random_string.random.result}"
+  plan_name                             = var.appServicePlanName != "" ? var.appServicePlanName : "${var.ResourceNamingConvention}-func-asp-va"
   sku                                   = {
     size                                = var.functionsAppSkuSize
     tier                                = var.functionsAppSkuTier
@@ -650,7 +650,7 @@ module "functions" {
   azureSearchIndex                      = var.searchIndexName
   azureSearchServiceEndpoint            = module.searchServices.endpoint
   endpointSuffix                        = var.azure_storage_domain
-  logAnalyticsWorkspaceResourceId       = module.logging.logAnalyticsId
+  logAnalyticsWorkspaceResourceId       = data.azurerm_log_analytics_workspace.ExistingLAW.id
   is_secure_mode                        = var.is_secure_mode
   vnet_name                             = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.name : null
   IntegrationSubnetName                 = var.is_secure_mode ? data.azurerm_subnet.InfoAssistINTSubnet.name : null
