@@ -8,6 +8,7 @@ ENV_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # To maintain backward compatibility, we need to convert some of the variables to TF_VAR_ format
 export TF_VAR_ResourceNamingConvention=$RESOURCENAMINGCONVENTION
 export TF_VAR_CloudShellIP=$CLOUDSHELLIP
+export TF_VAR_dns_private_resolver_ip=$DNS_PRIVATE_RESOLVER_IP
 
 export TF_VAR_SharedServicesSubscriptionID=$SHAREDSERVICES_SUBSCRIPTION_ID
 export TF_VAR_InfoAssistResourceGroupName=$INFOASSISTRESOURCEGROUPNAME
