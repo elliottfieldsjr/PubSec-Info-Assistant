@@ -684,3 +684,150 @@ resource "azurerm_cosmosdb_sql_role_assignment" "user_cosmosdb_data_contributor"
   principal_id = data.azurerm_client_config.SharedServicesSub.object_id
   scope = module.cosmosdb.id
 }
+
+data "azurerm_resource_group" "existing" {
+  provider = azurerm.SHAREDSERVICESSub
+  count = var.useExistingAOAIService ? 1 : 0
+  name  = var.azureOpenAIResourceGroup
+}
+
+# # // SYSTEM IDENTITY ROLES
+module "webApp_OpenAiRole" { 
+  source = "./core/security/role"
+  scope            = var.useExistingAOAIService ? data.azurerm_resource_group.existing[0].id : data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = module.webapp.identityPrincipalId
+  roleDefinitionId = local.azure_roles.CognitiveServicesOpenAIUser
+  principalType    = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
+
+module "enrichmentApp_OpenAiRole" {
+  source = "./core/security/role"
+  scope            = var.useExistingAOAIService ? data.azurerm_resource_group.existing[0].id : data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = module.enrichmentApp.identityPrincipalId
+  roleDefinitionId = local.azure_roles.CognitiveServicesOpenAIUser
+  principalType    = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
+
+module "webApp_CognitiveServicesUser" {
+  source = "./core/security/role"
+  scope            = data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = module.webapp.identityPrincipalId
+  roleDefinitionId = local.azure_roles.CognitiveServicesUser
+  principalType    = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
+
+module "functionApp_CognitiveServicesUser" {
+  source = "./core/security/role"
+  scope            = data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = module.functions.identityPrincipalId
+  roleDefinitionId = local.azure_roles.CognitiveServicesUser
+  principalType    = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
+
+module "enrichmentApp_CognitiveServicesUser" { 
+  source = "./core/security/role"
+  scope            = data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = module.enrichmentApp.identityPrincipalId
+  roleDefinitionId = local.azure_roles.CognitiveServicesUser
+  principalType    = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
+
+module "enrichmentApp_StorageQueueDataContributor" {
+  source = "./core/security/role"
+  scope            = data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = module.enrichmentApp.identityPrincipalId
+  roleDefinitionId = local.azure_roles.StorageQueueDataContributor
+  principalType    = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
+
+module "functionApp_StorageQueueDataContributor" { 
+  source = "./core/security/role"
+  scope            = data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = module.functions.identityPrincipalId
+  roleDefinitionId = local.azure_roles.StorageQueueDataContributor
+  principalType    = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
+
+module "webApp_StorageBlobDataContributor" {
+  source = "./core/security/role"
+  scope            = data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = module.webapp.identityPrincipalId
+  roleDefinitionId = local.azure_roles.StorageBlobDataContributor
+  principalType    = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
+
+module "webApp_SearchIndexDataReader" {
+  source = "./core/security/role"
+  scope            = data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = module.webapp.identityPrincipalId
+  roleDefinitionId = local.azure_roles.SearchIndexDataReader
+  principalType    = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
+
+module "functionApp_SearchIndexDataContributor" {
+  source = "./core/security/role"
+  scope            = data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = module.functions.identityPrincipalId
+  roleDefinitionId = local.azure_roles.SearchIndexDataContributor
+  principalType    = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
+
+module "encrichmentApp_SearchIndexDataContributor" {
+  source = "./core/security/role"
+  scope            = data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = module.enrichmentApp.identityPrincipalId
+  roleDefinitionId = local.azure_roles.SearchIndexDataContributor
+  principalType    = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
+
+module "fuctionApp_StorageBlobDataOwner" {
+  source = "./core/security/role"
+  scope            = data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = module.functions.identityPrincipalId
+  roleDefinitionId = local.azure_roles.StorageBlobDataOwner
+  principalType    = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
+
+module "enrichmentApp_StorageBlobDataOwner" {
+  source = "./core/security/role"
+  scope            = data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = module.enrichmentApp.identityPrincipalId
+  roleDefinitionId = local.azure_roles.StorageBlobDataOwner
+  principalType    = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
+
+module "fuctionApp_StorageAccountContributor" { 
+  source = "./core/security/role"
+  scope            = data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = module.functions.identityPrincipalId
+  roleDefinitionId = local.azure_roles.StorageAccountContributor
+  principalType    = "ServicePrincipal"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
