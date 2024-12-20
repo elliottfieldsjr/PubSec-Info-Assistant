@@ -663,3 +663,16 @@ module "functions" {
   azure_environment                     = var.azure_environment
   azure_ai_credential_domain            = var.azure_ai_private_link_domain
 }
+
+// USER ROLES
+module "userRoles" { 
+  source = "./core/security/role"
+  for_each = { for role in local.selected_roles : role => { role_definition_id = local.azure_roles[role] } }
+
+  scope            = data.azurerm_resource_group.InfoAssistRG.id
+  principalId      = data.azurerm_client_config.SharedServicesSub.object_id
+  roleDefinitionId = each.value.role_definition_id
+  principalType    = var.isInAutomation ? "ServicePrincipal" : "User"
+  subscriptionId   = data.azurerm_client_config.SharedServicesSub.subscription_id
+  resourceGroupId  = data.azurerm_resource_group.InfoAssistRG.id
+}
