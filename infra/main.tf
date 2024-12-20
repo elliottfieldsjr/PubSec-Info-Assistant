@@ -589,7 +589,11 @@ module "webapp" {
 
 # // Function App 
 module "functions" { 
-  source = "./core/host/functions"
+  providers = {
+    azurerm = azurerm
+    azurerm.HUBSub = azurerm.HUBSub
+  }
+  source = "./core/host/functions"  
   name                                  = var.functionsAppName != "" ? var.functionsAppName : "dat-func-${random_string.random.result}"
   location                              = var.location
   tags                                  = local.tags
