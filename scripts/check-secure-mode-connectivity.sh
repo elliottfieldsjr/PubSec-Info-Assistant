@@ -9,8 +9,8 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 source "${DIR}/load-env.sh"
 
-dns_private_resolver_ip=$(jq -r '.DNS_PRIVATE_RESOLVER_IP.value' $DIR/../inf_output.json)
-export DNS_PRIVATE_RESOLVER_IP=$dns_private_resolver_ip
+# dns_private_resolver_ip=$(jq -r '.DNS_PRIVATE_RESOLVER_IP.value' $DIR/../inf_output.json)
+# export DNS_PRIVATE_RESOLVER_IP=$dns_private_resolver_ip
 # export DNS_PRIVATE_RESOLVER_IP=172.18.1.4
 
 figlet Check Connectivity
