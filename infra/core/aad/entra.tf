@@ -13,7 +13,7 @@ resource "azuread_application" "aad_web_app" {
   oauth2_post_response_required = true
   service_management_reference = var.serviceManagementReference
   web {
-    redirect_uris = ["https://${var.ResourceNamingConvention}.infoasst-web.${var.azure_websites_domain}/.auth/login/aad/callback"]
+    redirect_uris = ["https://${var.ResourceNamingConvention}-infoasst-web.${var.azure_websites_domain}/.auth/login/aad/callback"]
     implicit_grant {
       access_token_issuance_enabled = true
       id_token_issuance_enabled     = true
