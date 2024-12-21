@@ -110,7 +110,7 @@ resource "azurerm_linux_web_app" "app_service" {
   https_only                          = true
   tags                                = var.tags
   webdeploy_publish_basic_authentication_enabled = false
-  public_network_access_enabled                   = true
+  public_network_access_enabled                   = false
   virtual_network_subnet_id                       = var.is_secure_mode ? data.azurerm_subnet.Integration[0].id : null
   
   site_config {
@@ -296,4 +296,10 @@ resource "azurerm_private_endpoint" "backendPrivateEndpoint" {
     name                 = "${var.name}PrivateDnsZoneGroup"
     private_dns_zone_ids = var.private_dns_zone_ids
   }
+}
+
+resource "azurerm_app_service_custom_hostname_binding" "customdomain" {
+  hostname            = var.CustomDomainName
+  app_service_name    = azurerm_linux_web_app.app_service.name
+  resource_group_name = azurerm_linux_web_app.app_service.resource_group_name
 }

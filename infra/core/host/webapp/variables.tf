@@ -130,6 +130,10 @@ variable "is_secure_mode" {
   type        = bool
 }
 
+variable "CustomDomainName" {
+  type = string
+}
+
 variable "vnet_name" {
   type = string
 }

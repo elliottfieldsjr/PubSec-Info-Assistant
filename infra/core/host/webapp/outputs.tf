@@ -13,3 +13,7 @@ output "uri" {
 output "web_serviceplan_name" {
   value = azurerm_service_plan.appServicePlan.name
 }
+
+output "custom_domain_verification_id" {
+  value = azurerm_linux_web_app.app_service.custom_domain_verification_id
+}
