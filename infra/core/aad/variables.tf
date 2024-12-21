@@ -1,5 +1,20 @@
-variable "ResourceNamingConvention" {
-  description = "Naming Prefix for Deployed Resources"
+variable "WebAppName" {
+  description = "Web App Name"
+  type        = string
+}
+
+variable "AADWebName" {
+  description = "Entra ID Web App Name"
+  type        = string
+}
+
+variable "AADWebUri" {
+  description = "Entra ID Web App Uri"
+  type        = string
+}
+
+variable "AADMgmtName" {
+  description = "Entra ID Management App Name"
   type        = string
 }
 

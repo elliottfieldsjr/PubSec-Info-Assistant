@@ -1,11 +1,33 @@
 locals {
-  tags            = { ProjectName = "Information Assistant", BuildNumber = var.buildNumber }
-  azure_roles     = jsondecode(file("${path.module}/azure_roles.json"))
-  selected_roles  = ["CognitiveServicesOpenAIUser", 
-                      "CognitiveServicesUser", 
-                      "StorageBlobDataOwner",
-                      "StorageQueueDataContributor", 
-                      "SearchIndexDataContributor"]
+  tags                  = { ProjectName = "Information Assistant", BuildNumber = var.buildNumber }
+  azure_roles           = jsondecode(file("${path.module}/azure_roles.json"))
+  selected_roles        = ["CognitiveServicesOpenAIUser", 
+                          "CognitiveServicesUser", 
+                          "StorageBlobDataOwner",
+                          "StorageQueueDataContributor", 
+                          "SearchIndexDataContributor"]
+  WebAppName            = "${var.ResourceNamingConvention}-web-va"
+  WebAppASPName         = "${var.ResourceNamingConvention}-asp-va"
+  EnrichmentWebName     = "${var.ResourceNamingConvention}-enrichmentweb-va"
+  EnrichmentASPName     = "${var.ResourceNamingConvention}-enrichmentasp-va"
+
+
+  AADWebName            = "${var.ResourceNamingConvention}_infoasst_web_access"
+  AADWebUri             = "${var.ResourceNamingConvention}-infoasst"
+  AADMgmtName           = "${var.ResourceNamingConvention}_infoasst_mgmt_access"
+  AppInsightsName       = "${var.ResourceNamingConvention}-appinsights"
+  AppInsightsAMPLSName  = "${var.ResourceNamingConvention}-ampls-appinsights-connection"  
+  logWorkbookName       = "${var.ResourceNamingConvention}-lw-va"  
+  ACRName               = "${var.ResourceNamingConvention}datacrva"   
+  OpenAIName            = "${var.ResourceNamingConvention}-aoai-va"  
+  SearchName            = "${var.ResourceNamingConvention}-search-va"  
+  DocIntName            = "${var.ResourceNamingConvention}-docint-va"  
+  AIServiceName         = "${var.ResourceNamingConvention}-aisvc-va"
+  CosmosName            = "${var.ResourceNamingConvention}-cosmos"  
+  WorkFlowName          = "${var.ResourceNamingConvention}-infoasst-sharepointonline" 
+  BingSearchName        = "${var.ResourceNamingConvention}-bing-va"  
+  FunctionAppName       = "${var.ResourceNamingConvention}-func-va"
+  FunctionASPName       = "${var.ResourceNamingConvention}-func-asp-va"  
 }
 
 data "azurerm_client_config" "HubSub" {
@@ -26,7 +48,10 @@ data "azurerm_client_config" "SharedServicesSub" {
 
 module "entraObjects" {
   source                            = "./core/aad"
-  ResourceNamingConvention = var.ResourceNamingConvention
+  WebAppName                        = local.WebAppName
+  AADWebName                        = local.AADWebName
+  AADWebUri                         = local.AADWebUri
+  AADMgmtName                       = local.AADMgmtName
   ObjectID = data.azurerm_client_config.HubSub.object_id
   isInAutomation                    = var.isInAutomation
   requireWebsiteSecurityMembership  = var.requireWebsiteSecurityMembership
@@ -189,8 +214,8 @@ module "logging" {
   LAWResourceGroupName                  = var.LAWResourceGroupName
   LAWName                               = var.LAWName
   AMPLSName                             = var.AMPLSName
-  AppInsightsName                       = "${var.ResourceNamingConvention}-appinsights"
-  AppInsightsAMPLSName                  = "${var.ResourceNamingConvention}-ampls-appinsights-connection"
+  AppInsightsName                       = local.AppInsightsName
+  AppInsightsAMPLSName                  = local.AppInsightsAMPLSName
   is_secure_mode                        = var.is_secure_mode
   privateDnsZoneNameMonitor             = "privatelink.${var.azure_monitor_domain}"
   privateDnsZoneNameMonitorId           = data.azurerm_private_dns_zone.MonitorPDZ.id
@@ -219,7 +244,7 @@ module "azMonitor" {
   }   
   logAnalyticsName  = data.azurerm_log_analytics_workspace.ExistingLAW.name
   location          = var.location
-  logWorkbookName   = "${var.ResourceNamingConvention}-lw-va"
+  logWorkbookName   = local.logWorkbookName
   resourceGroupName = var.LAWResourceGroupName
   componentResource = "/subscriptions/${data.azurerm_client_config.OperationsSub.subscription_id}/resourceGroups/${var.LAWResourceGroupName}/providers/Microsoft.OperationalInsights/workspaces/${data.azurerm_log_analytics_workspace.ExistingLAW.name}"
 }
@@ -262,7 +287,7 @@ module "storage" {
 module "acr"{ 
   source                = "./core/container_registry"
   CloudShellIP          = var.CloudShellIP  
-  name                  = "${var.ResourceNamingConvention}datacrva" 
+  name                  = local.ACRName
   location              = var.location
   resourceGroupName     = var.InfoAssistResourceGroupName
   is_secure_mode        = var.is_secure_mode
@@ -274,7 +299,7 @@ module "acr"{
 
 module "openaiServices" {
   source                          = "./core/ai/openaiservices"
-  name                            = var.openAIServiceName != "" ? var.openAIServiceName : "${var.ResourceNamingConvention}-aoai-va"
+  name                            = var.openAIServiceName != "" ? var.openAIServiceName : local.OpenAIName
   location                        = var.location
   tags                            = local.tags
   resourceGroupName               = var.InfoAssistResourceGroupName
@@ -320,7 +345,7 @@ module "openaiServices" {
 
 module "searchServices" {
   source                        = "./core/search"
-  name                          = var.searchServicesName != "" ? var.searchServicesName : "${var.ResourceNamingConvention}-search-va"
+  name                          = var.searchServicesName != "" ? var.searchServicesName : local.SearchName
   location                      = var.location
   tags                          = local.tags
   semanticSearch                = var.use_semantic_reranker ? "free" : null
@@ -336,10 +361,10 @@ module "searchServices" {
 
 module "aiDocIntelligence" {
   source                        = "./core/ai/docintelligence"
-  name                          = "${var.ResourceNamingConvention}-docint-va"
+  name                          = local.DocIntName
   location                      = var.location
   tags                          = local.tags
-  customSubDomainName           = "${var.ResourceNamingConvention}-docint-va"
+  customSubDomainName           = local.DocIntName
   resourceGroupName             = var.InfoAssistResourceGroupName
   key_vault_name                = data.azurerm_key_vault.InfoAssistKeyVault.name
   is_secure_mode                = var.is_secure_mode
@@ -356,7 +381,7 @@ module "cognitiveServices" {
     azurerm.HUBSub = azurerm.HUBSub
     azurerm.OPERATIONSSub = azurerm.OPERATIONSSub
   }   
-  name                          = "${var.ResourceNamingConvention}-aisvc-va"
+  name                          = local.AIServiceName
   location                      = var.location 
   tags                          = local.tags
   InfoAssistResourceGroupName   = var.InfoAssistResourceGroupName
@@ -373,7 +398,7 @@ module "cognitiveServices" {
 
 module "cosmosdb" {  
   source = "./core/db"
-  name                          = "${var.ResourceNamingConvention}-cosmos"
+  name                          = local.CosmosName
   location                      = var.location
   tags                          = local.tags
   logDatabaseName               = "statusdb"
@@ -385,13 +410,13 @@ module "cosmosdb" {
   vnet_name                     = var.is_secure_mode ? data.azurerm_virtual_network.InfoAssistVNet.name : null
   private_dns_zone_ids          = var.is_secure_mode ? [data.azurerm_private_dns_zone.DocumentsPDZ.id] : null
   arm_template_schema_mgmt_api  = var.arm_template_schema_mgmt_api
-}
+}  
 
 // SharePoint Connector is not supported in secure mode
 module "sharepoint" {
   count                               = var.is_secure_mode ? 0 : var.enableSharePointConnector ? 1 : 0
   source                              = "./core/sharepoint"
-  WorkFlowName                        = "${var.ResourceNamingConvention}-infoasst-sharepointonline" 
+  WorkFlowName                        = local.WorkFlowName
   location                            = data.azurerm_resource_group.InfoAssistRG.location
   resource_group_name                 = var.InfoAssistResourceGroupName
   resource_group_id                   = data.azurerm_resource_group.InfoAssistRG.name
@@ -414,7 +439,7 @@ module "bingSearch" {
   }
   count                         = var.azure_environment == "AzureUSGovernment" ? 0 : var.is_secure_mode ? 0 : var.enableWebChat ? 1 : 0
   source                        = "./core/ai/bingSearch"
-  name                          = "${var.ResourceNamingConvention}-bing-va"
+  name                          = local.BingSearchName
   InfoAssistResourceGroupName   = var.InfoAssistResourceGroupName
   KVResourceGroupName           = var.KVResourceGroupName 
   tags                          = local.tags
@@ -430,8 +455,8 @@ module "enrichmentApp" {
     azurerm.HUBSub = azurerm.HUBSub
   }     
   source                                    = "./core/host/enrichmentapp"
-  name                                      = var.enrichmentServiceName != "" ? var.enrichmentServiceName : "${var.ResourceNamingConvention}-enrichmentweb-va"
-  plan_name                                 = var.enrichmentAppServicePlanName != "" ? var.enrichmentAppServicePlanName : "${var.ResourceNamingConvention}-enrichmentasp-va"
+  name                                      = var.enrichmentServiceName != "" ? var.enrichmentServiceName : local.EnrichmentWebName
+  plan_name                                 = var.enrichmentAppServicePlanName != "" ? var.enrichmentAppServicePlanName : local.EnrichmentASPName
   location                                  = var.location 
   tags                                      = local.tags
   sku = {
@@ -499,8 +524,8 @@ module "webapp" {
     azurerm.HUBSub = azurerm.HUBSub
   }   
   source                              = "./core/host/webapp"
-  name                                = var.backendServiceName != "" ? var.backendServiceName : "${var.ResourceNamingConvention}-web-va"
-  plan_name                           = var.appServicePlanName != "" ? var.appServicePlanName : "${var.ResourceNamingConvention}-asp-va"
+  name                                = var.backendServiceName != "" ? var.backendServiceName : local.WebAppName
+  plan_name                           = var.appServicePlanName != "" ? var.appServicePlanName : local.WebAppASPName
   sku = {
     tier                              = var.appServiceSkuTier
     size                              = var.appServiceSkuSize
@@ -594,12 +619,12 @@ module "functions" {
     azurerm.HUBSub = azurerm.HUBSub
   }
   source = "./core/host/functions"  
-  name                                  = var.functionsAppName != "" ? var.functionsAppName : "${var.ResourceNamingConvention}-func-va"
+  name                                  = var.functionsAppName != "" ? var.functionsAppName : local.FunctionAppName
+  plan_name                             = var.appServicePlanName != "" ? var.appServicePlanName : local.FunctionASPName
   location                              = var.location
   tags                                  = local.tags
   keyVaultUri                           = data.azurerm_key_vault.InfoAssistKeyVault.vault_uri
   keyVaultName                          = data.azurerm_key_vault.InfoAssistKeyVault.name
-  plan_name                             = var.appServicePlanName != "" ? var.appServicePlanName : "${var.ResourceNamingConvention}-func-asp-va"
   sku                                   = {
     size                                = var.functionsAppSkuSize
     tier                                = var.functionsAppSkuTier

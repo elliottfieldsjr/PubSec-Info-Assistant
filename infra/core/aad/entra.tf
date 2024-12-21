@@ -6,14 +6,14 @@ locals {
 
 resource "azuread_application" "aad_web_app" {
   count                         = var.isInAutomation ? 0 : 1
-  display_name                  = "${var.ResourceNamingConvention}_infoasst_web_access"
-  identifier_uris               = ["api://${var.ResourceNamingConvention}-infoasst"]
+  display_name                  = var.AADWebName
+  identifier_uris               = ["api://${var.AADWebUri}"]
   owners                        = local.owner_ids
   sign_in_audience              = "AzureADMyOrg"
   oauth2_post_response_required = true
   service_management_reference = var.serviceManagementReference
   web {
-    redirect_uris = ["https://${var.ResourceNamingConvention}-infoasst-web.${var.azure_websites_domain}/.auth/login/aad/callback"]
+    redirect_uris = ["https://${var.WebAppName}.${var.azure_websites_domain}/.auth/login/aad/callback"]
     implicit_grant {
       access_token_issuance_enabled = true
       id_token_issuance_enabled     = true
@@ -31,7 +31,7 @@ resource "azuread_service_principal" "aad_web_sp" {
 
 resource "azuread_application" "aad_mgmt_app" {
   count             = var.isInAutomation ? 0 : 1
-  display_name      = "${var.ResourceNamingConvention}_infoasst_mgmt_access"
+  display_name      = var.AADMgmtName
   owners            = local.owner_ids
   sign_in_audience  = "AzureADMyOrg"
   service_management_reference = var.serviceManagementReference
