@@ -256,7 +256,6 @@ module "storage" {
     azurerm.HUBSub = azurerm.HUBSub
     azurerm.OPERATIONSSub = azurerm.OPERATIONSSub
   }   
-  CloudShellIP                    = var.CloudShellIP
   name                            = var.storageAccountName != "" ? var.storageAccountName : var.InfoAssistStorageAccountName
   location                        = var.location
   tags                            = local.tags
@@ -286,7 +285,6 @@ module "storage" {
 
 module "acr"{ 
   source                = "./core/container_registry"
-  CloudShellIP          = var.CloudShellIP  
   name                  = local.ACRName
   location              = var.location
   resourceGroupName     = var.InfoAssistResourceGroupName

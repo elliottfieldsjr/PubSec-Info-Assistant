@@ -3,11 +3,6 @@ variable "ResourceNamingConvention" {
   type        = string
 }
 
-variable "CloudShellIP" {
-  description = "Name of current CloudShell IP"
-  type = string
-}
-
 variable "environmentName" {
   description = "Name of the the environment which is used to generate a short unique hash used in all resources."
   type        = string
