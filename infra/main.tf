@@ -10,8 +10,6 @@ locals {
   WebAppASPName         = "${var.ResourceNamingConvention}-asp-va"
   EnrichmentWebName     = "${var.ResourceNamingConvention}-enrichmentweb-va"
   EnrichmentASPName     = "${var.ResourceNamingConvention}-enrichmentasp-va"
-
-
   AADWebName            = "${var.ResourceNamingConvention}_infoasst_web_access"
   AADWebUri             = "${var.ResourceNamingConvention}-infoasst"
   AADMgmtName           = "${var.ResourceNamingConvention}_infoasst_mgmt_access"
@@ -48,6 +46,7 @@ data "azurerm_client_config" "SharedServicesSub" {
 
 module "entraObjects" {
   source                            = "./core/aad"
+  CustomDomainName                  = var.CustomDomainName
   WebAppName                        = local.WebAppName
   AADWebName                        = local.AADWebName
   AADWebUri                         = local.AADWebUri

@@ -3,6 +3,10 @@ variable "WebAppName" {
   type        = string
 }
 
+variable "CustomDomainName" {
+  type = string
+}
+
 variable "AADWebName" {
   description = "Entra ID Web App Name"
   type        = string
