@@ -522,6 +522,7 @@ module "webapp" {
     azurerm.HUBSub = azurerm.HUBSub
   }   
   source                              = "./core/host/webapp"
+  CustomDomainName                    = var.CustomDomainName
   name                                = var.backendServiceName != "" ? var.backendServiceName : local.WebAppName
   plan_name                           = var.appServicePlanName != "" ? var.appServicePlanName : local.WebAppASPName
   sku = {
