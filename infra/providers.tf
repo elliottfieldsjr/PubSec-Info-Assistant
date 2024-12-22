@@ -24,8 +24,10 @@ provider "azurerm" {
   alias       = "HUBSub"  
   features {
     key_vault {
-      purge_soft_delete_on_destroy    = true
-      recover_soft_deleted_key_vaults = true
+      purge_soft_delete_on_destroy                = true
+      recover_soft_deleted_key_vaults             = true
+      purge_soft_deleted_certificates_on_destroy  = true
+      recover_soft_deleted_certificates           = true      
     }
   }
   subscription_id            = var.HubSubscriptionID
