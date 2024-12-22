@@ -398,7 +398,7 @@ infra/infoasst*
 infra/sp_config/config.json
 
 # Certificates
-infra/core/security/keyvaultCertificate/vonnzy.pfx
+# infra/core/security/keyvaultCertificate/vonnzy.pfx
 
 #Upgrade & Migrate Support
 scripts/upgrade_repoint.config.json
