@@ -397,6 +397,9 @@ terraform.tfstate.d
 infra/infoasst*
 infra/sp_config/config.json
 
+# Certificates
+infra/core/host/webapp/vonnzy.us
+
 #Upgrade & Migrate Support
 scripts/upgrade_repoint.config.json
 azcopy.tar.gz
