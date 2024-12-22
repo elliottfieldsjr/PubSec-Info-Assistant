@@ -2,6 +2,10 @@ variable "KeyVaultID" {
   type = string
 }
 
+variable "CertificateName" {
+  type = string
+}
+
 variable "CertificateFileName" {
   type = string
 }

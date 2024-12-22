@@ -12,11 +12,11 @@ terraform {
 }
 
 resource "azurerm_key_vault_certificate" "Certificate1" {
-  name         = var.CertificateFileName
+  name         = var.CertificateName
   key_vault_id = var.KeyVaultID
 
   certificate {
-    contents = filebase64("./core/security/keyvaultCertificate/${var.CertificateFileName}.pfx")
+    contents = filebase64("./core/security/keyvaultCertificate/${var.CertificateFileName}")
     password = var.CertificatePassword
   }
 

@@ -26,7 +26,8 @@ locals {
   BingSearchName        = "${var.ResourceNamingConvention}-bing-va"  
   FunctionAppName       = "${var.ResourceNamingConvention}-func-va"
   FunctionASPName       = "${var.ResourceNamingConvention}-func-asp-va"  
-  CertificateFileName   = "vonnzy"
+  CertificateName       = "vonnzy-wildcard"
+  CertificateFileName   = "vonnzy.pfx"
   CertificatePassword   = var.CertificatePassword
 }
 
@@ -201,6 +202,7 @@ module "keyvaultCertificate" {
     azurerm.HUBSub = azurerm.HUBSub
   }   
   KeyVaultID = data.azurerm_key_vault.InfoAssistKeyVault.id
+  CertificateName     = local.CertificateName
   CertificateFileName = local.CertificateFileName
   CertificatePassword = local.CertificatePassword
 
