@@ -5,8 +5,7 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 4.3.0"
       configuration_aliases = [
-        azurerm.HUBSub,
-        azurerm.OPERATIONSSub,
+        azurerm.HUBSub
        ]
     }
   }
