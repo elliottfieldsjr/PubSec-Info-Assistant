@@ -26,7 +26,7 @@ locals {
   BingSearchName        = "${var.ResourceNamingConvention}-bing-va"  
   FunctionAppName       = "${var.ResourceNamingConvention}-func-va"
   FunctionASPName       = "${var.ResourceNamingConvention}-func-asp-va"  
-  CertificateFileName   = "vonnzy.pfx"
+  CertificateFileName   = "vonnzy"
 }
 
 data "azurerm_client_config" "HubSub" {
