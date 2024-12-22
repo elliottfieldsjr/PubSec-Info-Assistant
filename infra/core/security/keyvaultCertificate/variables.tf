@@ -5,3 +5,8 @@ variable "KeyVaultID" {
 variable "CertificateFileName" {
   type = string
 }
+
+variable "CertificatePassword" {
+  type        = string
+  sensitive   = true
+}

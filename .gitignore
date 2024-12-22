@@ -234,7 +234,7 @@ ClientBin/
 *.dbmdl
 *.dbproj.schemaview
 *.jfm
-*.pfx
+# *.pfx
 *.publishsettings
 orleans.codegen.cs
 
@@ -398,7 +398,7 @@ infra/infoasst*
 infra/sp_config/config.json
 
 # Certificates
-infra/core/security/keyvaultCertificate/vonnzy.us
+infra/core/security/keyvaultCertificate/vonnzy.pfx
 
 #Upgrade & Migrate Support
 scripts/upgrade_repoint.config.json

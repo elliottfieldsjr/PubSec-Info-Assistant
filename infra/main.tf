@@ -27,6 +27,7 @@ locals {
   FunctionAppName       = "${var.ResourceNamingConvention}-func-va"
   FunctionASPName       = "${var.ResourceNamingConvention}-func-asp-va"  
   CertificateFileName   = "vonnzy"
+  CertificatePassword   = var.CertificatePassword
 }
 
 data "azurerm_client_config" "HubSub" {
@@ -201,6 +202,7 @@ module "keyvaultCertificate" {
   }   
   KeyVaultID = data.azurerm_key_vault.InfoAssistKeyVault.id
   CertificateFileName = local.CertificateFileName
+  CertificatePassword = local.CertificatePassword
 
 }
 

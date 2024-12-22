@@ -17,7 +17,7 @@ resource "azurerm_key_vault_certificate" "Certificate1" {
 
   certificate {
     contents = filebase64("${var.CertificateFileName}.pfx")
-    password = "terraform"
+    password = var.CertificatePassword
   }
 
   certificate_policy {

@@ -7,6 +7,11 @@ variable "CustomDomainName" {
   type = string
 }
 
+variable "CertificatePassword" {
+  type        = string
+  sensitive   = true
+}
+
 variable "environmentName" {
   description = "Name of the the environment which is used to generate a short unique hash used in all resources."
   type        = string
