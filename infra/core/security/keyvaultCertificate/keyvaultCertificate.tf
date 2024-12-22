@@ -11,7 +11,7 @@ terraform {
   }
 }
 
-resource "azurerm_key_vault_certificate" "Certificate1" {
+resource "azurerm_key_vault_certificate" "WebCertificate" {
   name         = var.CertificateName
   key_vault_id = var.KeyVaultID
 
