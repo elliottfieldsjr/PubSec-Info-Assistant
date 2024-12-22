@@ -26,7 +26,7 @@ locals {
   BingSearchName        = "${var.ResourceNamingConvention}-bing-va"  
   FunctionAppName       = "${var.ResourceNamingConvention}-func-va"
   FunctionASPName       = "${var.ResourceNamingConvention}-func-asp-va"  
-  CertificateFileName   = "vonnzy"
+  CertificateFileName   = "vonnzy-self"
   CertificatePassword   = var.CertificatePassword
 }
 
