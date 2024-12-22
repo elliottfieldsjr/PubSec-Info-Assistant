@@ -26,6 +26,7 @@ locals {
   BingSearchName        = "${var.ResourceNamingConvention}-bing-va"  
   FunctionAppName       = "${var.ResourceNamingConvention}-func-va"
   FunctionASPName       = "${var.ResourceNamingConvention}-func-asp-va"  
+  CertificateFileName   = "vonnzy.pfx"
 }
 
 data "azurerm_client_config" "HubSub" {
@@ -190,6 +191,17 @@ data "azurerm_key_vault" "InfoAssistKeyVault" {
   provider              = azurerm.HUBSub    
   name                  = var.KVName
   resource_group_name   = var.KVResourceGroupName
+}
+
+module "keyvaultCertificate" {
+  source            = "./core/security/keyvaultCertificate"
+  providers = {
+    azurerm = azurerm
+    azurerm.HUBSub = azurerm.HUBSub
+  }   
+  KeyVaultID = data.azurerm_key_vault.InfoAssistKeyVault.id
+  CertificateFileName = local.CertificateFileName
+
 }
 
 data "azurerm_log_analytics_workspace" "ExistingLAW" {
