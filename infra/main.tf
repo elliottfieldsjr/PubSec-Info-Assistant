@@ -196,19 +196,18 @@ data "azurerm_key_vault" "InfoAssistKeyVault" {
   resource_group_name   = var.KVResourceGroupName
 }
 
-module "keyvaultCertificate" {
-  source            = "./core/security/keyvaultCertificate"
-  providers = {
-    azurerm = azurerm
-    azurerm.HUBSub = azurerm.HUBSub
-  }   
-  KeyVaultID = data.azurerm_key_vault.InfoAssistKeyVault.id
-  CertificateName     = local.CertificateName
-  CertificateFileName = local.CertificateFileName
-  CertificateFilePath = local.CertificateFilePath
-  CertificatePassword = local.CertificatePassword
-
-}
+# module "keyvaultCertificate" {
+#  source            = "./core/security/keyvaultCertificate"
+#  providers = {
+#    azurerm = azurerm
+#    azurerm.HUBSub = azurerm.HUBSub
+#  }   
+#  KeyVaultID = data.azurerm_key_vault.InfoAssistKeyVault.id
+#  CertificateName     = local.CertificateName
+#  CertificateFileName = local.CertificateFileName
+#  CertificateFilePath = local.CertificateFilePath
+#  CertificatePassword = local.CertificatePassword
+#}
 
 data "azurerm_log_analytics_workspace" "ExistingLAW" {
   provider            = azurerm.OPERATIONSSub
@@ -568,7 +567,7 @@ module "webapp" {
   CertificateFileName                 = local.CertificateFileName
   CertificateFilePath                 = local.CertificateFilePath
   CertificatePassword                 = local.CertificatePassword  
-  CertificateThumbprint               = module.keyvaultCertificate.certificate_thumbprint
+  # CertificateThumbprint               = module.keyvaultCertificate.certificate_thumbprint
   tenantId                            = data.azurerm_client_config.SharedServicesSub.tenant_id
   is_secure_mode                      = var.is_secure_mode
   IntegrationSubnetName               = var.is_secure_mode ? data.azurerm_subnet.InfoAssistINTSubnet.name : null

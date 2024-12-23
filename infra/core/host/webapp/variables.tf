@@ -65,9 +65,9 @@ variable "keyVaultName" {
   type = string
 }
 
-variable "CertificateThumbprint" {
-  type = string
-}
+# variable "CertificateThumbprint" {
+#  type = string
+# }
 
 variable "CertificateName" {
   type = string
