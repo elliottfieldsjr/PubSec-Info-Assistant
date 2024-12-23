@@ -302,6 +302,18 @@ resource "azurerm_app_service_custom_hostname_binding" "customdomain" {
   hostname            = var.CustomDomainName
   app_service_name    = azurerm_linux_web_app.app_service.name
   resource_group_name = azurerm_linux_web_app.app_service.resource_group_name
-  ssl_state = "SniEnabled"
-  thumbprint = var.CertificateThumbprint
+  lifecycle {
+    ignore_changes = [ssl_state, thumbprint]
+  }  
+}
+
+resource "azurerm_app_service_certificate" "AppServiceCert" {
+  depends_on = [
+    azurerm_linux_web_app.app_service
+  ]
+  name                = var.CertificateName
+  resource_group_name = azurerm_linux_web_app.app_service.resource_group_name
+  location            = azurerm_linux_web_app.app_service.location
+  pfx_blob            = filebase64("${var.CertificateFilePath}")
+  password            = var.CertificatePassword
 }

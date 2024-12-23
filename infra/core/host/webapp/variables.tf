@@ -69,6 +69,23 @@ variable "CertificateThumbprint" {
   type = string
 }
 
+variable "CertificateName" {
+  type = string
+}
+
+variable "CertificateFileName" {
+  type = string
+}
+
+variable "CertificateFilePath" {
+  type = string
+}
+
+variable "CertificatePassword" {
+  type        = string
+  sensitive   = true
+}
+
 variable "aadClientId" {
   type = string
   default = ""

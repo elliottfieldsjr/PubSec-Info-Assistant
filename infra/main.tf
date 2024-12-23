@@ -564,6 +564,10 @@ module "webapp" {
   applicationInsightsConnectionString = module.logging.applicationInsightsConnectionString
   keyVaultUri                         = data.azurerm_key_vault.InfoAssistKeyVault.vault_uri
   keyVaultName                        = data.azurerm_key_vault.InfoAssistKeyVault.name
+  CertificateName                     = local.CertificateName
+  CertificateFileName                 = local.CertificateFileName
+  CertificateFilePath                 = local.CertificateFilePath
+  CertificatePassword                 = local.CertificatePassword  
   CertificateThumbprint               = module.keyvaultCertificate.certificate_thumbprint
   tenantId                            = data.azurerm_client_config.SharedServicesSub.tenant_id
   is_secure_mode                      = var.is_secure_mode
