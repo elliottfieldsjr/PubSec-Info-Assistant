@@ -318,12 +318,11 @@ resource "azurerm_app_service_certificate" "AppServiceCert" {
   password            = var.CertificatePassword
 }
 
-resource "azurerm_app_service_managed_certificate" "AppServiceCert" {
-  custom_hostname_binding_id = azurerm_app_service_custom_hostname_binding.customdomain.id
-}
-
 resource "azurerm_app_service_certificate_binding" "AppServiceCert" {
+  depends_on = [ 
+    azurerm_app_service_certificate.AppServiceCert
+  ]
   hostname_binding_id = azurerm_app_service_custom_hostname_binding.customdomain.id
-  certificate_id      = azurerm_app_service_managed_certificate.AppServiceCert.id
+  certificate_id      = azurerm_app_service_certificate.AppServiceCert.id
   ssl_state           = "SniEnabled"
 }
