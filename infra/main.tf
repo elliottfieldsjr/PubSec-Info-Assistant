@@ -562,6 +562,7 @@ module "webapp" {
   applicationInsightsConnectionString = module.logging.applicationInsightsConnectionString
   keyVaultUri                         = data.azurerm_key_vault.InfoAssistKeyVault.vault_uri
   keyVaultName                        = data.azurerm_key_vault.InfoAssistKeyVault.name
+  CertificateThumbprint               = module.keyvaultCertificate.certificate_thumbprint
   tenantId                            = data.azurerm_client_config.SharedServicesSub.tenant_id
   is_secure_mode                      = var.is_secure_mode
   IntegrationSubnetName               = var.is_secure_mode ? data.azurerm_subnet.InfoAssistINTSubnet.name : null
@@ -622,7 +623,10 @@ module "webapp" {
   }
 
   aadClientId = module.entraObjects.azure_ad_web_app_client_id
-  depends_on = [ data.azurerm_key_vault.InfoAssistKeyVault]
+  depends_on = [ 
+    data.azurerm_key_vault.InfoAssistKeyVault,
+    module.keyvaultCertificate
+  ]
 }
 
 

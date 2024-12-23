@@ -65,6 +65,10 @@ variable "keyVaultName" {
   type = string
 }
 
+variable "CertificateThumbprint" {
+  type = string
+}
+
 variable "aadClientId" {
   type = string
   default = ""

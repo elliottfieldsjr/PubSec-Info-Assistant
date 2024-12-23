@@ -302,4 +302,6 @@ resource "azurerm_app_service_custom_hostname_binding" "customdomain" {
   hostname            = var.CustomDomainName
   app_service_name    = azurerm_linux_web_app.app_service.name
   resource_group_name = azurerm_linux_web_app.app_service.resource_group_name
+  ssl_state = "SniEnabled"
+  thumbprint = var.CertificateThumbprint
 }
