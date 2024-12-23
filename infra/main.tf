@@ -630,7 +630,7 @@ module "webapp" {
   aadClientId = module.entraObjects.azure_ad_web_app_client_id
   depends_on = [ 
     data.azurerm_key_vault.InfoAssistKeyVault,
-    module.keyvaultCertificate
+    # module.keyvaultCertificate
   ]
 }
 
