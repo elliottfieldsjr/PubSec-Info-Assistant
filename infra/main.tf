@@ -27,7 +27,7 @@ locals {
   FunctionAppName       = "${var.ResourceNamingConvention}-func-va"
   FunctionASPName       = "${var.ResourceNamingConvention}-func-asp-va"  
   CertificateName       = "TestCert2"
-  CertificateFileName   = "vonnzywildcard99.pfx"
+  CertificateFileName   = "vonnzywildcard101.pfx"
   CertificatePassword   = var.CertificatePassword
 }
 
