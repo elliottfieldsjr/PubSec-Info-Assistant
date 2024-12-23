@@ -205,6 +205,7 @@ module "keyvaultCertificate" {
   KeyVaultID = data.azurerm_key_vault.InfoAssistKeyVault.id
   CertificateName     = local.CertificateName
   CertificateFileName = local.CertificateFileName
+  CertificateFilePath = local.CertificateFilePath
   CertificatePassword = local.CertificatePassword
 
 }
