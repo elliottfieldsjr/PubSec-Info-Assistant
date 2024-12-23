@@ -26,9 +26,10 @@ locals {
   BingSearchName        = "${var.ResourceNamingConvention}-bing-va"  
   FunctionAppName       = "${var.ResourceNamingConvention}-func-va"
   FunctionASPName       = "${var.ResourceNamingConvention}-func-asp-va"  
-  CertificateName       = "TestCert3"
-  CertificateFileName   = "vonnzywildcard101.pfx"
-  CertificatePassword   = var.CertificatePassword
+  CertificateName       = "TestCert4"
+  CertificateFileName   = "vonnzy.pfx"
+  CertificateFilePath   = "./certificates/${local.CertificateFileName}"
+  CertificatePassword   = var.CertificatePassword  
 }
 
 data "azurerm_client_config" "HubSub" {

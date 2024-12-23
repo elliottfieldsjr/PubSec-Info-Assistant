@@ -16,24 +16,7 @@ resource "azurerm_key_vault_certificate" "WebCertificate" {
   key_vault_id = var.KeyVaultID
 
   certificate {
-    contents = filebase64("./core/security/keyvaultCertificate/${var.CertificateFileName}")
+    contents = filebase64("${var.CertificateFilePath}")
     password = var.CertificatePassword
-  }
-
-  certificate_policy {
-    issuer_parameters {
-      name = "Unknown"
-    }
-
-    key_properties {
-      exportable = true
-      key_size   = 2048
-      key_type   = "RSA"
-      reuse_key  = false
-    }
-
-    secret_properties {
-      content_type = "application/x-pkcs12"
-    }
   }
 }
