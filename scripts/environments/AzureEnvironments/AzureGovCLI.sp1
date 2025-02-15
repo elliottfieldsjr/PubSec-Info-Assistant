@@ -1,5 +1,5 @@
 az cloud set --name AzureUSGovernment
 # az login --identity
-az login --tenant 03f141f3-496d-4319-bbea-a3e9286cab10 --use-device-code
+az login --tenant 2b88c6f1-9e05-48e2-b678-efcddac3d679 --use-device-code
 
 curl -s checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
