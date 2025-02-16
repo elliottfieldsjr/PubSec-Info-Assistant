@@ -196,7 +196,13 @@ data "azurerm_key_vault" "InfoAssistKeyVault" {
   resource_group_name   = var.KVResourceGroupName
 }
 
+data "azurerm_key_vault_certificate" "WebCertificate" {
+  key_vault_id = data.azurerm_key_vault.InfoAssistKeyVault.id
+  name = local.CertificateName
+}
+
 module "keyvaultCertificate" {
+  count = data.azurerm_key_vault_certificate.WebCertificate == "" ? 1 : 0
   source            = "./core/security/keyvaultCertificate"
   providers = {
     azurerm = azurerm
