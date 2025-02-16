@@ -272,7 +272,7 @@ module "storage" {
     azurerm.HUBSub = azurerm.HUBSub
     azurerm.OPERATIONSSub = azurerm.OPERATIONSSub
   }   
-  name                            = var.storageAccountName != "" ? var.storageAccountName : var.InfoAssistStorageAccountName
+  name                            = var.InfoAssistStorageAccountName == "" ? var.storageAccountName : var.InfoAssistStorageAccountName
   location                        = var.location
   tags                            = local.tags
   accessTier                      = "Hot"
