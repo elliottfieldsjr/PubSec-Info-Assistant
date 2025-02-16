@@ -58,7 +58,7 @@ resource "azurerm_private_dns_a_record" "oms_law_id" {
   count               = var.is_secure_mode ? 1 : 0
   name                = "infoasst-pl-oms-law-id"
   zone_name           = var.privateDnsZoneNameOms
-  resource_group_name = var.APDZResourceGroupName
+  resource_group_name = var.PrivateDNSZoneResourceGroupName
   ttl                 = 3600
   records             = [cidrhost(var.ampls_subnet_CIDR, 4)]
 }
@@ -68,7 +68,7 @@ resource "azurerm_private_dns_a_record" "ods_law_id" {
   count               = var.is_secure_mode ? 1 : 0
   name                = "infoasst_pl_ods_law_id"
   zone_name           = var.privateDnSZoneNameOds
-  resource_group_name = var.APDZResourceGroupName
+  resource_group_name = var.PrivateDNSZoneResourceGroupName
   ttl                 = 3600
   records             = [cidrhost(var.ampls_subnet_CIDR, 5)]
 }
@@ -79,7 +79,7 @@ resource "azurerm_private_dns_a_record" "agentsvc_law_id" {
   count               = var.is_secure_mode ? 1 : 0
   name                = "infoasst_pl_agentsvc_law_id"
   zone_name           = var.privateDnsZoneNameAutomation
-  resource_group_name = var.APDZResourceGroupName
+  resource_group_name = var.PrivateDNSZoneResourceGroupName
   ttl                 = 3600
   records             = [cidrhost(var.ampls_subnet_CIDR, 6)]
 }
@@ -89,7 +89,7 @@ resource "azurerm_private_dns_a_record" "blob_scadvisorcontentpld" {
   count               = var.is_secure_mode ? 1 : 0
   name                = "scadvisorcontentpl"
   zone_name           = var.privateDnsZoneNameBlob
-  resource_group_name = var.APDZResourceGroupName
+  resource_group_name = var.PrivateDNSZoneResourceGroupName
   ttl                 = 3600
   records             = [cidrhost(var.ampls_subnet_CIDR, 12)]
 }

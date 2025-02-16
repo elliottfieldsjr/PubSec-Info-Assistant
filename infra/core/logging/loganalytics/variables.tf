@@ -26,7 +26,7 @@ variable "InfoAssistResourceGroupName" {
   type    = string
 }
 
-variable "APDZResourceGroupName" {
+variable "PrivateDNSZoneResourceGroupName" {
   type    = string
 }
 
