@@ -9,6 +9,7 @@ ENV_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 export TF_VAR_ResourceNamingConvention=$RESOURCENAMINGCONVENTION
 export TF_VAR_CustomDomainName=$CUSTOMDOMAINNAME
 export TF_VAR_CustomDomainHost=$CUSTOMDOMAINHOST
+export TF_VAR_CustomDomainZone=$CUSTOMDOMAINZONE
 export TF_VAR_dns_private_resolver_ip=$DNS_PRIVATE_RESOLVER_IP
 
 export TF_VAR_SharedServicesSubscriptionID=$SHAREDSERVICES_SUBSCRIPTION_ID

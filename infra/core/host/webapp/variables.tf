@@ -163,6 +163,10 @@ variable "CustomDomainHost" {
   type = string
 }
 
+variable "CustomDomainZone" {
+  type = string
+}
+
 variable "vnet_name" {
   type = string
 }
