@@ -641,6 +641,9 @@ module "functions" {
     azurerm = azurerm
     azurerm.HUBSub = azurerm.HUBSub
   }
+  depends_on = [ 
+    module.storage
+  ]
   source = "./core/host/functions"  
   name                                  = var.functionsAppName != "" ? var.functionsAppName : local.FunctionAppName
   plan_name                             = var.appServicePlanName != "" ? var.appServicePlanName : local.FunctionASPName
