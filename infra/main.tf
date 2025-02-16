@@ -202,7 +202,7 @@ data "azurerm_key_vault_certificate" "WebCertificate" {
 }
 
 module "keyvaultCertificate" {
-  count = data.azurerm_key_vault_certificate.WebCertificate == "" ? 1 : 0
+  count = data.azurerm_key_vault_certificate.WebCertificate.name == "" ? 1 : 0
   source            = "./core/security/keyvaultCertificate"
   providers = {
     azurerm = azurerm
