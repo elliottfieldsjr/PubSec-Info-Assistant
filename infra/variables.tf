@@ -7,6 +7,10 @@ variable "CustomDomainName" {
   type = string
 }
 
+variable "CustomDomainHost" {
+  type = string
+}
+
 variable "CertificatePassword" {
   type        = string
   sensitive   = true

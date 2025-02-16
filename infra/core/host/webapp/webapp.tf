@@ -300,7 +300,7 @@ resource "azurerm_private_endpoint" "backendPrivateEndpoint" {
 
 resource "azurerm_dns_txt_record" "customdomainverification" {
   provider = azurerm.HUBSub      
-  name                = "@"
+  name                = var.CustomDomainHost
   zone_name           = var.CustomDomainName
   resource_group_name = var.PublicDNSZoneResourceGroupName
   ttl                 = 300

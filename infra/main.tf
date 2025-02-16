@@ -539,6 +539,7 @@ module "webapp" {
   }   
   source                              = "./core/host/webapp"
   CustomDomainName                    = var.CustomDomainName
+  CustomDomainHost                    = var.CustomDomainHost
   name                                = var.backendServiceName != "" ? var.backendServiceName : local.WebAppName
   plan_name                           = var.appServicePlanName != "" ? var.appServicePlanName : local.WebAppASPName
   sku = {
