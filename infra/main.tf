@@ -196,24 +196,19 @@ data "azurerm_key_vault" "InfoAssistKeyVault" {
   resource_group_name   = var.KVResourceGroupName
 }
 
-data "azurerm_key_vault_certificate" "WebCertificate" {
-  key_vault_id = data.azurerm_key_vault.InfoAssistKeyVault.id
-  name = local.CertificateName
-}
-
-module "keyvaultCertificate" {
-  count = data.azurerm_key_vault_certificate.WebCertificate.name == "" ? 1 : 0
-  source            = "./core/security/keyvaultCertificate"
-  providers = {
-    azurerm = azurerm
-    azurerm.HUBSub = azurerm.HUBSub
-  }   
-  KeyVaultID = data.azurerm_key_vault.InfoAssistKeyVault.id
-  CertificateName     = local.CertificateName
-  CertificateFileName = local.CertificateFileName
-  CertificateFilePath = local.CertificateFilePath
-  CertificatePassword = local.CertificatePassword
-}
+# module "keyvaultCertificate" {
+#   count = data.azurerm_key_vault_certificate.WebCertificate.name == "" ? 1 : 0
+#   source            = "./core/security/keyvaultCertificate"
+#   providers = {
+#     azurerm = azurerm
+#     azurerm.HUBSub = azurerm.HUBSub
+#   }   
+#   KeyVaultID = data.azurerm_key_vault.InfoAssistKeyVault.id
+#   CertificateName     = local.CertificateName
+#   CertificateFileName = local.CertificateFileName
+#   CertificateFilePath = local.CertificateFilePath
+#   CertificatePassword = local.CertificatePassword
+# }
 
 data "azurerm_log_analytics_workspace" "ExistingLAW" {
   provider            = azurerm.OPERATIONSSub
