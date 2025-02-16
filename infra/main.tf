@@ -548,6 +548,7 @@ module "webapp" {
   }
   kind                                = "linux"
   InfoAssistResourceGroupName         = var.InfoAssistResourceGroupName
+  PublicDNSZoneResourceGroupName      = var.PublicDNSZoneResourceGroupName
   KVResourceGroupName                 = var.KVResourceGroupName 
   location                            = var.location
   tags                                = merge(local.tags, { "azd-service-name" = "backend" })
