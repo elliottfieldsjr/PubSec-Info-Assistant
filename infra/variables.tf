@@ -33,6 +33,11 @@ variable "InfoAssistStorageAccountName" {
 }
 
 variable "APDZResourceGroupName" {
+  description = "Name of existing Azure Private DNS Zones Resource Group"  
+  type    = string
+}
+
+variable "PublicDNSZoneResourceGroupName" {
   description = "Name of existing Azure DNS Zones Resource Group"  
   type    = string
 }

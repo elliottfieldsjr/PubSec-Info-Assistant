@@ -37,6 +37,10 @@ variable "KVResourceGroupName" {
   type    = string
 }
 
+variable "PublicDNSZoneResourceGroupName" {
+  type    = string
+}
+
 variable "storageAccountId" {
   type    = string
   default = ""
